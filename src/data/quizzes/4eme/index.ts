@@ -31,6 +31,16 @@ export const topics: Topic[] = [
   produitQuiz,
   arithQuiz,
   recipQuiz,
+  {
+    id: 'test',
+    title: 'Test',
+    category: 'Calcul',
+    accent: '#6EE7C0',
+    icon: '🧪',
+    description: 'Catégorie de test.',
+    tags: ['Bientôt'],
+    available: false,
+  },
 ];
 
 export function getTopic(id: string): Topic | undefined {
