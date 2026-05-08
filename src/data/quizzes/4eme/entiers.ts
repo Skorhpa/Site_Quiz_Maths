@@ -1,0 +1,62 @@
+import type { GeneratorSpec, NumberExercise, QuizDefinition } from '@/types';
+
+const STATIC_EXERCISES: NumberExercise[] = [
+  { expr: '-3 + 7', ans: 4, type: 'add' },
+  { expr: '-8 + 3', ans: -5, type: 'add' },
+  { expr: '-7 + 10', ans: 3, type: 'add' },
+  { expr: '-15 + 8', ans: -7, type: 'add' },
+  { expr: '-12 + 5', ans: -7, type: 'add' },
+  { expr: '-10 + 7', ans: -3, type: 'add' },
+  { expr: '-2 + 9', ans: 7, type: 'add' },
+  { expr: '-6 + 14', ans: 8, type: 'add' },
+  { expr: '-20 + 12', ans: -8, type: 'add' },
+  { expr: '-14 + 20', ans: 6, type: 'add' },
+  { expr: '5 - 9', ans: -4, type: 'sub' },
+  { expr: '6 - 11', ans: -5, type: 'sub' },
+  { expr: '2 - 14', ans: -12, type: 'sub' },
+  { expr: '9 - 20', ans: -11, type: 'sub' },
+  { expr: '3 - 8', ans: -5, type: 'sub' },
+  { expr: '14 - 20', ans: -6, type: 'sub' },
+  { expr: '7 - 15', ans: -8, type: 'sub' },
+  { expr: '1 - 12', ans: -11, type: 'sub' },
+  { expr: '8 - 25', ans: -17, type: 'sub' },
+  { expr: '17 - 30', ans: -13, type: 'sub' },
+  { expr: '4 × (-5)', ans: -20, type: 'mul' },
+  { expr: '-4 × 5', ans: -20, type: 'mul' },
+  { expr: '-4 × (-5)', ans: 20, type: 'mul' },
+  { expr: '6 × (-3)', ans: -18, type: 'mul' },
+  { expr: '-6 × (-3)', ans: 18, type: 'mul' },
+  { expr: '7 × (-2)', ans: -14, type: 'mul' },
+  { expr: '-7 × (-2)', ans: 14, type: 'mul' },
+  { expr: '-5 × 5', ans: -25, type: 'mul' },
+  { expr: '(-1) × 11', ans: -11, type: 'mul' },
+  { expr: '(-1) × (-11)', ans: 11, type: 'mul' },
+];
+
+const GENERATOR: GeneratorSpec[] = [
+  { kind: 'integer', op: 'add', count: 10, range: [-20, 20] },
+  { kind: 'integer', op: 'sub', count: 10, range: [-20, 20] },
+  { kind: 'integer', op: 'mul', count: 10, range: [-12, 12] },
+];
+
+export const entiersQuiz: QuizDefinition<NumberExercise> = {
+  id: 'entiers',
+  available: true,
+  title: 'Entiers relatifs',
+  titleSub: 'relatifs',
+  subtitle: '30 calculs · 10 additions, 10 soustractions, 10 multiplications',
+  category: 'Calcul',
+  accent: '#6EE7C0',
+  accentSecondary: '#A78BFA',
+  icon: '±',
+  description: 'Additions, soustractions et multiplications avec des nombres positifs et négatifs.',
+  tags: ['30 questions', 'Génération aléatoire'],
+  renderer: 'number',
+  exercises: STATIC_EXERCISES,
+  generator: GENERATOR,
+  typePills: [
+    { label: 'Addition', color: '#4CAF84', type: 'add' },
+    { label: 'Soustraction', color: '#D07548', type: 'sub' },
+    { label: 'Multiplication', color: '#4A7CC9', type: 'mul' },
+  ],
+};

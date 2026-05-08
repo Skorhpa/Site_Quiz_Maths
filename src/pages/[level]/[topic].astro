@@ -1,0 +1,50 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Quiz from '@/components/Quiz';
+import { LEVELS, getLevel } from '@/data/levels';
+
+export async function getStaticPaths() {
+  const paths: { params: { level: string; topic: string } }[] = [];
+  for (const level of LEVELS) {
+    if (!level.available || !level.topicsModule) continue;
+    const mod = await level.topicsModule();
+    for (const topic of mod.topics) {
+      if (!topic.available) continue;
+      paths.push({ params: { level: level.id, topic: topic.id } });
+    }
+  }
+  return paths;
+}
+
+const { level: levelId, topic: topicId } = Astro.params;
+const level = getLevel(levelId!);
+if (!level || !level.available || !level.topicsModule) {
+  return Astro.redirect(`/${levelId ?? ''}`);
+}
+
+const mod = await level.topicsModule();
+const topic = mod.topics.find((t) => t.id === topicId);
+if (!topic || !topic.available) {
+  return Astro.redirect(`/${level.id}`);
+}
+
+const parentTopic = topic.parent
+  ? mod.topics.find((t) => t.id === topic.parent && t.available)
+  : null;
+---
+<BaseLayout title={`${topic.title} — ${level.label}`} description={topic.description}>
+  <div class="topbar">
+    <a class="home-btn" href={`/${level.id}`}>← Accueil</a>
+    <div class="breadcrumb">
+      / {parentTopic && (
+        <>
+          <a href={`/${level.id}/${parentTopic.id}`} style="color:var(--muted);text-decoration:underline;">{parentTopic.title}</a>
+          {' / '}
+        </>
+      )}
+      <span>{topic.title}</span>
+    </div>
+  </div>
+
+  <Quiz quiz={topic} client:load />
+</BaseLayout>

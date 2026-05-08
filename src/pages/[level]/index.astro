@@ -1,0 +1,84 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { LEVELS, getLevel } from '@/data/levels';
+import type { Topic } from '@/types';
+
+export async function getStaticPaths() {
+  return LEVELS.map((l) => ({ params: { level: l.id } }));
+}
+
+const { level: levelId } = Astro.params;
+const level = getLevel(levelId!);
+
+if (!level) {
+  return Astro.redirect('/');
+}
+
+let topics: Topic[] = [];
+if (level.available && level.topicsModule) {
+  const mod = await level.topicsModule();
+  topics = mod.topics;
+}
+
+// Hide the "← Niveaux / <Level>" topbar while a single level is the only one available —
+// the link would just bounce back to this page via the / → /<level> redirect.
+// Auto-restores once a second level flips to `available: true` in src/data/levels.ts.
+const showLevelTopbar = LEVELS.filter((l) => l.available).length > 1;
+---
+<BaseLayout title={`${level.label} — SiteMath`} description={level.description}>
+  {showLevelTopbar && (
+    <div class="topbar">
+      <a class="home-btn" href="/">← Niveaux</a>
+      <div class="breadcrumb">/ <span>{level.label}</span></div>
+    </div>
+  )}
+
+  <main class="home-shell">
+    <div class="home-eyebrow">Révisions</div>
+    <h1 class="home-title">Quiz Maths</h1>
+    <p class="home-sub">Choisis un thème pour commencer</p>
+
+    {!level.available && (
+      <p style="text-align:center;color:var(--muted);margin-top:2rem;">
+        Ce niveau sera bientôt disponible.
+      </p>
+    )}
+
+    {level.available && (
+      <div class="quiz-cards">
+        {topics.filter((t) => !(t.available && t.hidden)).map((topic) => (
+          topic.available ? (
+            <a
+              href={`/${level.id}/${topic.id}`}
+              class="quiz-card"
+              style={`--card-accent: ${topic.accent};`}
+            >
+              <div class="qc-icon" style={`background:${topic.accent}26;`}>
+                {topic.icon}
+              </div>
+              <div class="qc-label" style={`color:${topic.accent};`}>{topic.category}</div>
+              <div class="qc-title">{topic.cardTitle ?? topic.title}</div>
+              <div class="qc-desc">{topic.description}</div>
+              <div class="qc-tags">
+                {topic.tags.map((t) => <span class="qc-tag">{t}</span>)}
+              </div>
+              <div class="qc-arrow">→</div>
+            </a>
+          ) : (
+            <div class="quiz-card locked" style={`--card-accent: ${topic.accent};`}>
+              <div class="qc-icon" style={`background:${topic.accent}26;`}>
+                {topic.icon}
+              </div>
+              <div class="qc-label" style={`color:${topic.accent};`}>{topic.category}</div>
+              <div class="qc-title">{topic.cardTitle ?? topic.title}</div>
+              <div class="qc-desc">{topic.description}</div>
+              <div class="qc-tags">
+                <span class="qc-tag">Bientôt</span>
+              </div>
+            </div>
+          )
+        ))}
+      </div>
+    )}
+  </main>
+</BaseLayout>

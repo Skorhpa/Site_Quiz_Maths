@@ -1,0 +1,46 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { LEVELS } from '@/data/levels';
+
+const availableLevels = LEVELS.filter((l) => l.available);
+
+// While only one level is available, skip the level picker entirely.
+// The picker auto-reactivates once a second level flips `available: true`.
+if (availableLevels.length === 1) {
+  return Astro.redirect(`/${availableLevels[0]!.id}`);
+}
+---
+<BaseLayout title="SiteMath — Choisis ton niveau">
+  <main class="home-shell">
+    <div class="home-eyebrow">Mathématiques</div>
+    <h1 class="home-title">Choisis ton niveau</h1>
+    <p class="home-sub">Du collège au lycée — exercices, quiz et entraînement</p>
+
+    <div class="quiz-cards">
+      {LEVELS.map((level) => (
+        level.available ? (
+          <a href={`/${level.id}`} class="quiz-card" style={`--card-accent: var(--text);`}>
+            <div class="qc-icon">{level.shortLabel}</div>
+            <div class="qc-label">Niveau</div>
+            <div class="qc-title">{level.label}</div>
+            <div class="qc-desc">{level.description}</div>
+            <div class="qc-tags">
+              <span class="qc-tag">Disponible</span>
+            </div>
+            <div class="qc-arrow">→</div>
+          </a>
+        ) : (
+          <div class="quiz-card locked">
+            <div class="qc-icon">{level.shortLabel}</div>
+            <div class="qc-label">Niveau</div>
+            <div class="qc-title">{level.label}</div>
+            <div class="qc-desc">{level.description}</div>
+            <div class="qc-tags">
+              <span class="qc-tag">Bientôt</span>
+            </div>
+          </div>
+        )
+      ))}
+    </div>
+  </main>
+</BaseLayout>
