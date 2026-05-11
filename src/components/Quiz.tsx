@@ -9,6 +9,7 @@ import type {
   NumberExercise,
   ProduitExercise,
   ProgrammeExercise,
+  PuissancesExercise,
   PythagoreExercise,
   QuizDefinition,
   ReciproqueExercise,
@@ -29,6 +30,7 @@ import { FractionQuestion } from './questions/FractionQuestion';
 import { FractionsCompQuestion } from './questions/FractionsCompQuestion';
 import { EquationQuestion } from './questions/EquationQuestion';
 import { ReciproqueQuestion } from './questions/ReciproqueQuestion';
+import { PuissancesQuestion } from './questions/PuissancesQuestion';
 
 interface QuizProps {
   quiz: QuizDefinition;
@@ -447,6 +449,20 @@ export default function Quiz({ quiz }: QuizProps) {
               key={`${seriesKey}-${i}`}
               index={i}
               exercise={ex as ReciproqueExercise}
+              answer={answers[i]!}
+              onSubmit={(correct) => submit(i, correct)}
+            />
+          ))}
+        </div>
+      )}
+
+      {quiz.renderer === 'puissances' && (
+        <div className="questions-list">
+          {exercises.map((ex, i) => (
+            <PuissancesQuestion
+              key={`${seriesKey}-${i}`}
+              index={i}
+              exercise={ex as PuissancesExercise}
               answer={answers[i]!}
               onSubmit={(correct) => submit(i, correct)}
             />
