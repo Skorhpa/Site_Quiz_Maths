@@ -273,6 +273,25 @@ export interface FractionsCompExercise extends BaseExercise {
   ansDStr?: string;
 }
 
+export type PuissancesSubtype = 'power' | 'scientific' | 'exponent';
+
+export interface PuissancesExercise extends BaseExercise {
+  subtype: PuissancesSubtype;
+  /** HTML question text shown to the student. */
+  question: string;
+  /** HTML step-by-step correction. */
+  steps: string;
+  color: string;
+  /**
+   * For 'power': the numeric result.
+   * For 'exponent': the exponent integer.
+   * For 'scientific': the exponent (n in a × 10ⁿ).
+   */
+  ans: number;
+  /** For 'scientific' only: the mantissa (a in a × 10ⁿ, 1 ≤ a < 10). */
+  ansMantissa?: number;
+}
+
 export type Exercise =
   | NumberExercise
   | RoundingExercise
@@ -285,9 +304,10 @@ export type Exercise =
   | FractionExercise
   | FractionsCompExercise
   | EquationExercise
-  | ReciproqueExercise;
+  | ReciproqueExercise
+  | PuissancesExercise;
 
-export type RendererKind = 'number' | 'rounding' | 'literal' | 'produit' | 'arith' | 'programme' | 'pythagore' | 'thales' | 'fractions' | 'fractions-comp' | 'equation' | 'reciproque';
+export type RendererKind = 'number' | 'rounding' | 'literal' | 'produit' | 'arith' | 'programme' | 'pythagore' | 'thales' | 'fractions' | 'fractions-comp' | 'equation' | 'reciproque' | 'puissances';
 
 export type IntegerOp = 'add' | 'sub' | 'mul';
 
