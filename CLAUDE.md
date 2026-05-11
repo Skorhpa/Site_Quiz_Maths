@@ -366,3 +366,21 @@ npm run preview            # serve ./dist locally
 Before declaring a quiz ported, both `npx astro check` and `npx astro build`
 must finish with **0 errors / 0 warnings / 0 hints**, and the quiz must pass
 all six behavioural rules above.
+
+---
+
+## Git workflow
+
+- **Working branch : `Etienne`**. Always commit and push to `origin/Etienne`.
+  Never push to `main` directly.
+- **Local identity** (configured once per clone):
+  ```bash
+  git config user.name  "Etienne"
+  git config user.email "etienne.prevost@laposte.net"
+  ```
+- **Commit + push sequence**:
+  ```bash
+  git add <files>
+  git commit -m "Short imperative summary"
+  git push origin Etienne
+  ```

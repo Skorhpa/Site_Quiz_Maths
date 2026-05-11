@@ -24,6 +24,7 @@ const CARD_CLASS: Record<AnswerState['status'], string> = {
 function placeholderFor(subtype: LiteralExercise['subtype']): string {
   if (subtype === 'substitute') return 'Donne la valeur numérique…';
   if (subtype === 'factor') return "Écris l'expression factorisée…";
+  if (subtype === 'scientific') return 'Ex : 3,45 × 10^8  ou  3,45 * 10^8';
   return "Écris l'expression réduite…";
 }
 
@@ -31,6 +32,7 @@ export function TextQuestion({ index, exercise, answer, onChange, onSubmit }: Te
   const [hintOpen, setHintOpen] = useState(false);
   const disabled = answer.status !== 'pending';
   const isSub = exercise.subtype === 'substitute';
+  const isSci = exercise.subtype === 'scientific';
   const isComplex = exercise.subtype === 'complex';
 
   const handleKey = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -74,7 +76,7 @@ export function TextQuestion({ index, exercise, answer, onChange, onSubmit }: Te
 
       <div
         style={exprStyle}
-        dangerouslySetInnerHTML={{ __html: isSub ? exercise.expr : `${exercise.expr} =` }}
+        dangerouslySetInnerHTML={{ __html: (isSub || isSci) ? exercise.expr : `${exercise.expr} =` }}
       />
 
       <input

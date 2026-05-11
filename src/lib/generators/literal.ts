@@ -7,6 +7,7 @@ const COLORS: Record<LiteralSubtype, string> = {
   reduce_paren: '#7dd3fc',
   substitute: '#fbbf24',
   complex: '#E879F9',
+  scientific: '#6EE7C0',
 };
 const LABELS: Record<LiteralSubtype, string> = {
   reduce: 'Réduire',
@@ -15,6 +16,7 @@ const LABELS: Record<LiteralSubtype, string> = {
   reduce_paren: 'Réduire (parenthèses)',
   substitute: 'Substituer',
   complex: 'Calculs complexes',
+  scientific: 'Notation scientifique',
 };
 
 const randNZ = (a: number, b: number) => {
