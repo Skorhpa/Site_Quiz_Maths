@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type {
   ArithExercise,
+  PropExercise,
   EquationExercise,
   Exercise,
   FractionExercise,
@@ -31,6 +32,7 @@ import { FractionsCompQuestion } from './questions/FractionsCompQuestion';
 import { EquationQuestion } from './questions/EquationQuestion';
 import { ReciproqueQuestion } from './questions/ReciproqueQuestion';
 import { PuissancesQuestion } from './questions/PuissancesQuestion';
+import { PropQuestion } from './questions/PropQuestion';
 
 interface QuizProps {
   quiz: QuizDefinition;
@@ -449,6 +451,20 @@ export default function Quiz({ quiz }: QuizProps) {
               key={`${seriesKey}-${i}`}
               index={i}
               exercise={ex as ReciproqueExercise}
+              answer={answers[i]!}
+              onSubmit={(correct) => submit(i, correct)}
+            />
+          ))}
+        </div>
+      )}
+
+      {quiz.renderer === 'prop' && (
+        <div className="questions-list">
+          {exercises.map((ex, i) => (
+            <PropQuestion
+              key={`${seriesKey}-${i}`}
+              index={i}
+              exercise={ex as PropExercise}
               answer={answers[i]!}
               onSubmit={(correct) => submit(i, correct)}
             />
