@@ -10,6 +10,7 @@ export const fractionsCompQuiz: QuizDefinition<FractionsCompExercise> = {
   title: 'Fractions : comparaisons & simplification',
   titleSub: 'comparaisons & simplification',
   subtitle: '11 questions · Comparer · Simplifier',
+  notice: '<span style="color:#F87171;font-weight:600;">⚠&nbsp; À faire sans calculatrice</span>',
   category: 'Calcul',
   accent: '#34D399',
   accentSecondary: '#6EE7C0',
