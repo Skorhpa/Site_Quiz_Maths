@@ -1,4 +1,4 @@
-import type { KeyboardEvent } from 'react';
+import { useState, type KeyboardEvent } from 'react';
 import type { NumberExercise } from '@/types';
 
 interface AnswerState {
@@ -23,6 +23,7 @@ const CARD_CLASS: Record<AnswerState['status'], string> = {
 };
 
 export function NumberQuestion({ index, exercise, answer, accent, onChange, onSubmit }: NumberQuestionProps) {
+  const [hintOpen, setHintOpen] = useState(false);
   const disabled = answer.status !== 'pending';
 
   const handleKey = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -61,6 +62,16 @@ export function NumberQuestion({ index, exercise, answer, accent, onChange, onSu
       <div className={feedback.cls}>{feedback.text}</div>
       {exercise.hint && answer.status === 'pending' && (
         <div className="hint">💡 {exercise.hint}</div>
+      )}
+      {exercise.steps && (
+        <div style={{ marginTop: 8 }}>
+          <button type="button" className="hint-toggle" onClick={() => setHintOpen((v) => !v)}>
+            <span>{hintOpen ? '▼' : '▶'}</span> Voir la correction
+          </button>
+          <div className={`steps-box${hintOpen ? ' open' : ''}`} style={{ fontSize: 13, lineHeight: 2 }}>
+            <div dangerouslySetInnerHTML={{ __html: exercise.steps }} />
+          </div>
+        </div>
       )}
     </div>
   );

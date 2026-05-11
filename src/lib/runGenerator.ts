@@ -17,6 +17,9 @@ import { generateFractionsSeries, generateFractionsComplexSeries } from './gener
 import { generateFractionsCompSeries } from './generators/fractions-comp';
 import { generateEquationsSeries } from './generators/equations';
 import { generateReciproqueSeries } from './generators/reciproque';
+import { generatePuissancesSeries } from './generators/puissances';
+import { generatePropSeries } from './generators/prop';
+import { generateEntierComplexSeries } from './generators/entiers-complex';
 
 const randInt = (a: number, b: number) => Math.floor(Math.random() * (b - a + 1)) + a;
 const randNZ = (a: number, b: number) => {
@@ -188,6 +191,12 @@ export function runGenerator(specs: GeneratorSpec[]): Exercise[] {
       list.push(...generateEquationsSeries());
     } else if (spec.kind === 'reciproque') {
       list.push(...generateReciproqueSeries());
+    } else if (spec.kind === 'puissances') {
+      list.push(...generatePuissancesSeries());
+    } else if (spec.kind === 'prop') {
+      list.push(...generatePropSeries());
+    } else if (spec.kind === 'entiers-complex') {
+      list.push(...generateEntierComplexSeries());
     }
   }
   return list;

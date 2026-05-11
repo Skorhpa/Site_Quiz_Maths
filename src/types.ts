@@ -10,6 +10,7 @@ export interface BaseExercise {
 export interface NumberExercise extends BaseExercise {
   expr: string;
   ans: number;
+  steps?: string;
 }
 
 export type RoundingType = 'dix' | 'cent' | 'mill';
@@ -322,6 +323,8 @@ export interface PropExercise extends BaseExercise {
   // ── graph: nuage de points, proportionnalité ? ─────────────────────────
   graphSvg?: string;
   graphIsProp?: boolean;
+  // ── problem option: show "......" for known cells (student fills by hand) ─
+  probDotted?: boolean;
 }
 
 export type Exercise =
@@ -418,6 +421,21 @@ export interface ReciproqueSeriesSpec {
   kind: 'reciproque';
 }
 
+/** Generates a Puissances et écritures scientifiques set (4 power + 4 scientific + 2 exponent). */
+export interface PuissancesSeriesSpec {
+  kind: 'puissances';
+}
+
+/** Generates a Proportionnalité set (4 table4 + 2 check23 + 1 problem + 3 graphs). */
+export interface PropSeriesSpec {
+  kind: 'prop';
+}
+
+/** Shuffles the entiers-complex bank and picks 10 complex multi-operation exercises. */
+export interface EntierComplexSeriesSpec {
+  kind: 'entiers-complex';
+}
+
 export type GeneratorSpec =
   | IntegerSeriesSpec
   | RoundingSeriesSpec
@@ -432,7 +450,10 @@ export type GeneratorSpec =
   | FractionsCompSeriesSpec
   | FractionsComplexSeriesSpec
   | EquationsSeriesSpec
-  | ReciproqueSeriesSpec;
+  | ReciproqueSeriesSpec
+  | PuissancesSeriesSpec
+  | PropSeriesSpec
+  | EntierComplexSeriesSpec;
 
 export interface TopicCardBase {
   id: string;

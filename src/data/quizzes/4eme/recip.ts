@@ -28,7 +28,6 @@ export const recipQuiz: QuizDefinition<ReciproqueExercise> = {
   id: 'recip',
   available: true,
   title: 'Réciproque du théorème de Pythagore',
-  cardTitle: 'Réciproque de Pythagore',
   titleSub: 'du théorème de Pythagore',
   subtitle: '3 exercices · Tableau · Triangle rectangle · Triangle non rectangle',
   category: 'Géométrie',

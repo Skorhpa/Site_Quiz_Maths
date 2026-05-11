@@ -2,6 +2,7 @@ import type { Topic } from '@/types';
 import { scientifiqueQuiz } from './scientifique';
 import { proportionnaliteQuiz } from './proportionnalite';
 import { entiersQuiz } from './entiers';
+import { entiersComplexQuiz } from './entiers-complex';
 import { arrondisQuiz } from './arrondis';
 import { litteralQuiz } from './litteral';
 import { litteralComplexQuiz } from './litteral-complex';
@@ -20,6 +21,7 @@ import { recipQuiz } from './recip';
 // Order matches the original Site.html homepage card sequence.
 export const topics: Topic[] = [
   entiersQuiz,
+  entiersComplexQuiz,
   pythQuiz,
   eqQuiz,
   thalesQuiz,
