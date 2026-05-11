@@ -128,6 +128,7 @@ export const proportionnaliteQuiz: QuizDefinition<PropExercise> = {
   renderer: 'prop',
   generator: GENERATOR,
   subtitle: 'Produit en croix · Tableaux · Problèmes · Graphiques',
+  notice: '<span style="color:#34D399;font-weight:600;">🧮&nbsp; Calculatrice nécessaire</span>',
   typePills: [
     { label: 'Tableau 2×2', color: C_T4, type: 'default' },
     { label: 'Tableau 2×3', color: C_C23, type: 'default' },

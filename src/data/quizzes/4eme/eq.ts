@@ -10,6 +10,7 @@ export const eqQuiz: QuizDefinition<EquationExercise> = {
   title: "Résolution d'équations",
   titleSub: "d'équations",
   subtitle: "20 questions · 4 types d'équations",
+  notice: '<span style="color:#F87171;font-weight:600;">⚠&nbsp; À faire sans calculatrice</span>',
   category: 'Algèbre',
   accent: '#A78BFA',
   accentSecondary: '#60A5FA',

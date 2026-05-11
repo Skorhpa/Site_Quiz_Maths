@@ -10,6 +10,7 @@ export const fractionsQuiz: QuizDefinition<FractionExercise> = {
   title: 'Fractions : calculs',
   titleSub: 'calculs',
   subtitle: '21 questions · Additions · Soustractions · Multiplications · Divisions',
+  notice: '<span style="color:#F87171;font-weight:600;">⚠&nbsp; À faire sans calculatrice</span>',
   category: 'Calcul',
   accent: '#34D399',
   accentSecondary: '#6EE7C0',

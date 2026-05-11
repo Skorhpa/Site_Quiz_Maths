@@ -78,6 +78,7 @@ export const entiersQuiz: QuizDefinition<NumberExercise> = {
   title: 'Entiers relatifs',
   titleSub: 'relatifs',
   subtitle: '15 calculs · 5 additions, 5 soustractions, 5 multiplications',
+  notice: '<span style="color:#F87171;font-weight:600;">⚠&nbsp; À faire sans calculatrice</span>',
   category: 'Calcul',
   accent: '#6EE7C0',
   accentSecondary: '#A78BFA',

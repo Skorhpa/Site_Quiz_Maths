@@ -216,6 +216,7 @@ export default function Quiz({ quiz }: QuizProps) {
           {titleTail && <span style={tailStyle}>{titleTail}</span>}
         </h1>
         {quiz.subtitle && <p className="er-sub">{quiz.subtitle}</p>}
+        {quiz.notice && <p className="er-sub" dangerouslySetInnerHTML={{ __html: quiz.notice }} />}
       </div>
 
       {quiz.formulaBanner && (
