@@ -1,4 +1,4 @@
-import type { PuissancesExercise, QuizDefinition } from '@/types';
+import type { GeneratorSpec, PuissancesExercise, QuizDefinition } from '@/types';
 
 const C_PWR = '#FB923C'; // puissances
 const C_SCI = '#60A5FA'; // écriture scientifique (2 champs)
@@ -16,17 +16,19 @@ function exp(question: string, ans: number, steps: string): PuissancesExercise {
   return { type: 'default', subtype: 'exponent', question, ans, steps, color: C_EXP };
 }
 
+const GENERATOR: GeneratorSpec[] = [{ kind: 'puissances' }];
+
 export const scientifiqueQuiz: QuizDefinition<PuissancesExercise> = {
   id: 'scientifique',
   available: true,
-  title: 'Puissances et écritures',
+  title: 'Puissances et écritures scientifiques',
   titleSub: 'scientifiques',
   category: 'Calcul',
   accent: '#6EE7C0',
   accentSecondary: '#38BDF8',
   icon: '10ⁿ',
   description: 'Calculer des puissances et écrire des nombres en notation scientifique.',
-  tags: ['10 questions'],
+  tags: ['10 questions', 'Génération aléatoire'],
   renderer: 'puissances',
   subtitle: 'Puissances · Notation a × 10ⁿ avec 1 ≤ a < 10',
   typePills: [
@@ -34,6 +36,7 @@ export const scientifiqueQuiz: QuizDefinition<PuissancesExercise> = {
     { label: 'Écriture sci.', color: C_SCI, type: 'default' },
     { label: 'Exposant', color: C_EXP, type: 'default' },
   ],
+  generator: GENERATOR,
   exercises: [
     // ── Puissances ────────────────────────────────────────────────────────
     pwr(

@@ -1,4 +1,4 @@
-import type { PropExercise, QuizDefinition } from '@/types';
+import type { GeneratorSpec, PropExercise, QuizDefinition } from '@/types';
 
 const C_T4  = '#34D399'; // tableau 2×2
 const C_C23 = '#60A5FA'; // tableau 2×3
@@ -113,6 +113,8 @@ const G3 = `<svg viewBox="0 0 280 200" xmlns="http://www.w3.org/2000/svg">
 
 // ── quiz definition ────────────────────────────────────────────────────────────
 
+const GENERATOR: GeneratorSpec[] = [{ kind: 'prop' }];
+
 export const proportionnaliteQuiz: QuizDefinition<PropExercise> = {
   id: 'proportionnalite',
   available: true,
@@ -122,8 +124,9 @@ export const proportionnaliteQuiz: QuizDefinition<PropExercise> = {
   accentSecondary: '#60A5FA',
   icon: '∝',
   description: 'Tableaux de proportionnalité, produit en croix et représentations graphiques.',
-  tags: ['10 questions'],
+  tags: ['10 questions', 'Génération aléatoire'],
   renderer: 'prop',
+  generator: GENERATOR,
   subtitle: 'Produit en croix · Tableaux · Problèmes · Graphiques',
   typePills: [
     { label: 'Tableau 2×2', color: C_T4, type: 'default' },
@@ -198,7 +201,7 @@ export const proportionnaliteQuiz: QuizDefinition<PropExercise> = {
        <br>3 × 16 = 48 &nbsp;≠&nbsp; 5 × 9 = 45 → <strong style="color:var(--wrong)">non proportionnel</strong>`,
     ),
 
-    // ── Q7 : problème concret ──────────────────────────────────────────────
+    // ── Q7 : problème concret — l'élève complète toutes les cases sauf la ? ──
     {
       type: 'default',
       subtype: 'problem',
@@ -212,6 +215,7 @@ export const proportionnaliteQuiz: QuizDefinition<PropExercise> = {
       probRow1: [120, 510],
       probRow2: [4, null],
       probAns: 17,
+      probDotted: true,
       steps: `Produit en croix : <strong>120 × ? = 4 × 510</strong>
               <br>? = 4 × 510 ÷ 120 = 2 040 ÷ 120 = <strong style="color:var(--correct)">17</strong>
               <br>Avec 510 bouteilles on peut fabriquer <strong style="color:var(--correct)">17 pulls</strong>.`,

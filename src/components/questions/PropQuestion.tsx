@@ -275,8 +275,8 @@ export function PropQuestion({ index, exercise, answer, onSubmit }: PropQuestion
               {r1.map((v, i) => (
                 <td key={i} style={v === null
                   ? { ...tdBase, background: `${exercise.color}22`, color: exercise.color, fontWeight: 700, fontSize: 18 }
-                  : tdBase}
-                >{v === null ? '?' : v}</td>
+                  : exercise.probDotted ? { ...tdBase, color: 'var(--muted)', letterSpacing: 2 } : tdBase}
+                >{v === null ? '?' : exercise.probDotted ? '......' : v}</td>
               ))}
             </tr>
             <tr>
@@ -284,8 +284,8 @@ export function PropQuestion({ index, exercise, answer, onSubmit }: PropQuestion
               {r2.map((v, i) => (
                 <td key={i} style={v === null
                   ? { ...tdBase, background: `${exercise.color}22`, color: exercise.color, fontWeight: 700, fontSize: 18 }
-                  : tdBase}
-                >{v === null ? '?' : v}</td>
+                  : exercise.probDotted ? { ...tdBase, color: 'var(--muted)', letterSpacing: 2 } : tdBase}
+                >{v === null ? '?' : exercise.probDotted ? '......' : v}</td>
               ))}
             </tr>
           </tbody>
