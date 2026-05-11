@@ -389,6 +389,86 @@ const G_N3 = `<svg viewBox="0 0 280 200" xmlns="http://www.w3.org/2000/svg">
   <circle cx="184" cy="104" r="5" fill="#60A5FA"/>
 </svg>`;
 
+// Graph P4 — proportionnel y = 1,5x (scale 20px/u)
+// points: (1,1.5)→(76,145) (2,3)→(112,115) (3,4.5)→(148,85) (4,6)→(184,55) (5,7.5)→(220,25)
+const G_P4 = `<svg viewBox="0 0 280 200" xmlns="http://www.w3.org/2000/svg">
+  ${AXIS_COMMON}
+  <line x1="37" y1="135" x2="43" y2="135" stroke="#7A7F94" stroke-width="1"/>
+  <text x="22" y="139" font-size="10" fill="#7A7F94">2</text>
+  <line x1="37" y1="95" x2="43" y2="95" stroke="#7A7F94" stroke-width="1"/>
+  <text x="22" y="99" font-size="10" fill="#7A7F94">4</text>
+  <line x1="37" y1="55" x2="43" y2="55" stroke="#7A7F94" stroke-width="1"/>
+  <text x="22" y="59" font-size="10" fill="#7A7F94">6</text>
+  <circle cx="76" cy="145" r="5" fill="#60A5FA"/>
+  <circle cx="112" cy="115" r="5" fill="#60A5FA"/>
+  <circle cx="148" cy="85" r="5" fill="#60A5FA"/>
+  <circle cx="184" cy="55" r="5" fill="#60A5FA"/>
+  <circle cx="220" cy="25" r="5" fill="#60A5FA"/>
+</svg>`;
+
+// Graph N4 — non proportionnel y = 2x + 3 (scale 12px/u)
+// points: (1,5)→(76,115) (2,7)→(112,91) (3,9)→(148,67) (4,11)→(184,43) (5,13)→(220,19)
+const G_N4 = `<svg viewBox="0 0 280 200" xmlns="http://www.w3.org/2000/svg">
+  ${AXIS_COMMON}
+  <line x1="37" y1="139" x2="43" y2="139" stroke="#7A7F94" stroke-width="1"/>
+  <text x="22" y="143" font-size="10" fill="#7A7F94">3</text>
+  <line x1="37" y1="103" x2="43" y2="103" stroke="#7A7F94" stroke-width="1"/>
+  <text x="22" y="107" font-size="10" fill="#7A7F94">6</text>
+  <line x1="37" y1="67" x2="43" y2="67" stroke="#7A7F94" stroke-width="1"/>
+  <text x="22" y="71" font-size="10" fill="#7A7F94">9</text>
+  <line x1="37" y1="31" x2="43" y2="31" stroke="#7A7F94" stroke-width="1"/>
+  <text x="18" y="35" font-size="10" fill="#7A7F94">12</text>
+  <circle cx="76" cy="115" r="5" fill="#60A5FA"/>
+  <circle cx="112" cy="91" r="5" fill="#60A5FA"/>
+  <circle cx="148" cy="67" r="5" fill="#60A5FA"/>
+  <circle cx="184" cy="43" r="5" fill="#60A5FA"/>
+  <circle cx="220" cy="19" r="5" fill="#60A5FA"/>
+</svg>`;
+
+// Graph N5 — non proportionnel, nuage dispersé (scale 16px/u)
+// points: (1,5)(2,9)(3,1)(4,6)(5,3)(2,4)(4,8)
+const G_N5 = `<svg viewBox="0 0 280 200" xmlns="http://www.w3.org/2000/svg">
+  ${AXIS_COMMON}
+  <line x1="37" y1="143" x2="43" y2="143" stroke="#7A7F94" stroke-width="1"/>
+  <text x="22" y="147" font-size="10" fill="#7A7F94">2</text>
+  <line x1="37" y1="111" x2="43" y2="111" stroke="#7A7F94" stroke-width="1"/>
+  <text x="22" y="115" font-size="10" fill="#7A7F94">4</text>
+  <line x1="37" y1="79" x2="43" y2="79" stroke="#7A7F94" stroke-width="1"/>
+  <text x="22" y="83" font-size="10" fill="#7A7F94">6</text>
+  <line x1="37" y1="47" x2="43" y2="47" stroke="#7A7F94" stroke-width="1"/>
+  <text x="22" y="51" font-size="10" fill="#7A7F94">8</text>
+  <circle cx="76" cy="95" r="5" fill="#60A5FA"/>
+  <circle cx="112" cy="31" r="5" fill="#60A5FA"/>
+  <circle cx="148" cy="159" r="5" fill="#60A5FA"/>
+  <circle cx="184" cy="79" r="5" fill="#60A5FA"/>
+  <circle cx="220" cy="127" r="5" fill="#60A5FA"/>
+  <circle cx="112" cy="111" r="5" fill="#60A5FA"/>
+  <circle cx="184" cy="47" r="5" fill="#60A5FA"/>
+</svg>`;
+
+// Graph N6 — non proportionnel, nuage dispersé (scale 16px/u)
+// points: (1,8)(2,3)(3,10)(4,2)(5,6)(1,4)(3,7)
+const G_N6 = `<svg viewBox="0 0 280 200" xmlns="http://www.w3.org/2000/svg">
+  ${AXIS_COMMON}
+  <line x1="37" y1="143" x2="43" y2="143" stroke="#7A7F94" stroke-width="1"/>
+  <text x="22" y="147" font-size="10" fill="#7A7F94">2</text>
+  <line x1="37" y1="111" x2="43" y2="111" stroke="#7A7F94" stroke-width="1"/>
+  <text x="22" y="115" font-size="10" fill="#7A7F94">4</text>
+  <line x1="37" y1="79" x2="43" y2="79" stroke="#7A7F94" stroke-width="1"/>
+  <text x="22" y="83" font-size="10" fill="#7A7F94">6</text>
+  <line x1="37" y1="47" x2="43" y2="47" stroke="#7A7F94" stroke-width="1"/>
+  <text x="22" y="51" font-size="10" fill="#7A7F94">8</text>
+  <line x1="37" y1="15" x2="43" y2="15" stroke="#7A7F94" stroke-width="1"/>
+  <text x="18" y="19" font-size="10" fill="#7A7F94">10</text>
+  <circle cx="76" cy="47" r="5" fill="#60A5FA"/>
+  <circle cx="112" cy="127" r="5" fill="#60A5FA"/>
+  <circle cx="148" cy="15" r="5" fill="#60A5FA"/>
+  <circle cx="184" cy="143" r="5" fill="#60A5FA"/>
+  <circle cx="220" cy="79" r="5" fill="#60A5FA"/>
+  <circle cx="76" cy="111" r="5" fill="#60A5FA"/>
+  <circle cx="148" cy="63" r="5" fill="#60A5FA"/>
+</svg>`;
+
 // ── graph exercise pools ───────────────────────────────────────────────────────
 
 const GRAPH_PROP_POOL: PropExercise[] = [
@@ -410,6 +490,12 @@ const GRAPH_PROP_POOL: PropExercise[] = [
     steps: `Les points <strong>(1 ; 4), (2 ; 8), (3 ; 12), (4 ; 16), (5 ; 20)</strong> sont alignés <em>et</em> passent par l'origine O.
             <br>→ <strong style="color:var(--correct)">Situation de proportionnalité</strong> (coefficient k = 4).`,
   },
+  {
+    type: 'default', subtype: 'graph', color: C_GRF,
+    graphSvg: G_P4, graphIsProp: true,
+    steps: `Les points <strong>(1 ; 1,5), (2 ; 3), (3 ; 4,5), (4 ; 6), (5 ; 7,5)</strong> sont alignés <em>et</em> passent par l'origine O.
+            <br>→ <strong style="color:var(--correct)">Situation de proportionnalité</strong> (coefficient k = 1,5).`,
+  },
 ];
 
 const GRAPH_NONPROP_ALIGNED_POOL: PropExercise[] = [
@@ -427,6 +513,13 @@ const GRAPH_NONPROP_ALIGNED_POOL: PropExercise[] = [
             <br>→ <strong style="color:var(--wrong)">Pas une situation de proportionnalité</strong>.
             <br><span style="color:var(--muted);font-size:0.9em">Pour avoir proportionnalité, les points doivent passer <em>exactement</em> par O.</span>`,
   },
+  {
+    type: 'default', subtype: 'graph', color: C_GRF,
+    graphSvg: G_N4, graphIsProp: false,
+    steps: `Les points semblent alignés, mais si on prolonge la droite elle <strong>ne passe pas par l'origine</strong> (elle couperait l'axe y à y = 3).
+            <br>→ <strong style="color:var(--wrong)">Pas une situation de proportionnalité</strong>.
+            <br><span style="color:var(--muted);font-size:0.9em">Pour avoir proportionnalité, les points doivent passer <em>exactement</em> par O.</span>`,
+  },
 ];
 
 const GRAPH_NONPROP_SCATTERED_POOL: PropExercise[] = [
@@ -439,6 +532,18 @@ const GRAPH_NONPROP_SCATTERED_POOL: PropExercise[] = [
   {
     type: 'default', subtype: 'graph', color: C_GRF,
     graphSvg: G_N3, graphIsProp: false,
+    steps: `Les points sont <strong>dispersés</strong> sans alignement visible.
+            <br>→ <strong style="color:var(--wrong)">Pas une situation de proportionnalité</strong>.`,
+  },
+  {
+    type: 'default', subtype: 'graph', color: C_GRF,
+    graphSvg: G_N5, graphIsProp: false,
+    steps: `Les points sont <strong>dispersés</strong> sans alignement visible.
+            <br>→ <strong style="color:var(--wrong)">Pas une situation de proportionnalité</strong>.`,
+  },
+  {
+    type: 'default', subtype: 'graph', color: C_GRF,
+    graphSvg: G_N6, graphIsProp: false,
     steps: `Les points sont <strong>dispersés</strong> sans alignement visible.
             <br>→ <strong style="color:var(--wrong)">Pas une situation de proportionnalité</strong>.`,
   },
