@@ -1,4 +1,5 @@
 import type { Topic } from '@/types';
+import { scientifiqueQuiz } from './scientifique';
 import { entiersQuiz } from './entiers';
 import { arrondisQuiz } from './arrondis';
 import { litteralQuiz } from './litteral';
@@ -31,6 +32,7 @@ export const topics: Topic[] = [
   produitQuiz,
   arithQuiz,
   recipQuiz,
+  scientifiqueQuiz,
 ];
 
 export function getTopic(id: string): Topic | undefined {

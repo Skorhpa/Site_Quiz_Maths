@@ -65,6 +65,17 @@ function checkAnswer(quiz: QuizDefinition, ex: Exercise, value: string): boolean
       const expectedNum = parseFloat(lex.ans);
       return !Number.isNaN(studentNum) && Math.abs(studentNum - expectedNum) < 0.001;
     }
+    if (lex.subtype === 'scientific') {
+      // Accepts comma or period as decimal separator, × / * / x as multiply sign.
+      const normSci = (s: string) =>
+        s.toLowerCase()
+          .replace(/\s+/g, '')
+          .replace(/,/g, '.')
+          .replace(/×/g, '*')
+          .replace(/−/g, '-')
+          .replace(/(\d)x(\d)/g, '$1*$2');
+      return normSci(value) === normSci(lex.ans);
+    }
     return literalCheckAnswer(value, lex.ans);
   }
   if (quiz.renderer === 'produit') {

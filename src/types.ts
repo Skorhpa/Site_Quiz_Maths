@@ -27,7 +27,7 @@ export interface RoundingExercise extends BaseExercise {
   color: string;
 }
 
-export type LiteralSubtype = 'reduce' | 'develop' | 'factor' | 'reduce_paren' | 'substitute' | 'complex';
+export type LiteralSubtype = 'reduce' | 'develop' | 'factor' | 'reduce_paren' | 'substitute' | 'complex' | 'scientific';
 
 export interface LiteralExercise extends BaseExercise {
   subtype: LiteralSubtype;
