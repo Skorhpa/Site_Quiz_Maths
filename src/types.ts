@@ -292,6 +292,38 @@ export interface PuissancesExercise extends BaseExercise {
   ansMantissa?: number;
 }
 
+export type PropSubtype = 'table4' | 'check23' | 'problem' | 'graph';
+
+export interface PropExercise extends BaseExercise {
+  subtype: PropSubtype;
+  steps: string;
+  color: string;
+  // ── table4: tableau 2×2, trouver la valeur manquante ──────────────────
+  t4Row1Label?: string;
+  t4Row2Label?: string;
+  t4Row1?: [number | null, number | null];
+  t4Row2?: [number | null, number | null];
+  t4Ans?: number;
+  t4Round?: boolean;
+  // ── check23: tableau 2×3, ce tableau est-il de proportionnalité ? ─────
+  c23Row1Label?: string;
+  c23Row2Label?: string;
+  c23Row1?: [number, number, number];
+  c23Row2?: [number, number, number];
+  c23IsProp?: boolean;
+  // ── problem: problème concret (tableau + produit en croix) ─────────────
+  probStory?: string;
+  probRow1Label?: string;
+  probRow2Label?: string;
+  probRow1?: (number | null)[];
+  probRow2?: (number | null)[];
+  probColLabels?: string[];
+  probAns?: number;
+  // ── graph: nuage de points, proportionnalité ? ─────────────────────────
+  graphSvg?: string;
+  graphIsProp?: boolean;
+}
+
 export type Exercise =
   | NumberExercise
   | RoundingExercise
@@ -305,9 +337,10 @@ export type Exercise =
   | FractionsCompExercise
   | EquationExercise
   | ReciproqueExercise
-  | PuissancesExercise;
+  | PuissancesExercise
+  | PropExercise;
 
-export type RendererKind = 'number' | 'rounding' | 'literal' | 'produit' | 'arith' | 'programme' | 'pythagore' | 'thales' | 'fractions' | 'fractions-comp' | 'equation' | 'reciproque' | 'puissances';
+export type RendererKind = 'number' | 'rounding' | 'literal' | 'produit' | 'arith' | 'programme' | 'pythagore' | 'thales' | 'fractions' | 'fractions-comp' | 'equation' | 'reciproque' | 'puissances' | 'prop';
 
 export type IntegerOp = 'add' | 'sub' | 'mul';
 
