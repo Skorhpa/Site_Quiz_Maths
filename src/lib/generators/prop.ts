@@ -225,7 +225,8 @@ const PROBLEM_BANK: PropExercise[] = [
   },
 ];
 
-// ── static graph exercises (always the same 3) ────────────────────────────────
+// ── SVG graphs ────────────────────────────────────────────────────────────────
+// viewBox 280×200, origin (40,175), x scale 36px/u (x=1→76 … x=5→220)
 
 const AXIS_COMMON = `
   <line x1="40" y1="175" x2="258" y2="175" stroke="#7A7F94" stroke-width="1.5"/>
@@ -303,7 +304,94 @@ const G3 = `<svg viewBox="0 0 280 200" xmlns="http://www.w3.org/2000/svg">
   <circle cx="148" cy="31" r="5" fill="#60A5FA"/>
 </svg>`;
 
-const GRAPH_EXERCISES: PropExercise[] = [
+// Graph P2 — proportionnel y = 3x (scale 10.33px/u, range 0-15)
+// points: (1,3)→(76,144) (2,6)→(112,113) (3,9)→(148,82) (4,12)→(184,51) (5,15)→(220,20)
+const G_P2 = `<svg viewBox="0 0 280 200" xmlns="http://www.w3.org/2000/svg">
+  ${AXIS_COMMON}
+  <line x1="37" y1="144" x2="43" y2="144" stroke="#7A7F94" stroke-width="1"/>
+  <text x="22" y="148" font-size="10" fill="#7A7F94">3</text>
+  <line x1="37" y1="113" x2="43" y2="113" stroke="#7A7F94" stroke-width="1"/>
+  <text x="22" y="117" font-size="10" fill="#7A7F94">6</text>
+  <line x1="37" y1="82" x2="43" y2="82" stroke="#7A7F94" stroke-width="1"/>
+  <text x="22" y="86" font-size="10" fill="#7A7F94">9</text>
+  <line x1="37" y1="51" x2="43" y2="51" stroke="#7A7F94" stroke-width="1"/>
+  <text x="18" y="55" font-size="10" fill="#7A7F94">12</text>
+  <line x1="37" y1="20" x2="43" y2="20" stroke="#7A7F94" stroke-width="1"/>
+  <text x="18" y="24" font-size="10" fill="#7A7F94">15</text>
+  <circle cx="76" cy="144" r="5" fill="#60A5FA"/>
+  <circle cx="112" cy="113" r="5" fill="#60A5FA"/>
+  <circle cx="148" cy="82" r="5" fill="#60A5FA"/>
+  <circle cx="184" cy="51" r="5" fill="#60A5FA"/>
+  <circle cx="220" cy="20" r="5" fill="#60A5FA"/>
+</svg>`;
+
+// Graph P3 — proportionnel y = 4x (scale 8px/u, range 0-20)
+// points: (1,4)→(76,143) (2,8)→(112,111) (3,12)→(148,79) (4,16)→(184,47) (5,20)→(220,15)
+const G_P3 = `<svg viewBox="0 0 280 200" xmlns="http://www.w3.org/2000/svg">
+  ${AXIS_COMMON}
+  <line x1="37" y1="143" x2="43" y2="143" stroke="#7A7F94" stroke-width="1"/>
+  <text x="22" y="147" font-size="10" fill="#7A7F94">4</text>
+  <line x1="37" y1="111" x2="43" y2="111" stroke="#7A7F94" stroke-width="1"/>
+  <text x="22" y="115" font-size="10" fill="#7A7F94">8</text>
+  <line x1="37" y1="79" x2="43" y2="79" stroke="#7A7F94" stroke-width="1"/>
+  <text x="18" y="83" font-size="10" fill="#7A7F94">12</text>
+  <line x1="37" y1="47" x2="43" y2="47" stroke="#7A7F94" stroke-width="1"/>
+  <text x="18" y="51" font-size="10" fill="#7A7F94">16</text>
+  <line x1="37" y1="15" x2="43" y2="15" stroke="#7A7F94" stroke-width="1"/>
+  <text x="18" y="19" font-size="10" fill="#7A7F94">20</text>
+  <circle cx="76" cy="143" r="5" fill="#60A5FA"/>
+  <circle cx="112" cy="111" r="5" fill="#60A5FA"/>
+  <circle cx="148" cy="79" r="5" fill="#60A5FA"/>
+  <circle cx="184" cy="47" r="5" fill="#60A5FA"/>
+  <circle cx="220" cy="15" r="5" fill="#60A5FA"/>
+</svg>`;
+
+// Graph N2 — non proportionnel y = 2x + 1 (scale 14.09px/u, range 0-12)
+// points: (1,3)→(76,133) (2,5)→(112,104) (3,7)→(148,76) (4,9)→(184,48) (5,11)→(220,20)
+// y-axis marks at 2(147) 4(119) 6(90) 8(62) 10(34)
+const G_N2 = `<svg viewBox="0 0 280 200" xmlns="http://www.w3.org/2000/svg">
+  ${AXIS_COMMON}
+  <line x1="37" y1="147" x2="43" y2="147" stroke="#7A7F94" stroke-width="1"/>
+  <text x="22" y="151" font-size="10" fill="#7A7F94">2</text>
+  <line x1="37" y1="119" x2="43" y2="119" stroke="#7A7F94" stroke-width="1"/>
+  <text x="22" y="123" font-size="10" fill="#7A7F94">4</text>
+  <line x1="37" y1="90" x2="43" y2="90" stroke="#7A7F94" stroke-width="1"/>
+  <text x="22" y="94" font-size="10" fill="#7A7F94">6</text>
+  <line x1="37" y1="62" x2="43" y2="62" stroke="#7A7F94" stroke-width="1"/>
+  <text x="22" y="66" font-size="10" fill="#7A7F94">8</text>
+  <line x1="37" y1="34" x2="43" y2="34" stroke="#7A7F94" stroke-width="1"/>
+  <text x="18" y="38" font-size="10" fill="#7A7F94">10</text>
+  <circle cx="76" cy="133" r="5" fill="#60A5FA"/>
+  <circle cx="112" cy="104" r="5" fill="#60A5FA"/>
+  <circle cx="148" cy="76" r="5" fill="#60A5FA"/>
+  <circle cx="184" cy="48" r="5" fill="#60A5FA"/>
+  <circle cx="220" cy="20" r="5" fill="#60A5FA"/>
+</svg>`;
+
+// Graph N3 — non proportionnel, nuage dispersé (scale 17.78px/u, range 0-9)
+// points dispersés : (1,1)(2,6)(3,3)(4,8)(5,2)(2,9)(4,4)
+const G_N3 = `<svg viewBox="0 0 280 200" xmlns="http://www.w3.org/2000/svg">
+  ${AXIS_COMMON}
+  <line x1="37" y1="139" x2="43" y2="139" stroke="#7A7F94" stroke-width="1"/>
+  <text x="22" y="143" font-size="10" fill="#7A7F94">2</text>
+  <line x1="37" y1="104" x2="43" y2="104" stroke="#7A7F94" stroke-width="1"/>
+  <text x="22" y="108" font-size="10" fill="#7A7F94">4</text>
+  <line x1="37" y1="68" x2="43" y2="68" stroke="#7A7F94" stroke-width="1"/>
+  <text x="22" y="72" font-size="10" fill="#7A7F94">6</text>
+  <line x1="37" y1="33" x2="43" y2="33" stroke="#7A7F94" stroke-width="1"/>
+  <text x="22" y="37" font-size="10" fill="#7A7F94">8</text>
+  <circle cx="76" cy="157" r="5" fill="#60A5FA"/>
+  <circle cx="112" cy="68" r="5" fill="#60A5FA"/>
+  <circle cx="148" cy="122" r="5" fill="#60A5FA"/>
+  <circle cx="184" cy="33" r="5" fill="#60A5FA"/>
+  <circle cx="220" cy="139" r="5" fill="#60A5FA"/>
+  <circle cx="112" cy="15" r="5" fill="#60A5FA"/>
+  <circle cx="184" cy="104" r="5" fill="#60A5FA"/>
+</svg>`;
+
+// ── graph exercise pools ───────────────────────────────────────────────────────
+
+const GRAPH_PROP_POOL: PropExercise[] = [
   {
     type: 'default', subtype: 'graph', color: C_GRF,
     graphSvg: G1, graphIsProp: true,
@@ -312,14 +400,45 @@ const GRAPH_EXERCISES: PropExercise[] = [
   },
   {
     type: 'default', subtype: 'graph', color: C_GRF,
+    graphSvg: G_P2, graphIsProp: true,
+    steps: `Les points <strong>(1 ; 3), (2 ; 6), (3 ; 9), (4 ; 12), (5 ; 15)</strong> sont alignés <em>et</em> passent par l'origine O.
+            <br>→ <strong style="color:var(--correct)">Situation de proportionnalité</strong> (coefficient k = 3).`,
+  },
+  {
+    type: 'default', subtype: 'graph', color: C_GRF,
+    graphSvg: G_P3, graphIsProp: true,
+    steps: `Les points <strong>(1 ; 4), (2 ; 8), (3 ; 12), (4 ; 16), (5 ; 20)</strong> sont alignés <em>et</em> passent par l'origine O.
+            <br>→ <strong style="color:var(--correct)">Situation de proportionnalité</strong> (coefficient k = 4).`,
+  },
+];
+
+const GRAPH_NONPROP_ALIGNED_POOL: PropExercise[] = [
+  {
+    type: 'default', subtype: 'graph', color: C_GRF,
     graphSvg: G2, graphIsProp: false,
-    steps: `Les points semblent alignés, mais si on prolonge la droite elle <strong>ne passe pas par l'origine</strong>.
+    steps: `Les points semblent alignés, mais si on prolonge la droite elle <strong>ne passe pas par l'origine</strong> (elle couperait l'axe y à y = 2).
             <br>→ <strong style="color:var(--wrong)">Pas une situation de proportionnalité</strong>.
             <br><span style="color:var(--muted);font-size:0.9em">Rappel : pour qu'il y ait proportionnalité, les points doivent être alignés <em>et</em> passer par O.</span>`,
   },
   {
     type: 'default', subtype: 'graph', color: C_GRF,
+    graphSvg: G_N2, graphIsProp: false,
+    steps: `Les points semblent alignés, mais si on prolonge la droite elle <strong>ne passe pas par l'origine</strong> (elle couperait l'axe y à y = 1).
+            <br>→ <strong style="color:var(--wrong)">Pas une situation de proportionnalité</strong>.
+            <br><span style="color:var(--muted);font-size:0.9em">Pour avoir proportionnalité, les points doivent passer <em>exactement</em> par O.</span>`,
+  },
+];
+
+const GRAPH_NONPROP_SCATTERED_POOL: PropExercise[] = [
+  {
+    type: 'default', subtype: 'graph', color: C_GRF,
     graphSvg: G3, graphIsProp: false,
+    steps: `Les points sont <strong>dispersés</strong> sans alignement visible.
+            <br>→ <strong style="color:var(--wrong)">Pas une situation de proportionnalité</strong>.`,
+  },
+  {
+    type: 'default', subtype: 'graph', color: C_GRF,
+    graphSvg: G_N3, graphIsProp: false,
     steps: `Les points sont <strong>dispersés</strong> sans alignement visible.
             <br>→ <strong style="color:var(--wrong)">Pas une situation de proportionnalité</strong>.`,
   },
@@ -341,5 +460,8 @@ export function generatePropSeries(): PropExercise[] {
   const propCheck = shuffle(CHECK23_PROP)[0]!;
   const nonpropCheck = shuffle(CHECK23_NONPROP)[0]!;
   const problem = shuffle(PROBLEM_BANK)[0]!;
-  return [...table4, propCheck, nonpropCheck, problem, ...GRAPH_EXERCISES];
+  const graphProp = shuffle(GRAPH_PROP_POOL)[0]!;
+  const graphAligned = shuffle(GRAPH_NONPROP_ALIGNED_POOL)[0]!;
+  const graphScattered = shuffle(GRAPH_NONPROP_SCATTERED_POOL)[0]!;
+  return [...table4, propCheck, nonpropCheck, problem, graphProp, graphAligned, graphScattered];
 }

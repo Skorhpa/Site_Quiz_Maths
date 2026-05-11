@@ -29,6 +29,7 @@ export const thalesQuiz: QuizDefinition<ThalesExercise> = {
   // with no muted span, unlike Pythagore which splits "Théorème de" + "Pythagore".
   titleFontSize: 'clamp(2.2rem, 5vw, 3.5rem)',
   subtitle: '6 questions · 4 calculs + 2 exercices à compléter',
+  notice: '<span style="color:#34D399;font-weight:600;">🧮&nbsp; Calculatrice nécessaire</span>',
   category: 'Géométrie',
   accent: '#FB923C',
   accentSecondary: '#FCD34D',

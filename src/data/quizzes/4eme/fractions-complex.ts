@@ -12,6 +12,7 @@ export const fractionsComplexQuiz: QuizDefinition<FractionExercise> = {
   title: 'Calculs complexes de fractions',
   titleSub: 'de fractions',
   subtitle: '10 calculs · Opérations enchaînées · Expressions à plusieurs termes',
+  notice: '<span style="color:#F87171;font-weight:600;">⚠&nbsp; À faire sans calculatrice</span>',
   category: 'Calcul',
   accent: '#34D399',
   accentSecondary: '#6EE7C0',

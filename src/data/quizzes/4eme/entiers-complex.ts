@@ -12,6 +12,7 @@ export const entiersComplexQuiz: QuizDefinition<NumberExercise> = {
   title: 'Calculs complexes',
   titleSub: 'complexes',
   subtitle: 'Priorité des opérations · Parenthèses · Puissances',
+  notice: '<span style="color:#F87171;font-weight:600;">⚠&nbsp; À faire sans calculatrice</span>',
   category: 'Calcul',
   accent: '#6EE7C0',
   accentSecondary: '#A78BFA',

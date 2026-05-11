@@ -493,6 +493,8 @@ export interface QuizDefinition<E extends Exercise = Exercise> extends TopicCard
   extraControls?: { label: string; href: string; color?: string }[];
   /** Override the default `er-title` font-size clamp (used for Pythagore's slightly larger title). */
   titleFontSize?: string;
+  /** Optional HTML notice rendered below the subtitle (e.g. calculator policy in red). */
+  notice?: string;
   /** Optional banner rendered between the header and the scoreboard (e.g. Pythagore's formula card). */
   formulaBanner?: { html: string; bannerStyle?: Record<string, string | number> };
 }

@@ -29,6 +29,7 @@ export const pythQuiz: QuizDefinition<PythagoreExercise> = {
   titleSub: 'Pythagore',
   titleFontSize: 'clamp(2.2rem, 5vw, 3.5rem)',
   subtitle: '7 questions · 3 avec figure + 3 calculs + 1 exercice à compléter',
+  notice: '<span style="color:#34D399;font-weight:600;">🧮&nbsp; Calculatrice nécessaire</span>',
   category: 'Géométrie',
   accent: '#60A5FA',
   accentSecondary: '#6EE7C0',
