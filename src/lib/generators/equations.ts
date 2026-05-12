@@ -35,9 +35,12 @@ function makeT1(): EquationExercise {
 }
 
 function makeT2(): EquationExercise {
-  const a = rnz(-10, 10);
-  const x = rnz(-10, 10);
-  const d = a * x;
+  let a = 0, x = 0, d = 0;
+  do {
+    a = rnz(-10, 10);
+    x = rnz(-10, 10);
+    d = a * x;
+  } while (a === 1); // avoid trivial x = d
   const expr = `${coefX(a)} = ${d}`;
   return ex({
     eqType: 't2',

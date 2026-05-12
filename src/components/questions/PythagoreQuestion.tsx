@@ -179,13 +179,11 @@ function PythagoreCompleter({
     const anyEmpty = required.some((id) => get(id).trim() === '');
     if (anyEmpty) {
       setFeedback({ text: '✗ Certains champs ne sont pas remplis.', cls: 'feedback ko' });
-      onSubmit(false);
       return;
     }
     const hypVal = get('t3');
     if (!hypVal.includes('[') || !hypVal.includes(']')) {
       setFeedback({ text: "✗ L'hypoténuse doit être écrite entre crochets, ex : [AB]", cls: 'feedback ko' });
-      onSubmit(false);
       return;
     }
     const v = parseFloat(get('ans').replace(',', '.'));
@@ -209,7 +207,7 @@ function PythagoreCompleter({
 
   const corrBlock = cfg.find === 'hyp' ? (
     <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 13, lineHeight: 2.4, color: 'var(--muted)' }}>
-      <div>Le triangle <span style={{ color: 'var(--correct)' }}>{cfg.tri}</span> est rectangle en <span style={{ color: 'var(--correct)' }}>{cfg.rightAt}</span> d'hypoténuse <span style={{ color: 'var(--correct)' }}>{cfg.hyp}</span>,</div>
+      <div>Le triangle <span style={{ color: 'var(--correct)' }}>{cfg.tri}</span> est rectangle en <span style={{ color: 'var(--correct)' }}>{cfg.rightAt}</span> d'hypoténuse <span style={{ color: 'var(--correct)' }}>[{cfg.hyp}]</span>,</div>
       <div>d'après le <span style={{ color: 'var(--correct)' }}>théorème de Pythagore</span> on a :</div>
       <div style={{ color: 'var(--c2)' }}>{cfg.hyp}² = {cfg.leg1}² + {cfg.leg2}²</div>
       <div>Donc &nbsp;{cfg.hyp}² = {cfg.v1}² + {cfg.v2}²</div>
@@ -219,7 +217,7 @@ function PythagoreCompleter({
     </div>
   ) : (
     <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 13, lineHeight: 2.4, color: 'var(--muted)' }}>
-      <div>Le triangle <span style={{ color: 'var(--correct)' }}>{cfg.tri}</span> est rectangle en <span style={{ color: 'var(--correct)' }}>{cfg.rightAt}</span> d'hypoténuse <span style={{ color: 'var(--correct)' }}>{cfg.hyp}</span>,</div>
+      <div>Le triangle <span style={{ color: 'var(--correct)' }}>{cfg.tri}</span> est rectangle en <span style={{ color: 'var(--correct)' }}>{cfg.rightAt}</span> d'hypoténuse <span style={{ color: 'var(--correct)' }}>[{cfg.hyp}]</span>,</div>
       <div>d'après le <span style={{ color: 'var(--correct)' }}>théorème de Pythagore</span> on a :</div>
       <div style={{ color: 'var(--c2)' }}>{cfg.hyp}² = {cfg.leg1}² + {cfg.leg2}²</div>
       <div>Donc &nbsp;{cfg.givenHyp}² = {cfg.unknownLeg}² + {cfg.givenLeg}²</div>

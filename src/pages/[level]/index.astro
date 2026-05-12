@@ -35,9 +35,16 @@ const showLevelTopbar = LEVELS.filter((l) => l.available).length > 1;
 
   <main class="home-shell">
     <div class="home-eyebrow">Révisions</div>
-    <h1 class="home-title">Quiz Maths</h1>
-    <p class="home-sub">Choisis un thème pour commencer</p>
-    <p class="home-sub" style="font-size:13px;margin-top:-2.5rem;margin-bottom:4rem;">il est préférable de se munir d'une calculatrice et d'un brouillon pour certains exercices</p>
+    <h1 class="home-title">Maths - Collège Montesquieu d'Évry</h1>
+    <div class="home-sub" style="text-align:left;max-width:640px;margin:1.5rem auto 3.5rem;font-size:15px;line-height:2;">
+      <strong>Quelques recommandations :</strong>
+      <ul style="margin-top:0.5rem;padding-left:1.4rem;">
+        <li>Il est préférable de se munir d'un brouillon pour certains exercices.</li>
+        <li>Certains exercices doivent être faits sans calculatrice, d'autres avec. Cette information est mentionnée en début d'exercice.</li>
+        <li>Clique sur une série sur laquelle tu souhaites t'entraîner puis réponds aux questions. Pense bien à regarder la correction à chaque question.</li>
+        <li>Certains exercices proposent des séries plus compliquées, sois sûr de maîtriser les bases avant d'essayer.</li>
+      </ul>
+    </div>
 
     {!level.available && (
       <p style="text-align:center;color:var(--muted);margin-top:2rem;">

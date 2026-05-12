@@ -156,26 +156,27 @@ export function FractionsCompQuestion({ index, exercise, answer, onSubmit }: Pro
           <div style={{ fontSize: 14, color: 'var(--text)' }}>Complète par &lt; ou &gt; ou = :</div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap', margin: '12px 0' }}>
             <div style={{ fontSize: '1.5rem' }} dangerouslySetInnerHTML={{ __html: fH(exercise.a!, exercise.b!) }} />
-            <input
-              type="text"
-              maxLength={1}
+            <select
               value={signInput}
-              placeholder="?"
               disabled={disabled}
               onChange={(e) => setSignInput(e.target.value)}
-              onKeyDown={handleKey}
               style={{
-                width: 44,
                 fontSize: '1.4rem',
                 fontWeight: 700,
                 textAlign: 'center',
-                padding: 6,
+                padding: '4px 8px',
                 borderRadius: 8,
                 border: '1px solid var(--border2)',
                 background: 'var(--bg)',
-                color: 'var(--text)',
+                color: signInput ? 'var(--text)' : 'var(--muted)',
+                cursor: disabled ? 'default' : 'pointer',
               }}
-            />
+            >
+              <option value="">?</option>
+              <option value="<">&lt;</option>
+              <option value=">">&gt;</option>
+              <option value="=">=</option>
+            </select>
             <div style={{ fontSize: '1.5rem' }} dangerouslySetInnerHTML={{ __html: fH(exercise.c!, exercise.d!) }} />
           </div>
         </>
