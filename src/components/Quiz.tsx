@@ -271,10 +271,10 @@ export default function Quiz({ quiz }: QuizProps) {
       </div>
 
       <div className="controls">
-        <button className="btn-primary" style={{ background: quiz.accent }} onClick={revealAll} disabled={stats.answered < stats.total}>
+        <button className="btn-primary" style={{ background: quiz.accent }} onClick={revealAll}>
           Tout corriger
         </button>
-        <button className="btn-secondary" onClick={resetErrors}>Recommencer les erreurs</button>
+        <button className="btn-secondary" onClick={resetErrors} disabled={stats.wrong === 0}>Recommencer les erreurs</button>
         {hasGenerator && (
           <button className="btn-secondary" onClick={newSeries}>Nouvelle série</button>
         )}
