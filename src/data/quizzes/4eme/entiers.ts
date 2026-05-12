@@ -95,5 +95,6 @@ export const entiersQuiz: QuizDefinition<NumberExercise> = {
   ],
   extraControls: [
     { label: 'Calculs complexes →', href: '/4eme/entiers-complex', color: '#6EE7C0' },
+    { label: 'Contre la montre ⏱', href: '/4eme/entiers-chrono', color: '#6EE7C0' },
   ],
 };
