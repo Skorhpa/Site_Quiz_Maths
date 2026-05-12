@@ -52,7 +52,7 @@ function buildAnswers(n: number): AnswerState[] {
 function checkAnswer(quiz: QuizDefinition, ex: Exercise, value: string): boolean {
   if (value.trim() === '') return false;
   if (quiz.renderer === 'number') {
-    const num = Number(value);
+    const num = Number(value.replace(',', '.'));
     if (Number.isNaN(num)) return false;
     return num === (ex as NumberExercise).ans;
   }
