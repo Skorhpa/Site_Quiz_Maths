@@ -506,7 +506,15 @@ export function literalNormalize(s: string): string {
     .replace(/\+-/g, '-');
 }
 
-// Accept the exact normalized form, plus a couple of equivalent shorthand forms.
+// Split a normalized expression into additive terms and sort them.
+function sortedTerms(expr: string): string {
+  const terms = (expr.match(/[+-]?[^+-]+/g) ?? [expr])
+    .map((t) => (t.startsWith('+') ? t.slice(1) : t))
+    .sort();
+  return terms.join('\x00');
+}
+
+// Accept the exact normalized form, shorthand equivalents, and commuted sums.
 export function literalCheckAnswer(student: string, expected: string): boolean {
   const sn = literalNormalize(student);
   const en = literalNormalize(expected);
@@ -515,5 +523,8 @@ export function literalCheckAnswer(student: string, expected: string): boolean {
     en.replace(/-1([a-z])/g, '-$1'),
     en.replace(/(?<![0-9])1([a-z])/g, '$1'),
   ];
-  return alts.some((a) => sn === a);
+  if (alts.some((a) => sn === a)) return true;
+  // Commutativity of addition: sort terms and compare
+  const snSort = sortedTerms(sn);
+  return [en, ...alts].some((e) => sortedTerms(e) === snSort);
 }

@@ -33,6 +33,25 @@ const showLevelTopbar = LEVELS.filter((l) => l.available).length > 1;
     </div>
   )}
 
+  <div class="theme-switcher">
+    <button class="theme-btn" id="btn-dark" onclick="setTheme('dark')">Sombre</button>
+    <button class="theme-btn" id="btn-light" onclick="setTheme('light')">Clair</button>
+  </div>
+  <script is:inline>
+    function setTheme(t) {
+      if (t === 'light') document.documentElement.classList.add('light');
+      else document.documentElement.classList.remove('light');
+      localStorage.setItem('sitemath-theme', t);
+      document.getElementById('btn-dark').classList.toggle('active', t === 'dark');
+      document.getElementById('btn-light').classList.toggle('active', t === 'light');
+    }
+    (function() {
+      var t = localStorage.getItem('sitemath-theme') || 'dark';
+      document.getElementById('btn-dark').classList.toggle('active', t === 'dark');
+      document.getElementById('btn-light').classList.toggle('active', t === 'light');
+    })();
+  </script>
+
   <main class="home-shell">
     <div class="home-eyebrow">Révisions</div>
     <h1 class="home-title">Maths - Collège Montesquieu d'Évry</h1>

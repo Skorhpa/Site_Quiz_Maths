@@ -299,6 +299,70 @@ const PGCD_CONTEXTS = [
     unit: 'sachet',
     unitP: 'sachets',
   },
+  {
+    obj1: 'chocolats au lait',
+    obj2: 'chocolats noirs',
+    template: (N: number, M: number) =>
+      `Une chocolatière veut préparer des boîtes identiques avec <strong>${N} chocolats au lait</strong> et <strong>${M} chocolats noirs</strong>, sans reste. Quelles sont les compositions possibles ?`,
+    unit: 'boîte',
+    unitP: 'boîtes',
+  },
+  {
+    obj1: 'autocollants ronds',
+    obj2: 'autocollants étoile',
+    template: (N: number, M: number) =>
+      `Marie veut distribuer <strong>${N} autocollants ronds</strong> et <strong>${M} autocollants étoile</strong> dans des enveloppes identiques, sans en garder. Quelles sont les compositions possibles ?`,
+    unit: 'enveloppe',
+    unitP: 'enveloppes',
+  },
+  {
+    obj1: 'biscuits sucrés',
+    obj2: 'biscuits salés',
+    template: (N: number, M: number) =>
+      `Un pâtissier veut remplir des assiettes identiques avec <strong>${N} biscuits sucrés</strong> et <strong>${M} biscuits salés</strong>, sans laisser de reste. Quelles compositions peut-il faire ?`,
+    unit: 'assiette',
+    unitP: 'assiettes',
+  },
+  {
+    obj1: 'cartes de sport',
+    obj2: 'cartes de jeu',
+    template: (N: number, M: number) =>
+      `Pierre veut ranger <strong>${N} cartes de sport</strong> et <strong>${M} cartes de jeu</strong> dans des classeurs identiques, sans en laisser. Quelles répartitions sont possibles ?`,
+    unit: 'classeur',
+    unitP: 'classeurs',
+  },
+  {
+    obj1: 'bonbons acidulés',
+    obj2: 'bonbons au chocolat',
+    template: (N: number, M: number) =>
+      `Un confiseur répartit <strong>${N} bonbons acidulés</strong> et <strong>${M} bonbons au chocolat</strong> dans des sachets identiques, sans reste. Quelles sont les compositions possibles ?`,
+    unit: 'sachet',
+    unitP: 'sachets',
+  },
+  {
+    obj1: 'photos de paysage',
+    obj2: 'photos de portrait',
+    template: (N: number, M: number) =>
+      `Un photographe veut créer des albums identiques avec <strong>${N} photos de paysage</strong> et <strong>${M} photos de portrait</strong>, sans laisser de photo. Quelles sont les compositions possibles ?`,
+    unit: 'album',
+    unitP: 'albums',
+  },
+  {
+    obj1: 'plantes vertes',
+    obj2: 'plantes fleuries',
+    template: (N: number, M: number) =>
+      `Un jardinier veut garnir des jardinières identiques avec <strong>${N} plantes vertes</strong> et <strong>${M} plantes fleuries</strong>, en utilisant toutes les plantes. Quelles sont les compositions possibles ?`,
+    unit: 'jardinière',
+    unitP: 'jardinières',
+  },
+  {
+    obj1: 'livres de fiction',
+    obj2: 'livres documentaires',
+    template: (N: number, M: number) =>
+      `Une bibliothécaire veut constituer des lots identiques avec <strong>${N} livres de fiction</strong> et <strong>${M} livres documentaires</strong>, sans reste. Quelles répartitions sont possibles ?`,
+    unit: 'lot',
+    unitP: 'lots',
+  },
 ];
 
 function makePgcdProblem(ctxIndex: number): ArithExercise {
