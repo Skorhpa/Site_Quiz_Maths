@@ -682,6 +682,42 @@ svg text { font-family: 'DM Mono', monospace; }
 
 button:disabled { opacity: 0.4; cursor: not-allowed; }
 
+/* ── Contre la montre ── */
+.chrono-shell { max-width: 640px; margin: 0 auto; padding: 3rem 1.5rem 6rem; }
+.chrono-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 2.5rem 2rem;
+  text-align: center;
+}
+.chrono-timer-bar {
+  height: 7px;
+  background: var(--surface2);
+  border-radius: 99px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+.chrono-timer-fill { height: 100%; border-radius: 99px; transition: width 0.95s linear; }
+.chrono-expr {
+  font-family: 'DM Mono', monospace;
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 1.5rem;
+}
+.chrono-recap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 1.5rem;
+}
+.chrono-recap-row {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+}
+
 /* ── Theme switcher ── */
 .theme-switcher {
   position: fixed;

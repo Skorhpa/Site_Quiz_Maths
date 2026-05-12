@@ -1,6 +1,7 @@
 import type {
   Exercise,
   GeneratorSpec,
+  IntegerOp,
   IntegerSeriesSpec,
   NumberExercise,
   RoundingExercise,
@@ -216,6 +217,12 @@ function expandRoundingSpec(spec: RoundingSeriesSpec): RoundingExercise[] {
     list.push(makeRoundingExercise(spec.type, trapPositions.has(i)));
   }
   return list;
+}
+
+export function randomIntegerExercise(): NumberExercise {
+  const ops: IntegerOp[] = ['add', 'sub', 'mul'];
+  const op = ops[Math.floor(Math.random() * 3)] as IntegerOp;
+  return makeIntegerExercise({ kind: 'integer', op, count: 1, range: [-15, 15] });
 }
 
 export function runGenerator(specs: GeneratorSpec[]): Exercise[] {

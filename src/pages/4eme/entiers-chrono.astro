@@ -1,0 +1,11 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ContreMontre from '@/components/ContreMontre';
+---
+<BaseLayout title="Contre la montre — Entiers relatifs">
+  <div class="topbar">
+    <a class="home-btn" href="/4eme/entiers">← Entiers relatifs</a>
+    <div class="breadcrumb">/ <span>Contre la montre</span></div>
+  </div>
+  <ContreMontre client:load />
+</BaseLayout>
