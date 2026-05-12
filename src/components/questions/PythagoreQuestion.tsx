@@ -84,6 +84,11 @@ function PythagoreRegular({
           <div className="figure-wrap" dangerouslySetInnerHTML={{ __html: exercise.figure }} />
         )}
         <div className="qinfo">
+          {!exercise.figure && (
+            <p style={{ fontSize: 12, color: 'var(--muted)', fontStyle: 'italic', marginBottom: 8 }}>
+              Il peut être utile de faire une figure sur un brouillon.
+            </p>
+          )}
           <div className="given-vals">{givenLines}</div>
           <button
             type="button"

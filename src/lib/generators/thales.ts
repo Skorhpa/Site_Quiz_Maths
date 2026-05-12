@@ -25,6 +25,13 @@ const SHAPES: Shape[] = [
   { Ax: 70, Ay: 18, Bx: 12, By: 172, Cx: 195, Cy: 172 },
   { Ax: 150, Ay: 18, Bx: 25, By: 172, Cx: 208, Cy: 172 },
   { Ax: 110, Ay: 40, Bx: 5, By: 172, Cx: 215, Cy: 172 },
+  // Varied orientations
+  { Ax: 8, Ay: 90, Bx: 182, By: 18, Cx: 195, Cy: 185 },   // apex far left
+  { Ax: 232, Ay: 90, Bx: 45, By: 18, Cx: 58, Cy: 185 },   // apex far right
+  { Ax: 120, Ay: 182, Bx: 15, By: 12, Cx: 225, Cy: 12 },  // inverted (apex bottom)
+  { Ax: 28, Ay: 78, Bx: 158, By: 12, Cx: 218, Cy: 188 },  // strongly oblique ↗
+  { Ax: 212, Ay: 78, Bx: 22, By: 12, Cx: 82, Cy: 188 },   // strongly oblique ↖
+  { Ax: 120, Ay: 8, Bx: 8, By: 195, Cx: 232, Cy: 195 },   // very tall, very wide
 ];
 
 const LETTER_SETS: Letters[] = [

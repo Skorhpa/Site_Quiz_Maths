@@ -41,9 +41,10 @@ interface QuizProps {
 interface AnswerState {
   value: string;
   status: 'pending' | 'correct' | 'wrong' | 'revealed';
+  resetKey: number;
 }
 
-const emptyAnswer = (): AnswerState => ({ value: '', status: 'pending' });
+const emptyAnswer = (): AnswerState => ({ value: '', status: 'pending', resetKey: 0 });
 
 function buildAnswers(n: number): AnswerState[] {
   return Array.from({ length: n }, emptyAnswer);
@@ -168,9 +169,12 @@ export default function Quiz({ quiz }: QuizProps) {
     }
   };
 
-  const reset = () => {
-    setAnswers(buildAnswers(exercises.length));
-    setSeriesKey((k) => k + 1);
+  const resetErrors = () => {
+    setAnswers((prev) =>
+      prev.map((a) =>
+        a.status === 'correct' ? a : { value: '', status: 'pending', resetKey: a.resetKey + 1 }
+      )
+    );
     scrollToTop();
   };
 
@@ -261,10 +265,10 @@ export default function Quiz({ quiz }: QuizProps) {
       </div>
 
       <div className="controls">
-        <button className="btn-primary" style={{ background: quiz.accent }} onClick={revealAll}>
+        <button className="btn-primary" style={{ background: quiz.accent }} onClick={revealAll} disabled={stats.answered < stats.total}>
           Tout corriger
         </button>
-        <button className="btn-secondary" onClick={reset}>Recommencer</button>
+        <button className="btn-secondary" onClick={resetErrors}>Recommencer les erreurs</button>
         {hasGenerator && (
           <button className="btn-secondary" onClick={newSeries}>Nouvelle série</button>
         )}
@@ -287,7 +291,7 @@ export default function Quiz({ quiz }: QuizProps) {
         <div className="er-grid">
           {exercises.map((ex, i) => (
             <NumberQuestion
-              key={`${seriesKey}-${i}`}
+              key={`${seriesKey}-${answers[i]!.resetKey}-${i}`}
               index={i}
               exercise={ex as NumberExercise}
               answer={answers[i]!}
@@ -303,7 +307,7 @@ export default function Quiz({ quiz }: QuizProps) {
         <div className="questions-list">
           {exercises.map((ex, i) => (
             <RoundingQuestion
-              key={`${seriesKey}-${i}`}
+              key={`${seriesKey}-${answers[i]!.resetKey}-${i}`}
               index={i}
               exercise={ex as RoundingExercise}
               answer={answers[i]!}
@@ -318,7 +322,7 @@ export default function Quiz({ quiz }: QuizProps) {
         <div className="questions-list">
           {exercises.map((ex, i) => (
             <TextQuestion
-              key={`${seriesKey}-${i}`}
+              key={`${seriesKey}-${answers[i]!.resetKey}-${i}`}
               index={i}
               exercise={ex as LiteralExercise}
               answer={answers[i]!}
@@ -333,7 +337,7 @@ export default function Quiz({ quiz }: QuizProps) {
         <div className="questions-list">
           {exercises.map((ex, i) => (
             <FigureTextQuestion
-              key={`${seriesKey}-${i}`}
+              key={`${seriesKey}-${answers[i]!.resetKey}-${i}`}
               index={i}
               exercise={ex as ProduitExercise}
               answer={answers[i]!}
@@ -348,7 +352,7 @@ export default function Quiz({ quiz }: QuizProps) {
         <div className="questions-list">
           {exercises.map((ex, i) => (
             <ArithQuestion
-              key={`${seriesKey}-${i}`}
+              key={`${seriesKey}-${answers[i]!.resetKey}-${i}`}
               index={i}
               exercise={ex as ArithExercise}
               answer={answers[i]!}
@@ -362,7 +366,7 @@ export default function Quiz({ quiz }: QuizProps) {
         <div className="questions-list">
           {exercises.map((ex, i) => (
             <ProgrammeQuestion
-              key={`${seriesKey}-${i}`}
+              key={`${seriesKey}-${answers[i]!.resetKey}-${i}`}
               index={i}
               exercise={ex as ProgrammeExercise}
               answer={answers[i]!}
@@ -376,7 +380,7 @@ export default function Quiz({ quiz }: QuizProps) {
         <div className="questions-list">
           {exercises.map((ex, i) => (
             <PythagoreQuestion
-              key={`${seriesKey}-${i}`}
+              key={`${seriesKey}-${answers[i]!.resetKey}-${i}`}
               index={i}
               exercise={ex as PythagoreExercise}
               answer={answers[i]!}
@@ -391,7 +395,7 @@ export default function Quiz({ quiz }: QuizProps) {
         <div className="questions-list">
           {exercises.map((ex, i) => (
             <ThalesQuestion
-              key={`${seriesKey}-${i}`}
+              key={`${seriesKey}-${answers[i]!.resetKey}-${i}`}
               index={i}
               exercise={ex as ThalesExercise}
               answer={answers[i]!}
@@ -406,7 +410,7 @@ export default function Quiz({ quiz }: QuizProps) {
         <div className="questions-list">
           {exercises.map((ex, i) => (
             <FractionQuestion
-              key={`${seriesKey}-${i}`}
+              key={`${seriesKey}-${answers[i]!.resetKey}-${i}`}
               index={i}
               exercise={ex as FractionExercise}
               answer={answers[i]!}
@@ -420,7 +424,7 @@ export default function Quiz({ quiz }: QuizProps) {
         <div className="questions-list">
           {exercises.map((ex, i) => (
             <FractionsCompQuestion
-              key={`${seriesKey}-${i}`}
+              key={`${seriesKey}-${answers[i]!.resetKey}-${i}`}
               index={i}
               exercise={ex as FractionsCompExercise}
               answer={answers[i]!}
@@ -434,7 +438,7 @@ export default function Quiz({ quiz }: QuizProps) {
         <div className="eq-list">
           {exercises.map((ex, i) => (
             <EquationQuestion
-              key={`${seriesKey}-${i}`}
+              key={`${seriesKey}-${answers[i]!.resetKey}-${i}`}
               index={i}
               exercise={ex as EquationExercise}
               answer={answers[i]!}
@@ -449,7 +453,7 @@ export default function Quiz({ quiz }: QuizProps) {
         <div className="questions-list">
           {exercises.map((ex, i) => (
             <ReciproqueQuestion
-              key={`${seriesKey}-${i}`}
+              key={`${seriesKey}-${answers[i]!.resetKey}-${i}`}
               index={i}
               exercise={ex as ReciproqueExercise}
               answer={answers[i]!}
@@ -463,7 +467,7 @@ export default function Quiz({ quiz }: QuizProps) {
         <div className="questions-list">
           {exercises.map((ex, i) => (
             <PropQuestion
-              key={`${seriesKey}-${i}`}
+              key={`${seriesKey}-${answers[i]!.resetKey}-${i}`}
               index={i}
               exercise={ex as PropExercise}
               answer={answers[i]!}
@@ -477,7 +481,7 @@ export default function Quiz({ quiz }: QuizProps) {
         <div className="questions-list">
           {exercises.map((ex, i) => (
             <PuissancesQuestion
-              key={`${seriesKey}-${i}`}
+              key={`${seriesKey}-${answers[i]!.resetKey}-${i}`}
               index={i}
               exercise={ex as PuissancesExercise}
               answer={answers[i]!}

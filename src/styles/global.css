@@ -28,6 +28,16 @@
   --crp: #A78BFA;
 }
 
+:root.light {
+  --bg: #F5F5F0;
+  --surface: #FFFFFF;
+  --surface2: #EEEDE8;
+  --border: rgba(0,0,0,0.08);
+  --border2: rgba(0,0,0,0.14);
+  --text: #1A1D27;
+  --muted: #6B7280;
+}
+
 html, body {
   font-family: 'DM Sans', sans-serif;
   background: var(--bg);
@@ -669,3 +679,38 @@ svg text { font-family: 'DM Mono', monospace; }
 }
 .end-banner p { font-size: 15px; color: var(--muted); margin-bottom: 1.8rem; }
 .btn-group { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+
+button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ── Theme switcher ── */
+.theme-switcher {
+  position: fixed;
+  top: 1rem;
+  right: 1.5rem;
+  display: flex;
+  gap: 6px;
+  z-index: 200;
+}
+.theme-btn {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  padding: 5px 12px;
+  border-radius: 99px;
+  border: 1px solid var(--border2);
+  background: var(--surface);
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.15s;
+  letter-spacing: 0.05em;
+}
+.theme-btn:hover { color: var(--text); border-color: var(--text); }
+.theme-btn.active { background: var(--surface2); color: var(--text); font-weight: 600; }
+
+/* ── Light mode overrides for hardcoded dark values ── */
+:root.light .topbar {
+  background: rgba(245,245,240,0.9);
+  border-bottom-color: rgba(0,0,0,0.08);
+}
+:root.light .home-title {
+  background-image: linear-gradient(135deg, #1A1D27 40%, #A78BFA 70%, #6EE7C0);
+}

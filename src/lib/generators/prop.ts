@@ -212,7 +212,7 @@ const PROBLEM_BANK: PropExercise[] = [
   {
     type: 'default', subtype: 'problem', color: C_PRB,
     probStory: `En <strong>5 jours</strong>, Léa économise <strong>35 €</strong>.<br>
-      Complète le tableau puis calcule combien elle économie en <strong>12 jours</strong>.`,
+      Complète le tableau puis calcule combien elle économise en <strong>12 jours</strong>.`,
     probRow1Label: 'Jours',
     probRow2Label: 'Économies (€)',
     probColLabels: ['Situation 1', 'Situation 2'],
@@ -222,6 +222,104 @@ const PROBLEM_BANK: PropExercise[] = [
     probDotted: true,
     steps: `Produit en croix : <strong>5 × ? = 35 × 12</strong>
             <br>? = 35 × 12 ÷ 5 = 420 ÷ 5 = <strong style="color:var(--correct)">84 €</strong>`,
+  },
+  {
+    type: 'default', subtype: 'problem', color: C_PRB,
+    probStory: `Une imprimante produit <strong>150 pages</strong> en <strong>5 minutes</strong>.<br>
+      Complète le tableau puis calcule le nombre de pages en <strong>8 minutes</strong>.`,
+    probRow1Label: 'Temps (min)',
+    probRow2Label: 'Pages',
+    probColLabels: ['Situation 1', 'Situation 2'],
+    probRow1: [5, 8],
+    probRow2: [150, null],
+    probAns: 240,
+    probDotted: true,
+    steps: `Produit en croix : <strong>5 × ? = 150 × 8</strong>
+            <br>? = 150 × 8 ÷ 5 = 1 200 ÷ 5 = <strong style="color:var(--correct)">240 pages</strong>`,
+  },
+  {
+    type: 'default', subtype: 'problem', color: C_PRB,
+    probStory: `Un robinet remplit <strong>9 litres</strong> en <strong>3 minutes</strong>.<br>
+      Complète le tableau puis calcule le volume rempli en <strong>7 minutes</strong>.`,
+    probRow1Label: 'Temps (min)',
+    probRow2Label: 'Volume (L)',
+    probColLabels: ['Situation 1', 'Situation 2'],
+    probRow1: [3, 7],
+    probRow2: [9, null],
+    probAns: 21,
+    probDotted: true,
+    steps: `Produit en croix : <strong>3 × ? = 9 × 7</strong>
+            <br>? = 9 × 7 ÷ 3 = 63 ÷ 3 = <strong style="color:var(--correct)">21 litres</strong>`,
+  },
+  {
+    type: 'default', subtype: 'problem', color: C_PRB,
+    probStory: `Pour peindre <strong>24 m²</strong>, il faut <strong>6 L</strong> de peinture.<br>
+      Complète le tableau puis calcule la surface qu'on peut peindre avec <strong>10 L</strong>.`,
+    probRow1Label: 'Peinture (L)',
+    probRow2Label: 'Surface (m²)',
+    probColLabels: ['Situation 1', 'Situation 2'],
+    probRow1: [6, 10],
+    probRow2: [24, null],
+    probAns: 40,
+    probDotted: true,
+    steps: `Produit en croix : <strong>6 × ? = 24 × 10</strong>
+            <br>? = 24 × 10 ÷ 6 = 240 ÷ 6 = <strong style="color:var(--correct)">40 m²</strong>`,
+  },
+  {
+    type: 'default', subtype: 'problem', color: C_PRB,
+    probStory: `Un train parcourt <strong>180 km</strong> en <strong>2 h</strong>.<br>
+      Complète le tableau puis calcule la distance parcourue en <strong>5 h</strong>.`,
+    probRow1Label: 'Temps (h)',
+    probRow2Label: 'Distance (km)',
+    probColLabels: ['Situation 1', 'Situation 2'],
+    probRow1: [2, 5],
+    probRow2: [180, null],
+    probAns: 450,
+    probDotted: true,
+    steps: `Produit en croix : <strong>2 × ? = 180 × 5</strong>
+            <br>? = 180 × 5 ÷ 2 = 900 ÷ 2 = <strong style="color:var(--correct)">450 km</strong>`,
+  },
+  {
+    type: 'default', subtype: 'problem', color: C_PRB,
+    probStory: `Une voiture consomme <strong>7 L d'essence</strong> pour <strong>100 km</strong>.<br>
+      Complète le tableau puis calcule la consommation pour <strong>350 km</strong>.`,
+    probRow1Label: 'Distance (km)',
+    probRow2Label: 'Essence (L)',
+    probColLabels: ['Situation 1', 'Situation 2'],
+    probRow1: [100, 350],
+    probRow2: [7, null],
+    probAns: 24.5,
+    probDotted: true,
+    steps: `Produit en croix : <strong>100 × ? = 7 × 350</strong>
+            <br>? = 7 × 350 ÷ 100 = 2 450 ÷ 100 = <strong style="color:var(--correct)">24,5 L</strong>`,
+  },
+  {
+    type: 'default', subtype: 'problem', color: C_PRB,
+    probStory: `Pour fabriquer <strong>30 gâteaux</strong>, il faut <strong>450 g de sucre</strong>.<br>
+      Complète le tableau puis calcule la quantité de sucre pour <strong>50 gâteaux</strong>.`,
+    probRow1Label: 'Gâteaux',
+    probRow2Label: 'Sucre (g)',
+    probColLabels: ['Situation 1', 'Situation 2'],
+    probRow1: [30, 50],
+    probRow2: [450, null],
+    probAns: 750,
+    probDotted: true,
+    steps: `Produit en croix : <strong>30 × ? = 450 × 50</strong>
+            <br>? = 450 × 50 ÷ 30 = 22 500 ÷ 30 = <strong style="color:var(--correct)">750 g</strong>`,
+  },
+  {
+    type: 'default', subtype: 'problem', color: C_PRB,
+    probStory: `Une pompe vide <strong>600 L</strong> de piscine en <strong>4 h</strong>.<br>
+      Complète le tableau puis calcule le volume vidé en <strong>7 h</strong>.`,
+    probRow1Label: 'Temps (h)',
+    probRow2Label: 'Volume (L)',
+    probColLabels: ['Situation 1', 'Situation 2'],
+    probRow1: [4, 7],
+    probRow2: [600, null],
+    probAns: 1050,
+    probDotted: true,
+    steps: `Produit en croix : <strong>4 × ? = 600 × 7</strong>
+            <br>? = 600 × 7 ÷ 4 = 4 200 ÷ 4 = <strong style="color:var(--correct)">1 050 L</strong>`,
   },
 ];
 
