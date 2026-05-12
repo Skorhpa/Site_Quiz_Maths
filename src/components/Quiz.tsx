@@ -169,6 +169,12 @@ export default function Quiz({ quiz }: QuizProps) {
     }
   };
 
+  const reset = () => {
+    setAnswers(buildAnswers(exercises.length));
+    setSeriesKey((k) => k + 1);
+    scrollToTop();
+  };
+
   const resetErrors = () => {
     setAnswers((prev) =>
       prev.map((a) =>
