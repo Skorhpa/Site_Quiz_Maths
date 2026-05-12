@@ -153,16 +153,6 @@ export default function Quiz({ quiz }: QuizProps) {
     updateAnswer(i, { status: ok ? 'correct' : 'wrong' });
   };
 
-  const revealAll = () => {
-    setAnswers((prev) =>
-      prev.map((a, i) => {
-        if (a.status !== 'pending') return a;
-        const ok = checkAnswer(quiz, exercises[i]!, a.value);
-        return { ...a, status: ok ? 'correct' : 'revealed' };
-      }),
-    );
-  };
-
   const scrollToTop = () => {
     if (typeof window !== 'undefined') {
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -271,9 +261,6 @@ export default function Quiz({ quiz }: QuizProps) {
       </div>
 
       <div className="controls">
-        <button className="btn-primary" style={{ background: quiz.accent }} onClick={revealAll}>
-          Tout corriger
-        </button>
         <button className="btn-secondary" onClick={resetErrors} disabled={stats.wrong === 0}>Recommencer les erreurs</button>
         {hasGenerator && (
           <button className="btn-secondary" onClick={newSeries}>Nouvelle série</button>
