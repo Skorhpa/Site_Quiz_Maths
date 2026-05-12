@@ -31,11 +31,71 @@ const randNZ = (a: number, b: number) => {
 function makeIntegerExercise(spec: IntegerSeriesSpec): NumberExercise {
   const a = randNZ(spec.range[0], spec.range[1]);
   const b = randNZ(spec.range[0], spec.range[1]);
-  if (spec.op === 'add') return { expr: `${a} + ${b}`, ans: a + b, type: 'add' };
-  if (spec.op === 'sub') return { expr: `${a} - ${b > 0 ? b : `(${b})`}`, ans: a - b, type: 'sub' };
+  const absA = Math.abs(a);
+  const absB = Math.abs(b);
+  const ok = (n: number) => `<strong style="color:var(--correct)">${n}</strong>`;
+
+  if (spec.op === 'add') {
+    const ans = a + b;
+    if (b < 0) {
+      // Rewrite a + (−|b|) as a − |b| to avoid double-sign display
+      const expr = `${a} - ${absB}`;
+      let steps: string;
+      if (a < 0) {
+        steps = `Les deux termes sont négatifs : −(${absA} + ${absB}) = ${ok(ans)}`;
+      } else if (a > absB) {
+        steps = `${a} > ${absB}, résultat positif : ${a} − ${absB} = ${ok(ans)}`;
+      } else if (absB > a) {
+        steps = `${absB} > ${a}, résultat négatif : −(${absB} − ${a}) = ${ok(ans)}`;
+      } else {
+        steps = `${a} = ${absB}, les termes s'annulent → ${ok(0)}`;
+      }
+      return { expr, ans, type: 'add', steps };
+    }
+    // b > 0
+    const expr = `${a} + ${b}`;
+    let steps: string;
+    if (a >= 0) {
+      steps = `${a} + ${b} = ${ok(ans)}`;
+    } else if (b > absA) {
+      steps = `${b} > ${absA}, résultat positif : ${b} − ${absA} = ${ok(ans)}`;
+    } else if (absA > b) {
+      steps = `${absA} > ${b}, résultat négatif : −(${absA} − ${b}) = ${ok(ans)}`;
+    } else {
+      steps = `${b} = ${absA}, les termes s'annulent → ${ok(0)}`;
+    }
+    return { expr, ans, type: 'add', steps };
+  }
+
+  if (spec.op === 'sub') {
+    const ans = a - b;
+    const expr = `${a} - ${b > 0 ? b : `(${b})`}`;
+    let steps: string;
+    if (b < 0) {
+      steps = `Deux signes − consécutifs donnent + : ${a} − (${b}) = ${a} + ${absB} = ${ok(ans)}`;
+    } else if (a > 0 && a > b) {
+      steps = `${a} > ${b}, résultat positif : ${a} − ${b} = ${ok(ans)}`;
+    } else if (a >= 0) {
+      steps = `${b} > ${a}, résultat négatif : −(${b} − ${a}) = ${ok(ans)}`;
+    } else {
+      steps = `${a} − ${b} : les deux termes rendent le résultat négatif → ${ok(ans)}`;
+    }
+    return { expr, ans, type: 'sub', steps };
+  }
+
+  // mul
   const ea = a < 0 ? `(${a})` : `${a}`;
   const eb = b < 0 ? `(${b})` : `${b}`;
-  return { expr: `${ea} × ${eb}`, ans: a * b, type: 'mul' };
+  const ans = a * b;
+  let steps: string;
+  if (a < 0 && b < 0) {
+    steps = `Signes identiques (− et −) → résultat positif. ${absA} × ${absB} = ${ok(ans)}`;
+  } else if (a > 0 && b > 0) {
+    steps = `${absA} × ${absB} = ${ok(ans)}`;
+  } else {
+    steps = `Signes contraires → résultat négatif. ${absA} × ${absB} = ${absA * absB}, donc ${ea} × ${eb} = ${ok(ans)}`;
+  }
+  return { expr: `${ea} × ${eb}`, ans, type: 'mul', steps };
 }
 
 const ROUNDING_POS_NAMES = [

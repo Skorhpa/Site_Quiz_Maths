@@ -32,7 +32,13 @@ export function NumberQuestion({ index, exercise, answer, accent, onChange, onSu
 
   const feedback = (() => {
     if (answer.status === 'correct') return { text: '✓ Correct !', cls: 'feedback ok' };
-    if (answer.status === 'wrong') return { text: `✗ Réponse : ${exercise.ans}`, cls: 'feedback ko' };
+    if (answer.status === 'wrong') {
+      const studentNum = parseFloat(answer.value);
+      if (exercise.type === 'mul' && exercise.ans !== 0 && !isNaN(studentNum) && studentNum === -exercise.ans) {
+        return { text: `✗ Erreur de signe ! Réponse : ${exercise.ans}`, cls: 'feedback ko' };
+      }
+      return { text: `✗ Réponse : ${exercise.ans}`, cls: 'feedback ko' };
+    }
     if (answer.status === 'revealed') return { text: `Réponse : ${exercise.ans}`, cls: 'feedback ko' };
     return { text: '', cls: 'feedback' };
   })();

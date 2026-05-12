@@ -36,12 +36,12 @@ const STATIC_EXERCISES: NumberExercise[] = [
     steps: `14 > 2, donc le résultat est négatif : −(14 − 2) = <strong style="color:var(--correct)">−12</strong>`,
   },
   {
-    expr: '9 - 20', ans: -11, type: 'sub',
-    steps: `20 > 9, donc le résultat est négatif : −(20 − 9) = <strong style="color:var(--correct)">−11</strong>`,
+    expr: '5 - (-3)', ans: 8, type: 'sub',
+    steps: `Deux signes − consécutifs donnent + : 5 − (−3) = 5 + 3 = <strong style="color:var(--correct)">8</strong>`,
   },
   {
-    expr: '3 - 8', ans: -5, type: 'sub',
-    steps: `8 > 3, donc le résultat est négatif : −(8 − 3) = <strong style="color:var(--correct)">−5</strong>`,
+    expr: '-2 - (-6)', ans: 4, type: 'sub',
+    steps: `Deux signes − consécutifs donnent + : −2 − (−6) = −2 + 6 = <strong style="color:var(--correct)">4</strong>`,
   },
   // ── Multiplications ───────────────────────────────────────────────────────
   {
