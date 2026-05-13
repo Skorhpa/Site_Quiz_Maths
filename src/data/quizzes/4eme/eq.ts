@@ -20,6 +20,9 @@ export const eqQuiz: QuizDefinition<EquationExercise> = {
   renderer: 'equation',
   exercises: STATIC_EXERCISES,
   generator: GENERATOR,
+  extraControls: [
+    { label: 'Je suis perdu / perdue 🆘', href: '/4eme/eq-guidee', color: '#A78BFA' },
+  ],
   typePills: [
     { label: 'x + a = b', color: '#6EE7C0', type: 'default' },
     { label: 'ax = d', color: '#60A5FA', type: 'default' },

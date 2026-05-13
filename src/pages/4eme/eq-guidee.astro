@@ -1,0 +1,11 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import EqGuidee from '@/components/EqGuidee';
+---
+<BaseLayout title="Je suis perdu — Équations du premier degré">
+  <div class="topbar">
+    <a class="home-btn" href="/4eme/eq">← Équations</a>
+    <div class="breadcrumb">/ <span>Mode guidé</span></div>
+  </div>
+  <EqGuidee client:load />
+</BaseLayout>
