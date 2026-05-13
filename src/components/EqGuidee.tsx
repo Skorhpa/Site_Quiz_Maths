@@ -1,11 +1,12 @@
-import { useState, useRef, useEffect, type KeyboardEvent } from 'react';
+import { useState, useRef, useEffect, type KeyboardEvent, type RefObject } from 'react';
 
 type Phase = 'intro1' | 'play1' | 'intro2' | 'play2' | 'intro3' | 'play3' | 'done';
 
 const ACCENT = '#A78BFA';
 const ACCENT_FG = '#0F1117';
-const VIDEO_URL =
-  'https://www.youtube.com/watch?v=uV_EmbYu9_E&t=425s&pp=ygUacsOpc29sdXRpb24gZXF1YXRpb24gNGVtZSA%3D';
+const VIDEO_L1 = 'https://www.youtube.com/watch?v=IznhSKDp_P4&pp=ygUPZXF1YXRpb24geCthPWIg';
+const VIDEO_L2 = 'https://www.youtube.com/watch?v=5b2yQ4Q9W0g&pp=ygUQZXF1YXRpb24gYXgrYz1iIA%3D%3D';
+const VIDEO_L3 = 'https://www.youtube.com/watch?v=VJ1QU4ruRE4&pp=ygUTZXF1YXRpb24gYXgrYj1jeCtkIA%3D%3D';
 
 const ri = (a: number, b: number) => Math.floor(Math.random() * (b - a + 1)) + a;
 const rnz = (a: number, b: number) => {
@@ -18,12 +19,13 @@ const coefX = (n: number): string =>
 
 // ── Param types ───────────────────────────────────────────────────────────────
 
-interface L1 { a: number; x: number; b: number }        // x + a = b
-interface L2 { a: number; b: number; x: number; c: number; rhs1: number }  // ax+b=c
+interface L1 { a: number; x: number; b: number }         // x ± |a| = b
+interface L2 { a: number; b: number; x: number; c: number; rhs1: number }   // ax+b=c
 interface L3 { a: number; b: number; c: number; d: number; x: number; coef: number; rhs1: number } // ax+b=cx+d
 
 function genL1(): L1 {
-  const a = ri(2, 12);
+  // a can be positive or negative — exercises both "subtract" and "add" cases
+  const a = rnz(-12, 12);
   const x = rnz(-10, 10);
   return { a, x, b: x + a };
 }
@@ -37,8 +39,9 @@ function genL2(): L2 {
 }
 
 function genL3(): L3 {
-  const a = ri(3, 7);
-  const c = ri(1, Math.max(1, a - 2)); // ensures coef = a-c >= 2
+  // c >= 2, coef = a-c >= 2 so no coefficient is ever 1
+  const c = ri(2, 4);
+  const a = ri(c + 2, Math.min(9, c + 5));
   const b = ri(1, 10);
   const x = rnz(-6, 6);
   const d = (a - c) * x + b;
@@ -56,6 +59,42 @@ function Frac({ num, den }: { num: string; den: string }) {
   );
 }
 
+// Fraction where the numerator is fixed text and the denominator is an input
+function FracDenInput({
+  num,
+  value,
+  onChange,
+  onEnter,
+  inputRef,
+  disabled,
+}: {
+  num: string;
+  value: string;
+  onChange: (v: string) => void;
+  onEnter?: () => void;
+  inputRef?: RefObject<HTMLInputElement>;
+  disabled?: boolean;
+}) {
+  return (
+    <span className="frac-inp">
+      <span style={{ padding: '0 6px', fontSize: 14, fontFamily: "'DM Mono', monospace", fontWeight: 700 }}>
+        {num}
+      </span>
+      <span className="frac-line" />
+      <input
+        ref={inputRef}
+        type="number"
+        value={value}
+        disabled={disabled}
+        onChange={(e) => onChange(e.target.value)}
+        onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
+          if (e.key === 'Enter') onEnter?.();
+        }}
+      />
+    </span>
+  );
+}
+
 function GdBlank({
   value,
   onChange,
@@ -66,7 +105,7 @@ function GdBlank({
   value: string;
   onChange: (v: string) => void;
   onEnter?: () => void;
-  inputRef?: React.RefObject<HTMLInputElement>;
+  inputRef?: RefObject<HTMLInputElement>;
   disabled?: boolean;
 }) {
   return (
@@ -84,14 +123,6 @@ function GdBlank({
   );
 }
 
-function VideoLink() {
-  return (
-    <a href={VIDEO_URL} target="_blank" rel="noopener noreferrer" className="gd-video-link">
-      📺 Voir la vidéo explicative
-    </a>
-  );
-}
-
 // ── Intro screens ─────────────────────────────────────────────────────────────
 
 function Intro1({ onStart }: { onStart: () => void }) {
@@ -106,16 +137,27 @@ function Intro1({ onStart }: { onStart: () => void }) {
             l'égalité vraie. La règle d'or :{' '}
             <em>ce qu'on fait d'un côté du signe =, on doit le faire de l'autre côté aussi.</em>
           </p>
-          <p>Ici, x est seul accompagné d'un nombre qu'on lui ajoute. On va l'isoler en <strong>soustrayant ce nombre des deux membres</strong>.</p>
+          <p>
+            Pour isoler x, on regarde le signe du nombre et on fait <strong>l'opération inverse</strong> des deux côtés.
+          </p>
           <div className="gd-method-box">
-            <div>x + a = b</div>
-            <div className="gd-method-arrow">→ On soustrait <em>a</em> des deux membres :</div>
-            <div>x + a − a = b − a</div>
-            <div className="gd-method-arrow">→ On simplifie :</div>
-            <div style={{ fontWeight: 700 }}>x = b − a</div>
+            <div className="gd-method-arrow">Exemple 1 — le nombre est positif (+5) :</div>
+            <div>x + 5 = 8</div>
+            <div className="gd-method-arrow">→ Signe + → opération inverse : on soustrait 5</div>
+            <div>x + 5 − 5 = 8 − 5</div>
+            <div style={{ fontWeight: 700 }}>x = 3</div>
+          </div>
+          <div className="gd-method-box" style={{ marginTop: '0.8rem' }}>
+            <div className="gd-method-arrow">Exemple 2 — le nombre est négatif (−8) :</div>
+            <div>x − 8 = 4</div>
+            <div className="gd-method-arrow">→ Signe − → opération inverse : on ajoute 8</div>
+            <div>x − 8 + 8 = 4 + 8</div>
+            <div style={{ fontWeight: 700 }}>x = 12</div>
           </div>
         </div>
-        <VideoLink />
+        <a href={VIDEO_L1} target="_blank" rel="noopener noreferrer" className="gd-video-link">
+          📺 Voir la vidéo explicative
+        </a>
         <button
           className="btn-primary"
           style={{ background: ACCENT, color: ACCENT_FG, marginTop: '1.5rem' }}
@@ -141,22 +183,24 @@ function Intro2({ onStart }: { onStart: () => void }) {
           </p>
           <ol style={{ paddingLeft: '1.2rem', lineHeight: 2 }}>
             <li>Isoler le terme en x en soustrayant <em>b</em> des deux membres</li>
-            <li>Diviser les deux membres par <em>a</em> — représenté sous forme de fraction</li>
+            <li>Diviser les deux membres par <em>a</em> — représenté sous forme de fraction (tu complèteras les dénominateurs)</li>
           </ol>
           <div className="gd-method-box">
             <div>ax + b = c</div>
             <div className="gd-method-arrow">→ − b des deux membres :</div>
             <div>ax = c − b</div>
-            <div className="gd-method-arrow">→ ÷ a des deux membres (fraction) :</div>
+            <div className="gd-method-arrow">→ ÷ a des deux membres :</div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
               <Frac num="ax" den="a" />
               <span>=</span>
               <Frac num="c − b" den="a" />
             </div>
-            <div style={{ fontWeight: 700, marginTop: 4 }}>x = (c − b) / a</div>
+            <div style={{ fontWeight: 700, marginTop: 4 }}>x = (c − b) ÷ a</div>
           </div>
         </div>
-        <VideoLink />
+        <a href={VIDEO_L2} target="_blank" rel="noopener noreferrer" className="gd-video-link">
+          📺 Voir la vidéo explicative
+        </a>
         <button
           className="btn-primary"
           style={{ background: ACCENT, color: ACCENT_FG, marginTop: '1.5rem' }}
@@ -181,26 +225,29 @@ function Intro3({ onStart }: { onStart: () => void }) {
           </p>
           <p>On procède en trois étapes :</p>
           <ol style={{ paddingLeft: '1.2rem', lineHeight: 2 }}>
-            <li>Regrouper tous les <em>x</em> à gauche (soustraire <em>cx</em> des deux membres)</li>
-            <li>Isoler le terme en x (soustraire <em>b</em> des deux membres)</li>
-            <li>Diviser par le coefficient restant</li>
+            <li>Regrouper les x à gauche en soustrayant <em>cx</em> des deux membres — tu calculeras le nouveau coefficient</li>
+            <li>Isoler le terme en x en soustrayant <em>b</em> des deux membres</li>
+            <li>Diviser par le coefficient restant — tu complèteras les dénominateurs</li>
           </ol>
           <div className="gd-method-box">
             <div>ax + b = cx + d</div>
             <div className="gd-method-arrow">→ − cx des deux membres :</div>
-            <div>(a−c)x + b = d</div>
+            <div>ax + b − cx = cx + d − cx</div>
+            <div style={{ fontWeight: 700 }}>(a−c)x + b = d</div>
             <div className="gd-method-arrow">→ − b des deux membres :</div>
-            <div>(a−c)x = d − b</div>
+            <div style={{ fontWeight: 700 }}>(a−c)x = d − b</div>
             <div className="gd-method-arrow">→ ÷ (a−c) des deux membres :</div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <Frac num="(a−c)x" den="a−c" />
               <span>=</span>
               <Frac num="d − b" den="a−c" />
             </div>
-            <div style={{ fontWeight: 700, marginTop: 4 }}>x = (d − b) / (a−c)</div>
+            <div style={{ fontWeight: 700, marginTop: 4 }}>x = (d − b) ÷ (a−c)</div>
           </div>
         </div>
-        <VideoLink />
+        <a href={VIDEO_L3} target="_blank" rel="noopener noreferrer" className="gd-video-link">
+          📺 Voir la vidéo explicative
+        </a>
         <button
           className="btn-primary"
           style={{ background: ACCENT, color: ACCENT_FG, marginTop: '1.5rem' }}
@@ -213,13 +260,13 @@ function Intro3({ onStart }: { onStart: () => void }) {
   );
 }
 
-// ── PlayL1 ────────────────────────────────────────────────────────────────────
+// ── PlayL1 — x + a = b (a may be negative → equation shows x − |a| = b) ─────
 
 function PlayL1({ p, onDone }: { p: L1; onDone: () => void }) {
   const [step, setStep] = useState(0);
-  const [a1, setA1] = useState('');
-  const [a2, setA2] = useState('');
-  const [ax, setAx] = useState('');
+  const [v1, setV1] = useState('');
+  const [v2, setV2] = useState('');
+  const [vx, setVx] = useState('');
   const [error, setError] = useState('');
   const [done, setDone] = useState(false);
   const ref1 = useRef<HTMLInputElement>(null);
@@ -229,19 +276,34 @@ function PlayL1({ p, onDone }: { p: L1; onDone: () => void }) {
     (step === 0 ? ref1 : refX).current?.focus();
   }, [step]);
 
-  const eqStr = `x + ${p.a} = ${p.b}`;
+  const absA = Math.abs(p.a);
+  const isPos = p.a > 0;
+
+  // Display strings
+  const eqStr = isPos ? `x + ${p.a} = ${p.b}` : `x - ${absA} = ${p.b}`;
+  const opLabel = isPos
+    ? `→ On soustrait ${p.a} des deux membres :`
+    : `→ On ajoute ${absA} des deux membres :`;
+  const opSign = isPos ? '−' : '+';
+  const lhsPart = isPos ? `x + ${p.a} ${opSign}` : `x − ${absA} ${opSign}`;
+  const rhsPart = `${p.b} ${opSign}`;
+  const verif = isPos
+    ? `Vérification : ${p.x} + ${p.a} = ${p.b} ✓`
+    : `Vérification : ${p.x} − ${absA} = ${p.b} ✓`;
 
   const validate0 = () => {
-    if (parseFloat(a1) === p.a && parseFloat(a2) === p.a) {
+    if (parseFloat(v1) === absA && parseFloat(v2) === absA) {
       setError('');
       setStep(1);
     } else {
-      setError('Les deux nombres soustraits doivent être identiques et égaux à ' + p.a + '. Réessaie !');
+      setError(
+        `Les deux valeurs doivent être ${absA} (${isPos ? 'ce qu\'on soustrait' : 'ce qu\'on ajoute'}). Réessaie !`
+      );
     }
   };
 
   const validate1 = () => {
-    if (parseFloat(ax) === p.x) {
+    if (parseFloat(vx) === p.x) {
       setError('');
       setDone(true);
     } else {
@@ -257,12 +319,12 @@ function PlayL1({ p, onDone }: { p: L1; onDone: () => void }) {
         <hr className="gd-divider" />
 
         <div className="gd-step">
-          <div className="gd-step-label">→ On soustrait {p.a} des deux membres :</div>
+          <div className="gd-step-label">{opLabel}</div>
           <div className="gd-eq-line">
-            <span>x + {p.a} −</span>
-            <GdBlank value={a1} onChange={setA1} onEnter={step === 0 ? validate0 : undefined} inputRef={ref1} disabled={step > 0} />
-            <span>= {p.b} −</span>
-            <GdBlank value={a2} onChange={setA2} onEnter={step === 0 ? validate0 : undefined} disabled={step > 0} />
+            <span>{lhsPart}</span>
+            <GdBlank value={v1} onChange={setV1} onEnter={step === 0 ? validate0 : undefined} inputRef={ref1} disabled={step > 0} />
+            <span>= {rhsPart}</span>
+            <GdBlank value={v2} onChange={setV2} onEnter={step === 0 ? validate0 : undefined} disabled={step > 0} />
           </div>
           {step === 0 && (
             <button className="btn-primary gd-validate-btn" style={{ background: ACCENT, color: ACCENT_FG }} onClick={validate0}>
@@ -276,7 +338,7 @@ function PlayL1({ p, onDone }: { p: L1; onDone: () => void }) {
             <div className="gd-step-label">→ On simplifie :</div>
             <div className="gd-eq-line">
               <span>x =</span>
-              <GdBlank value={ax} onChange={setAx} onEnter={validate1} inputRef={refX} disabled={done} />
+              <GdBlank value={vx} onChange={setVx} onEnter={validate1} inputRef={refX} disabled={done} />
             </div>
             {!done && (
               <button className="btn-primary gd-validate-btn" style={{ background: ACCENT, color: ACCENT_FG }} onClick={validate1}>
@@ -291,7 +353,7 @@ function PlayL1({ p, onDone }: { p: L1; onDone: () => void }) {
         {done && (
           <div className="gd-success">
             ✓ Bravo ! La solution est <strong>x = {p.x}</strong><br />
-            Vérification : {p.x} + {p.a} = {p.b} ✓
+            {verif}
             <br /><br />
             <button className="btn-primary" style={{ background: ACCENT, color: ACCENT_FG }} onClick={onDone}>
               Niveau suivant →
@@ -303,38 +365,52 @@ function PlayL1({ p, onDone }: { p: L1; onDone: () => void }) {
   );
 }
 
-// ── PlayL2 ────────────────────────────────────────────────────────────────────
+// ── PlayL2 — ax + b = c ───────────────────────────────────────────────────────
+// Steps: 0 = subtract b | 1 = fill denominators | 2 = final x
 
 function PlayL2({ p, onDone }: { p: L2; onDone: () => void }) {
   const [step, setStep] = useState(0);
-  const [a1, setA1] = useState('');
-  const [a2, setA2] = useState('');
-  const [ax, setAx] = useState('');
+  // step 0: subtract b
+  const [s0a, setS0a] = useState('');
+  const [s0b, setS0b] = useState('');
+  // step 1: denominators
+  const [d1, setD1] = useState('');
+  const [d2, setD2] = useState('');
+  // step 2: final x
+  const [vx, setVx] = useState('');
   const [error, setError] = useState('');
   const [done, setDone] = useState(false);
-  const ref1 = useRef<HTMLInputElement>(null);
+  const refS0 = useRef<HTMLInputElement>(null);
+  const refD1 = useRef<HTMLInputElement>(null);
   const refX = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    (step === 0 ? ref1 : refX).current?.focus();
+    if (step === 0) refS0.current?.focus();
+    else if (step === 1) refD1.current?.focus();
+    else if (step === 2) refX.current?.focus();
   }, [step]);
 
-  const lhsStr = `${coefX(p.a)} + ${p.b}`;
-  const eqStr = `${lhsStr} = ${p.c}`;
+  const eqStr = `${coefX(p.a)} + ${p.b} = ${p.c}`;
 
   const validate0 = () => {
-    if (parseFloat(a1) === p.b && parseFloat(a2) === p.b) {
-      setError('');
-      setStep(1);
+    if (parseFloat(s0a) === p.b && parseFloat(s0b) === p.b) {
+      setError(''); setStep(1);
     } else {
-      setError('Les deux nombres soustraits doivent valoir ' + p.b + '. Réessaie !');
+      setError(`Les deux valeurs doivent être ${p.b}. Réessaie !`);
     }
   };
 
   const validate1 = () => {
-    if (parseFloat(ax) === p.x) {
-      setError('');
-      setDone(true);
+    if (parseFloat(d1) === p.a && parseFloat(d2) === p.a) {
+      setError(''); setStep(2);
+    } else {
+      setError(`Les deux dénominateurs doivent être ${p.a}. Réessaie !`);
+    }
+  };
+
+  const validate2 = () => {
+    if (parseFloat(vx) === p.x) {
+      setError(''); setDone(true);
     } else {
       setError("Ce n'est pas la bonne valeur pour x. Réessaie !");
     }
@@ -347,13 +423,14 @@ function PlayL2({ p, onDone }: { p: L2; onDone: () => void }) {
         <div className="gd-eq-main">{eqStr}</div>
         <hr className="gd-divider" />
 
+        {/* Step 0: subtract b */}
         <div className="gd-step">
           <div className="gd-step-label">→ On soustrait {p.b} des deux membres :</div>
           <div className="gd-eq-line">
             <span>{coefX(p.a)} + {p.b} −</span>
-            <GdBlank value={a1} onChange={setA1} onEnter={step === 0 ? validate0 : undefined} inputRef={ref1} disabled={step > 0} />
+            <GdBlank value={s0a} onChange={setS0a} onEnter={step === 0 ? validate0 : undefined} inputRef={refS0} disabled={step > 0} />
             <span>= {p.c} −</span>
-            <GdBlank value={a2} onChange={setA2} onEnter={step === 0 ? validate0 : undefined} disabled={step > 0} />
+            <GdBlank value={s0b} onChange={setS0b} onEnter={step === 0 ? validate0 : undefined} disabled={step > 0} />
           </div>
           {step === 0 && (
             <button className="btn-primary gd-validate-btn" style={{ background: ACCENT, color: ACCENT_FG }} onClick={validate0}>
@@ -362,6 +439,7 @@ function PlayL2({ p, onDone }: { p: L2; onDone: () => void }) {
           )}
         </div>
 
+        {/* Steps 1 & 2: revealed after step 0 */}
         {step >= 1 && (
           <>
             <div className="gd-step">
@@ -370,27 +448,35 @@ function PlayL2({ p, onDone }: { p: L2; onDone: () => void }) {
             </div>
 
             <div className="gd-step">
-              <div className="gd-step-label">→ On divise les deux membres par {p.a} :</div>
-              <div className="gd-eq-line" style={{ gap: 8 }}>
-                <Frac num={coefX(p.a)} den={String(p.a)} />
-                <span>=</span>
-                <Frac num={String(p.rhs1)} den={String(p.a)} />
+              <div className="gd-step-label">→ On divise les deux membres par {p.a} — complète les dénominateurs :</div>
+              <div className="gd-eq-line" style={{ gap: 10, alignItems: 'flex-end' }}>
+                <FracDenInput num={coefX(p.a)} value={d1} onChange={setD1} onEnter={step === 1 ? validate1 : undefined} inputRef={refD1} disabled={step > 1} />
+                <span style={{ marginBottom: 4 }}>=</span>
+                <FracDenInput num={String(p.rhs1)} value={d2} onChange={setD2} onEnter={step === 1 ? validate1 : undefined} disabled={step > 1} />
               </div>
-            </div>
-
-            <div className="gd-step">
-              <div className="gd-step-label">→ On simplifie :</div>
-              <div className="gd-eq-line">
-                <span>x =</span>
-                <GdBlank value={ax} onChange={setAx} onEnter={validate1} inputRef={refX} disabled={done} />
-              </div>
-              {!done && (
+              {step === 1 && (
                 <button className="btn-primary gd-validate-btn" style={{ background: ACCENT, color: ACCENT_FG }} onClick={validate1}>
                   Valider
                 </button>
               )}
             </div>
           </>
+        )}
+
+        {/* Step 2: final x */}
+        {step >= 2 && (
+          <div className="gd-step">
+            <div className="gd-step-label">→ On simplifie :</div>
+            <div className="gd-eq-line">
+              <span>x =</span>
+              <GdBlank value={vx} onChange={setVx} onEnter={validate2} inputRef={refX} disabled={done} />
+            </div>
+            {!done && (
+              <button className="btn-primary gd-validate-btn" style={{ background: ACCENT, color: ACCENT_FG }} onClick={validate2}>
+                Valider
+              </button>
+            )}
+          </div>
         )}
 
         {error && <div className="gd-error">{error}</div>}
@@ -410,39 +496,67 @@ function PlayL2({ p, onDone }: { p: L2; onDone: () => void }) {
   );
 }
 
-// ── PlayL3 ────────────────────────────────────────────────────────────────────
+// ── PlayL3 — ax + b = cx + d ──────────────────────────────────────────────────
+// Steps: 0 = intermediate coef | 1 = subtract b | 2 = fill denominators | 3 = final x
 
 function PlayL3({ p, onDone }: { p: L3; onDone: () => void }) {
   const [step, setStep] = useState(0);
-  const [a1, setA1] = useState('');
-  const [a2, setA2] = useState('');
-  const [ax, setAx] = useState('');
+  const [s0, setS0] = useState('');       // coef = a-c
+  const [s1a, setS1a] = useState('');     // subtract b (×2)
+  const [s1b, setS1b] = useState('');
+  const [d1, setD1] = useState('');       // denominators (×2)
+  const [d2, setD2] = useState('');
+  const [vx, setVx] = useState('');       // final x
   const [error, setError] = useState('');
   const [done, setDone] = useState(false);
-  const ref1 = useRef<HTMLInputElement>(null);
+  const refS0 = useRef<HTMLInputElement>(null);
+  const refS1 = useRef<HTMLInputElement>(null);
+  const refD1 = useRef<HTMLInputElement>(null);
   const refX = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    (step === 0 ? ref1 : refX).current?.focus();
+    if (step === 0) refS0.current?.focus();
+    else if (step === 1) refS1.current?.focus();
+    else if (step === 2) refD1.current?.focus();
+    else if (step === 3) refX.current?.focus();
   }, [step]);
 
-  const rhsStr = p.d >= 0 ? `${coefX(p.c)} + ${p.d}` : `${coefX(p.c)} - ${Math.abs(p.d)}`;
+  const rhsStr = p.d >= 0
+    ? `${coefX(p.c)} + ${p.d}`
+    : `${coefX(p.c)} − ${Math.abs(p.d)}`;
   const eqStr = `${coefX(p.a)} + ${p.b} = ${rhsStr}`;
-  const regrouped = `${coefX(p.coef)} + ${p.b} = ${p.d}`;
+
+  // Intermediate display line (after subtracting cx)
+  const dStr = p.d >= 0 ? `${coefX(p.c)} + ${p.d}` : `${coefX(p.c)} − ${Math.abs(p.d)}`;
+  const interLine = `${coefX(p.a)} + ${p.b} − ${coefX(p.c)} = ${dStr} − ${coefX(p.c)}`;
 
   const validate0 = () => {
-    if (parseFloat(a1) === p.b && parseFloat(a2) === p.b) {
-      setError('');
-      setStep(1);
+    if (parseFloat(s0) === p.coef) {
+      setError(''); setStep(1);
     } else {
-      setError('Les deux nombres soustraits doivent valoir ' + p.b + '. Réessaie !');
+      setError(`Le coefficient de x est ${p.a} − ${p.c} = ${p.coef}. Réessaie !`);
     }
   };
 
   const validate1 = () => {
-    if (parseFloat(ax) === p.x) {
-      setError('');
-      setDone(true);
+    if (parseFloat(s1a) === p.b && parseFloat(s1b) === p.b) {
+      setError(''); setStep(2);
+    } else {
+      setError(`Les deux valeurs doivent être ${p.b}. Réessaie !`);
+    }
+  };
+
+  const validate2 = () => {
+    if (parseFloat(d1) === p.coef && parseFloat(d2) === p.coef) {
+      setError(''); setStep(3);
+    } else {
+      setError(`Les deux dénominateurs doivent être ${p.coef}. Réessaie !`);
+    }
+  };
+
+  const validate3 = () => {
+    if (parseFloat(vx) === p.x) {
+      setError(''); setDone(true);
     } else {
       setError("Ce n'est pas la bonne valeur pour x. Réessaie !");
     }
@@ -455,18 +569,14 @@ function PlayL3({ p, onDone }: { p: L3; onDone: () => void }) {
         <div className="gd-eq-main">{eqStr}</div>
         <hr className="gd-divider" />
 
+        {/* Step 0: regroup x terms → student computes coefficient */}
         <div className="gd-step">
-          <div className="gd-step-label">→ On regroupe les termes en x à gauche. On soustrait {coefX(p.c)} des deux membres :</div>
-          <div className="gd-eq-display">{regrouped}</div>
-        </div>
-
-        <div className="gd-step">
-          <div className="gd-step-label">→ On soustrait {p.b} des deux membres :</div>
+          <div className="gd-step-label">→ On soustrait {coefX(p.c)} des deux membres :</div>
+          <div className="gd-eq-display" style={{ fontSize: '0.95rem', color: 'var(--muted)' }}>{interLine}</div>
+          <div className="gd-step-label" style={{ marginTop: 6 }}>Calcule le nouveau coefficient de x :</div>
           <div className="gd-eq-line">
-            <span>{coefX(p.coef)} + {p.b} −</span>
-            <GdBlank value={a1} onChange={setA1} onEnter={step === 0 ? validate0 : undefined} inputRef={ref1} disabled={step > 0} />
-            <span>= {p.d} −</span>
-            <GdBlank value={a2} onChange={setA2} onEnter={step === 0 ? validate0 : undefined} disabled={step > 0} />
+            <GdBlank value={s0} onChange={setS0} onEnter={step === 0 ? validate0 : undefined} inputRef={refS0} disabled={step > 0} />
+            <span>x + {p.b} = {p.d}</span>
           </div>
           {step === 0 && (
             <button className="btn-primary gd-validate-btn" style={{ background: ACCENT, color: ACCENT_FG }} onClick={validate0}>
@@ -475,7 +585,26 @@ function PlayL3({ p, onDone }: { p: L3; onDone: () => void }) {
           )}
         </div>
 
+        {/* Step 1: subtract b */}
         {step >= 1 && (
+          <div className="gd-step">
+            <div className="gd-step-label">→ On soustrait {p.b} des deux membres :</div>
+            <div className="gd-eq-line">
+              <span>{coefX(p.coef)} + {p.b} −</span>
+              <GdBlank value={s1a} onChange={setS1a} onEnter={step === 1 ? validate1 : undefined} inputRef={refS1} disabled={step > 1} />
+              <span>= {p.d} −</span>
+              <GdBlank value={s1b} onChange={setS1b} onEnter={step === 1 ? validate1 : undefined} disabled={step > 1} />
+            </div>
+            {step === 1 && (
+              <button className="btn-primary gd-validate-btn" style={{ background: ACCENT, color: ACCENT_FG }} onClick={validate1}>
+                Valider
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* Steps 2 & 3: after step 1 */}
+        {step >= 2 && (
           <>
             <div className="gd-step">
               <div className="gd-step-label">→ On simplifie :</div>
@@ -483,27 +612,35 @@ function PlayL3({ p, onDone }: { p: L3; onDone: () => void }) {
             </div>
 
             <div className="gd-step">
-              <div className="gd-step-label">→ On divise les deux membres par {p.coef} :</div>
-              <div className="gd-eq-line" style={{ gap: 8 }}>
-                <Frac num={coefX(p.coef)} den={String(p.coef)} />
-                <span>=</span>
-                <Frac num={String(p.rhs1)} den={String(p.coef)} />
+              <div className="gd-step-label">→ On divise les deux membres par {p.coef} — complète les dénominateurs :</div>
+              <div className="gd-eq-line" style={{ gap: 10, alignItems: 'flex-end' }}>
+                <FracDenInput num={coefX(p.coef)} value={d1} onChange={setD1} onEnter={step === 2 ? validate2 : undefined} inputRef={refD1} disabled={step > 2} />
+                <span style={{ marginBottom: 4 }}>=</span>
+                <FracDenInput num={String(p.rhs1)} value={d2} onChange={setD2} onEnter={step === 2 ? validate2 : undefined} disabled={step > 2} />
               </div>
-            </div>
-
-            <div className="gd-step">
-              <div className="gd-step-label">→ On simplifie :</div>
-              <div className="gd-eq-line">
-                <span>x =</span>
-                <GdBlank value={ax} onChange={setAx} onEnter={validate1} inputRef={refX} disabled={done} />
-              </div>
-              {!done && (
-                <button className="btn-primary gd-validate-btn" style={{ background: ACCENT, color: ACCENT_FG }} onClick={validate1}>
+              {step === 2 && (
+                <button className="btn-primary gd-validate-btn" style={{ background: ACCENT, color: ACCENT_FG }} onClick={validate2}>
                   Valider
                 </button>
               )}
             </div>
           </>
+        )}
+
+        {/* Step 3: final x */}
+        {step >= 3 && (
+          <div className="gd-step">
+            <div className="gd-step-label">→ On simplifie :</div>
+            <div className="gd-eq-line">
+              <span>x =</span>
+              <GdBlank value={vx} onChange={setVx} onEnter={validate3} inputRef={refX} disabled={done} />
+            </div>
+            {!done && (
+              <button className="btn-primary gd-validate-btn" style={{ background: ACCENT, color: ACCENT_FG }} onClick={validate3}>
+                Valider
+              </button>
+            )}
+          </div>
         )}
 
         {error && <div className="gd-error">{error}</div>}

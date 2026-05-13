@@ -21,7 +21,7 @@ export const eqQuiz: QuizDefinition<EquationExercise> = {
   exercises: STATIC_EXERCISES,
   generator: GENERATOR,
   extraControls: [
-    { label: 'Je suis perdu / perdue 🆘', href: '/4eme/eq-guidee', color: '#A78BFA' },
+    { label: 'Je revois la méthode 📖', href: '/4eme/eq-guidee', color: '#A78BFA' },
   ],
   typePills: [
     { label: 'x + a = b', color: '#6EE7C0', type: 'default' },
