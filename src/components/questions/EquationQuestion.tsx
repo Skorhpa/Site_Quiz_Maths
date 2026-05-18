@@ -1,6 +1,33 @@
 import { useState, type KeyboardEvent } from 'react';
 import type { EquationExercise } from '@/types';
 
+function RichEq({ eq, redParts }: { eq: string; redParts?: string[] }) {
+  if (!redParts?.length) return <>{eq}</>;
+  type S = { text: string; red: boolean };
+  let segs: S[] = [{ text: eq, red: false }];
+  for (const rp of redParts) {
+    const next: S[] = [];
+    for (const seg of segs) {
+      if (seg.red) { next.push(seg); continue; }
+      const parts = seg.text.split(rp);
+      parts.forEach((p, i) => {
+        if (p) next.push({ text: p, red: false });
+        if (i < parts.length - 1) next.push({ text: rp, red: true });
+      });
+    }
+    segs = next;
+  }
+  return (
+    <>
+      {segs.map((s, i) =>
+        s.red
+          ? <span key={i} style={{ color: '#F87171', fontWeight: 700 }}>{s.text}</span>
+          : <span key={i}>{s.text}</span>
+      )}
+    </>
+  );
+}
+
 interface AnswerState {
   value: string;
   status: 'pending' | 'correct' | 'wrong' | 'revealed';
@@ -50,8 +77,8 @@ export function EquationQuestion({ index, exercise, answer, onChange, onSubmit }
       <div className={`steps-box${hintOpen ? ' open' : ''}`}>
         {exercise.steps.map((s, j) => (
           <div key={j}>
-            <span style={{ color: s.label.includes('des deux membres') ? '#F87171' : 'var(--muted)', minWidth: 160, display: 'inline-block' }}>{s.label} :</span>{' '}
-            <span className="step-eq">{s.eq}</span>
+            <span style={{ color: 'var(--muted)', minWidth: 160, display: 'inline-block' }}>{s.label} :</span>{' '}
+            <span className="step-eq"><RichEq eq={s.eq} redParts={s.redParts} /></span>
           </div>
         ))}
       </div>
