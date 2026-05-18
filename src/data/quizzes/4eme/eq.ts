@@ -22,6 +22,7 @@ export const eqQuiz: QuizDefinition<EquationExercise> = {
   generator: GENERATOR,
   extraControls: [
     { label: 'Je revois la méthode 📖', href: '/4eme/eq-guidee', color: '#A78BFA' },
+    { label: 'Résolution de problèmes', href: '/4eme/eq-problemes', color: '#60A5FA' },
   ],
   typePills: [
     { label: 'x + a = b', color: '#6EE7C0', type: 'default' },
