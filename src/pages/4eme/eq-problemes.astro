@@ -1,0 +1,11 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import EqProblemes from '@/components/EqProblemes';
+---
+<BaseLayout title="Résolution de problèmes — Équations du premier degré">
+  <div class="topbar">
+    <a class="home-btn" href="/4eme/eq">← Équations</a>
+    <div class="breadcrumb">/ <span>Résolution de problèmes</span></div>
+  </div>
+  <EqProblemes client:load />
+</BaseLayout>

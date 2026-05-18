@@ -50,7 +50,7 @@ export function EquationQuestion({ index, exercise, answer, onChange, onSubmit }
       <div className={`steps-box${hintOpen ? ' open' : ''}`}>
         {exercise.steps.map((s, j) => (
           <div key={j}>
-            <span style={{ color: 'var(--muted)', minWidth: 160, display: 'inline-block' }}>{s.label} :</span>{' '}
+            <span style={{ color: s.label.includes('des deux membres') ? '#F87171' : 'var(--muted)', minWidth: 160, display: 'inline-block' }}>{s.label} :</span>{' '}
             <span className="step-eq">{s.eq}</span>
           </div>
         ))}
