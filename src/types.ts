@@ -249,7 +249,7 @@ export interface EquationExercise extends BaseExercise {
   label: string;
   expr: string;
   ans: number;
-  steps: { label: string; eq: string }[];
+  steps: { label: string; eq: string; redParts?: string[] }[];
 }
 
 export type FractionsCompSubtype = 'comp' | 'simpl' | 'prime';
