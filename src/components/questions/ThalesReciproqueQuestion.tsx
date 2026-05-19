@@ -11,15 +11,6 @@ function normLetters(s: string): string {
 function matchSet(input: string, expected: string): boolean {
   return normLetters(input) === normLetters(expected);
 }
-function parseVal(s: string): number {
-  const t = s.trim().replace(',', '.');
-  if (t.includes('/')) {
-    const [a, b] = t.split('/').map(Number);
-    if (!a || !b || b === 0) return NaN;
-    return a / b;
-  }
-  return parseFloat(t);
-}
 
 // ── Small display components ──────────────────────────────────────────────────
 
@@ -105,9 +96,7 @@ function CorrFrac({ n, d }: { n: string; d: string }) {
 }
 
 function Correction({ ex }: { ex: ThalesReciproqueExercise }) {
-  const { apex, ptL, ptR, ptM, ptN, sM, sA, sN, sB, r1n, r1d, r2n, r2d, isParallel } = ex;
-  const r1Val = `${r1n}/${r1d}`;
-  const r2Val = `${r2n}/${r2d}`;
+  const { apex, ptL, ptR, ptM, ptN, sM, sA, sN, sB, r1n, r1d, r2n, r2d, isParallel, altRatio } = ex;
   const sym = isParallel ? '=' : '≠';
   const line = (label: string, content: ReactNode) => (
     <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap', marginBottom: 4 }}>
@@ -115,6 +104,10 @@ function Correction({ ex }: { ex: ThalesReciproqueExercise }) {
       {content}
     </div>
   );
+  const r2NumLabel = altRatio ? `${ptM}${ptN}` : `${apex}${ptN}`;
+  const r2DenLabel = altRatio ? `${ptL}${ptR}` : `${apex}${ptR}`;
+  const r2NumVal = altRatio ? altRatio.mn : sN;
+  const r2DenVal = altRatio ? altRatio.ab : sB;
   return (
     <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 13, lineHeight: 2.1, paddingTop: 4 }}>
       {ex.variant === 'complement' && (
@@ -135,19 +128,19 @@ function Correction({ ex }: { ex: ThalesReciproqueExercise }) {
         <EqSign>=</EqSign>
         <CorrFrac n={String(sM)} d={String(sA)} />
         <EqSign>=</EqSign>
-        <span style={{ color: ACCENT, fontWeight: 700 }}>{r1Val}</span>
+        <CorrFrac n={String(r1n)} d={String(r1d)} />
       </span>)}
       {line("D'autre part :", <span style={{ display: 'flex', alignItems: 'center', gap: 4, flexWrap: 'wrap' }}>
-        <CorrFrac n={`${apex}${ptN}`} d={`${apex}${ptR}`} />
+        <CorrFrac n={r2NumLabel} d={r2DenLabel} />
         <EqSign>=</EqSign>
-        <CorrFrac n={String(sN)} d={String(sB)} />
+        <CorrFrac n={String(r2NumVal)} d={String(r2DenVal)} />
         <EqSign>=</EqSign>
-        <span style={{ color: ACCENT, fontWeight: 700 }}>{r2Val}</span>
+        <CorrFrac n={String(r2n)} d={String(r2d)} />
       </span>)}
       {line('Donc :', <span style={{ display: 'flex', alignItems: 'center', gap: 4, flexWrap: 'wrap' }}>
         <CorrFrac n={`${apex}${ptM}`} d={`${apex}${ptL}`} />
         <span style={{ color: isParallel ? '#4ADE80' : '#F87171', fontWeight: 700, fontSize: 16 }}>{sym}</span>
-        <CorrFrac n={`${apex}${ptN}`} d={`${apex}${ptR}`} />
+        <CorrFrac n={r2NumLabel} d={r2DenLabel} />
       </span>)}
       <div style={{ color: 'var(--text)', marginTop: 4 }}>
         {isParallel
@@ -193,7 +186,12 @@ export function ThalesReciproqueQuestion({ index, exercise: ex, answer, onSubmit
     <FracInp idN={idN} idD={idD} get={get} set={set} disabled={disabled} w={w} />
   );
 
-  const { apex, ptL, ptR, ptM, ptN, sM, sA, sN, sB, r1n, r1d, r2n, r2d, isParallel, variant } = ex;
+  const { apex, ptL, ptR, ptM, ptN, sM, sA, sN, sB, r1n, r1d, r2n, r2d, isParallel, variant, altRatio } = ex;
+
+  const r2NumLabel = altRatio ? `${ptM}${ptN}` : `${apex}${ptN}`;
+  const r2DenLabel = altRatio ? `${ptL}${ptR}` : `${apex}${ptR}`;
+  const r2NumVal = altRatio ? altRatio.mn : sN;
+  const r2DenVal = altRatio ? altRatio.ab : sB;
 
   // ── Validation ──────────────────────────────────────────────────────────────
   const handleValidate = () => {
@@ -236,33 +234,33 @@ export function ThalesReciproqueQuestion({ index, exercise: ex, answer, onSubmit
         errs.push(`D'une part — dénominateur (valeur) : attend ${sA}`);
       }
     }
-    // D'une part — simplified value
-    const v1 = parseVal(get('r1v'));
-    if (isNaN(v1) || Math.abs(v1 - r1n / r1d) > 0.01) {
-      errs.push(`D'une part — valeur finale : attend ${r1n}/${r1d} (ou ${(r1n / r1d).toFixed(2)})`);
+    // D'une part — simplified fraction value
+    const vn1 = parseInt(get('r1vn')); const vd1 = parseInt(get('r1vd'));
+    if (isNaN(vn1) || isNaN(vd1) || vd1 === 0 || vn1 !== r1n || vd1 !== r1d) {
+      errs.push(`D'une part — fraction irréductible : attend ${r1n}/${r1d}`);
     }
     // D'autre part — letter fraction
-    if (!matchSet(get('r2ln'), apex + ptN)) {
-      errs.push(`D'autre part — numérateur (lettres) : attend ${apex}${ptN} (ou ${ptN}${apex})`);
+    if (!matchSet(get('r2ln'), r2NumLabel)) {
+      errs.push(`D'autre part — numérateur (lettres) : attend ${r2NumLabel}`);
     }
-    if (!matchSet(get('r2ld'), apex + ptR)) {
-      errs.push(`D'autre part — dénominateur (lettres) : attend ${apex}${ptR} (ou ${ptR}${apex})`);
+    if (!matchSet(get('r2ld'), r2DenLabel)) {
+      errs.push(`D'autre part — dénominateur (lettres) : attend ${r2DenLabel}`);
     }
     // D'autre part — number fraction
-    if (parseInt(get('r2nn')) !== sN) {
-      errs.push(`D'autre part — numérateur (valeur) : attend ${sN}`);
+    if (parseInt(get('r2nn')) !== r2NumVal) {
+      errs.push(`D'autre part — numérateur (valeur) : attend ${r2NumVal}`);
     }
-    if (parseInt(get('r2nd')) !== sB) {
-      if (variant === 'complement') {
+    if (parseInt(get('r2nd')) !== r2DenVal) {
+      if (!altRatio && variant === 'complement') {
         errs.push(`D'autre part — dénominateur (valeur) : ${apex}${ptR} = ${apex}${ptN} + ${ptN}${ptR} = ${sN} + ${sB - sN} = ${sB}`);
       } else {
-        errs.push(`D'autre part — dénominateur (valeur) : attend ${sB}`);
+        errs.push(`D'autre part — dénominateur (valeur) : attend ${r2DenVal}`);
       }
     }
-    // D'autre part — simplified value
-    const v2 = parseVal(get('r2v'));
-    if (isNaN(v2) || Math.abs(v2 - r2n / r2d) > 0.01) {
-      errs.push(`D'autre part — valeur finale : attend ${r2n}/${r2d} (ou ${(r2n / r2d).toFixed(2)})`);
+    // D'autre part — simplified fraction value
+    const vn2 = parseInt(get('r2vn')); const vd2 = parseInt(get('r2vd'));
+    if (isNaN(vn2) || isNaN(vd2) || vd2 === 0 || vn2 !== r2n || vd2 !== r2d) {
+      errs.push(`D'autre part — fraction irréductible : attend ${r2n}/${r2d}`);
     }
     // Comparison symbol
     const expectedSym = isParallel ? '=' : '≠';
@@ -368,7 +366,7 @@ export function ThalesReciproqueQuestion({ index, exercise: ex, answer, onSubmit
           <EqSign>=</EqSign>
           {fracInp('r1nn', 'r1nd')}
           <EqSign>=</EqSign>
-          {inp('r1v', 50)}
+          {fracInp('r1vn', 'r1vd')}
         </>)}
 
         {/* Line 3: D'autre part */}
@@ -378,7 +376,7 @@ export function ThalesReciproqueQuestion({ index, exercise: ex, answer, onSubmit
           <EqSign>=</EqSign>
           {fracInp('r2nn', 'r2nd')}
           <EqSign>=</EqSign>
-          {inp('r2v', 50)}
+          {fracInp('r2vn', 'r2vd')}
         </>)}
 
         {/* Line 4: Donc comparison */}
@@ -405,7 +403,7 @@ export function ThalesReciproqueQuestion({ index, exercise: ex, answer, onSubmit
             <option value="=">=</option>
             <option value="≠">≠</option>
           </select>
-          <Frac n={`${apex}${ptN}`} d={`${apex}${ptR}`} />
+          <Frac n={r2NumLabel} d={r2DenLabel} />
         </>)}
 
         {/* Line 5: Conclusion radio */}
