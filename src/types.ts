@@ -349,6 +349,8 @@ export interface ThalesReciproqueExercise extends BaseExercise {
   dataLabel: string;
   /** Inline SVG string. */
   fig: string;
+  /** When set, D'autre part uses MN/AB instead of SN/SB. */
+  altRatio?: { mn: number; ab: number };
 }
 
 export type Exercise =

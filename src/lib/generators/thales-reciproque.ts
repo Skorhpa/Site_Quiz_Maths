@@ -48,10 +48,9 @@ function makeFig(
   const ny = +(sy + r2 * (ay - sy)).toFixed(1);
   const isParallel = Math.abs(r1 - r2) < 0.001;
   const stroke = isParallel ? '#60A5FA' : '#FB923C';
-  const dash = isParallel ? '' : ' stroke-dasharray="5,3"';
   return `<svg viewBox="0 0 150 162" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:140px">` +
     `<polygon points="${sx},${sy} ${ax},${ay} ${bx},${ay}" fill="rgba(251,146,60,0.07)" stroke="#FB923C" stroke-width="1.5"/>` +
-    `<line x1="${mx}" y1="${my}" x2="${nx}" y2="${ny}" stroke="${stroke}" stroke-width="1.6"${dash}/>` +
+    `<line x1="${mx}" y1="${my}" x2="${nx}" y2="${ny}" stroke="${stroke}" stroke-width="1.6"/>` +
     `<text x="${sx}" y="${sy - 4}" text-anchor="middle" font-size="13" fill="#F0EDE8" font-weight="bold" font-family="DM Mono,monospace">${apex}</text>` +
     `<text x="${ax - 10}" y="${ay + 15}" font-size="13" fill="#A0A8B8" font-weight="bold" font-family="DM Mono,monospace">${ptL}</text>` +
     `<text x="${bx + 2}" y="${ay + 15}" font-size="13" fill="#A0A8B8" font-weight="bold" font-family="DM Mono,monospace">${ptR}</text>` +
@@ -64,6 +63,7 @@ function makeEx(
   letters: LetterSet,
   isParallel: boolean,
   variant: 'direct' | 'complement',
+  useAltRatio = false,
 ): ThalesReciproqueExercise {
   const { apex, ptL, ptR, ptM, ptN } = letters;
 
@@ -86,9 +86,20 @@ function makeEx(
   const [r1n, r1d] = simplify(sM, sA);
   const [r2n, r2d] = simplify(sN, sB);
 
+  // altRatio: MN and AB lengths derived from the two side ratios
+  // MN = sM * (sB - sN) / sN  — but we need integer values, so compute them
+  // from ratio2 scaled to k2: altRatio.mn = ratio2[0]*k2 = sN, altRatio.ab = ratio2[1]*k2 = sB
+  // Actually, MN/AB equals SM/SA when parallel (by Thales). For the altRatio case we pick
+  // integer MN and AB values that equal sN and sB (same numbers, different label context).
+  const altRatio = useAltRatio ? { mn: sN, ab: sB } : undefined;
+
   let dataLabel: string;
   if (variant === 'direct') {
-    dataLabel = `${apex}${ptM} = ${sM} cm · ${apex}${ptL} = ${sA} cm · ${apex}${ptN} = ${sN} cm · ${apex}${ptR} = ${sB} cm`;
+    if (useAltRatio) {
+      dataLabel = `${apex}${ptM} = ${sM} cm · ${apex}${ptL} = ${sA} cm · ${ptM}${ptN} = ${sN} cm · ${ptL}${ptR} = ${sB} cm`;
+    } else {
+      dataLabel = `${apex}${ptM} = ${sM} cm · ${apex}${ptL} = ${sA} cm · ${apex}${ptN} = ${sN} cm · ${apex}${ptR} = ${sB} cm`;
+    }
   } else {
     const ma = sA - sM;
     const nb = sB - sN;
@@ -107,6 +118,7 @@ function makeEx(
     isParallel,
     dataLabel,
     fig,
+    ...(altRatio !== undefined ? { altRatio } : {}),
   };
 }
 
@@ -116,7 +128,7 @@ export function generateThalesReciproqueSeries(): ThalesReciproqueExercise[] {
   const exs: ThalesReciproqueExercise[] = [
     makeEx(sets[0]!, true, 'direct'),
     makeEx(sets[1]!, true, 'complement'),
-    makeEx(sets[2]!, false, 'direct'),
+    makeEx(sets[2]!, false, 'direct', true),
     makeEx(sets[3]!, false, 'complement'),
   ];
   // Shuffle order so parallel/non-parallel exercises are mixed
