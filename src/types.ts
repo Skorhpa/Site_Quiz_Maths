@@ -327,6 +327,30 @@ export interface PropExercise extends BaseExercise {
   probDotted?: boolean;
 }
 
+export interface ThalesReciproqueExercise extends BaseExercise {
+  rtType: 'reciproque';
+  apex: string;
+  ptL: string;
+  ptR: string;
+  ptM: string;
+  ptN: string;
+  /** 'direct': SA and SB given directly. 'complement': MA and NB given, student computes SA = SM+MA. */
+  variant: 'direct' | 'complement';
+  sM: number;
+  sA: number;
+  sN: number;
+  sB: number;
+  r1n: number;
+  r1d: number;
+  r2n: number;
+  r2d: number;
+  isParallel: boolean;
+  /** Human-readable data line shown above the proof ("SM = 4 cm · SA = 8 cm …"). */
+  dataLabel: string;
+  /** Inline SVG string. */
+  fig: string;
+}
+
 export type Exercise =
   | NumberExercise
   | RoundingExercise
@@ -341,9 +365,10 @@ export type Exercise =
   | EquationExercise
   | ReciproqueExercise
   | PuissancesExercise
-  | PropExercise;
+  | PropExercise
+  | ThalesReciproqueExercise;
 
-export type RendererKind = 'number' | 'rounding' | 'literal' | 'produit' | 'arith' | 'programme' | 'pythagore' | 'thales' | 'fractions' | 'fractions-comp' | 'equation' | 'reciproque' | 'puissances' | 'prop';
+export type RendererKind = 'number' | 'rounding' | 'literal' | 'produit' | 'arith' | 'programme' | 'pythagore' | 'thales' | 'fractions' | 'fractions-comp' | 'equation' | 'reciproque' | 'puissances' | 'prop' | 'thales-reciproque';
 
 export type IntegerOp = 'add' | 'sub' | 'mul';
 
@@ -431,6 +456,11 @@ export interface PropSeriesSpec {
   kind: 'prop';
 }
 
+/** Generates a Réciproque du théorème de Thalès set (4 exercises: 2 parallel, 2 non-parallel). */
+export interface ThalesReciproqueSeriesSpec {
+  kind: 'thales-reciproque';
+}
+
 /** Shuffles the entiers-complex bank and picks 10 complex multi-operation exercises. */
 export interface EntierComplexSeriesSpec {
   kind: 'entiers-complex';
@@ -453,7 +483,8 @@ export type GeneratorSpec =
   | ReciproqueSeriesSpec
   | PuissancesSeriesSpec
   | PropSeriesSpec
-  | EntierComplexSeriesSpec;
+  | EntierComplexSeriesSpec
+  | ThalesReciproqueSeriesSpec;
 
 export interface TopicCardBase {
   id: string;

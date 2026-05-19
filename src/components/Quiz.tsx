@@ -16,6 +16,7 @@ import type {
   ReciproqueExercise,
   RoundingExercise,
   ThalesExercise,
+  ThalesReciproqueExercise,
 } from '@/types';
 import { runGenerator } from '@/lib/runGenerator';
 import { literalCheckAnswer } from '@/lib/generators/literal';
@@ -33,6 +34,7 @@ import { EquationQuestion } from './questions/EquationQuestion';
 import { ReciproqueQuestion } from './questions/ReciproqueQuestion';
 import { PuissancesQuestion } from './questions/PuissancesQuestion';
 import { PropQuestion } from './questions/PropQuestion';
+import { ThalesReciproqueQuestion } from './questions/ThalesReciproqueQuestion';
 
 interface QuizProps {
   quiz: QuizDefinition;
@@ -477,6 +479,20 @@ export default function Quiz({ quiz }: QuizProps) {
               key={`${seriesKey}-${answers[i]!.resetKey}-${i}`}
               index={i}
               exercise={ex as PuissancesExercise}
+              answer={answers[i]!}
+              onSubmit={(correct) => submit(i, correct)}
+            />
+          ))}
+        </div>
+      )}
+
+      {quiz.renderer === 'thales-reciproque' && (
+        <div className="questions-list">
+          {exercises.map((ex, i) => (
+            <ThalesReciproqueQuestion
+              key={`${seriesKey}-${answers[i]!.resetKey}-${i}`}
+              index={i}
+              exercise={ex as ThalesReciproqueExercise}
               answer={answers[i]!}
               onSubmit={(correct) => submit(i, correct)}
             />
