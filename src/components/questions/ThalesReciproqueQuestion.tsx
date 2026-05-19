@@ -450,6 +450,7 @@ export function ThalesReciproqueQuestion({ index, exercise: ex, answer, onSubmit
       {!disabled && (
         <div style={{ marginTop: 10 }}>
           <button
+            type="button"
             className="btn-primary"
             style={{ background: ACCENT, color: '#0F1117' }}
             onClick={handleValidate}

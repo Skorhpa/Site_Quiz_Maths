@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { Component, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import type {
   ArithExercise,
   PropExercise,
@@ -35,6 +35,30 @@ import { ReciproqueQuestion } from './questions/ReciproqueQuestion';
 import { PuissancesQuestion } from './questions/PuissancesQuestion';
 import { PropQuestion } from './questions/PropQuestion';
 import { ThalesReciproqueQuestion } from './questions/ThalesReciproqueQuestion';
+
+// Isolates a render crash in one exercise so the quiz controls still work.
+class ExerciseErrorBoundary extends Component<
+  { children: ReactNode },
+  { hasError: boolean }
+> {
+  constructor(props: { children: ReactNode }) {
+    super(props);
+    this.state = { hasError: false };
+  }
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ padding: '1.5rem', textAlign: 'center', color: 'var(--muted)', fontSize: 14, border: '1px solid var(--border)', borderRadius: 12 }}>
+          Une erreur s'est produite. Cliquez sur « Nouvelle série » pour relancer.
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 interface QuizProps {
   quiz: QuizDefinition;
@@ -282,6 +306,8 @@ export default function Quiz({ quiz }: QuizProps) {
         })}
       </div>
 
+      <ExerciseErrorBoundary key={seriesKey}>
+
       {quiz.renderer === 'number' && (
         <div className="er-grid">
           {exercises.map((ex, i) => (
@@ -499,6 +525,8 @@ export default function Quiz({ quiz }: QuizProps) {
           ))}
         </div>
       )}
+
+      </ExerciseErrorBoundary>
 
       {finished && (
         <div className="end-banner" ref={endRef} style={{ border: `1px solid ${quiz.accent}` }}>
