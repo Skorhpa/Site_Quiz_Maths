@@ -16,6 +16,7 @@ import { fractionsComplexQuiz } from './fractions-complex';
 import { fractionsCompQuiz } from './fractions-comp';
 import { eqQuiz } from './eq';
 import { recipQuiz } from './recip';
+import { recipThalesQuiz } from './recip-thales';
 
 
 // Order matches the original Site.html homepage card sequence.
@@ -35,19 +36,10 @@ export const topics: Topic[] = [
   produitQuiz,
   arithQuiz,
   recipQuiz,
+  recipThalesQuiz,
   scientifiqueQuiz,
   proportionnaliteQuiz,
   // ── À venir ────────────────────────────────────────────────────────────
-  {
-    id: 'recip-thales',
-    title: 'Réciproque du théorème de Thalès',
-    category: 'Géométrie',
-    accent: '#FB923C',
-    icon: '⟺',
-    description: 'Appliquer la réciproque du théorème de Thalès pour démontrer des propriétés.',
-    tags: ['À venir'],
-    available: false,
-  },
   {
     id: 'probabilites',
     title: 'Probabilités',
