@@ -398,7 +398,7 @@ const MODES: { id: HubMode; label: string; icon: string; desc: string; href?: st
     id: 'signes',
     label: 'Étude de signes',
     icon: '×',
-    desc: '5 exercices · signe d'un produit ou d'un quotient de nombres relatifs',
+    desc: "5 exercices · signe d'un produit ou d'un quotient de nombres relatifs",
   },
 ];
 
