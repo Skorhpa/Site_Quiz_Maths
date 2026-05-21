@@ -158,7 +158,15 @@ export interface PythagoreCompleterExercise extends BaseExercise {
   ans: number;
 }
 
-export type PythagoreExercise = PythagoreRegularExercise | PythagoreCompleterExercise;
+export interface PythagoreDragDropExercise extends BaseExercise {
+  pythType: 'dragdrop';
+  text: string;
+  figure: string;
+  steps: string[];
+  shuffled: string[];
+}
+
+export type PythagoreExercise = PythagoreRegularExercise | PythagoreCompleterExercise | PythagoreDragDropExercise;
 
 export interface ThalesCompleterConfig {
   letters: { apex: string; bl: string; br: string; ml: string; mr: string };
@@ -413,7 +421,7 @@ export interface ProgrammeSeriesSpec {
   kind: 'programme';
 }
 
-/** Generates the Pythagore 7-question set (3 with figure + 3 calculs + 1 completer). */
+/** Generates the Pythagore 8-question set (3 with figure + 3 calculs + 1 drag-drop + 1 completer). */
 export interface PythagoreSeriesSpec {
   kind: 'pythagore';
 }
