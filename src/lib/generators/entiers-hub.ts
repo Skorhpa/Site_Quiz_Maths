@@ -187,7 +187,7 @@ export { generateEntierComplexSeries as generateComplexSeries };
 
 // ── Mode 4: Étude de signes ──────────────────────────────────────────────────
 
-const SIGNE_BANK: EntiersSigneExercise[] = [
+const EASY_SIGNE_BANK: EntiersSigneExercise[] = [
   {
     type: 'mul', exKind: 'signe',
     exprHtml: '(−3) × 4',
@@ -248,8 +248,97 @@ const SIGNE_BANK: EntiersSigneExercise[] = [
     isPositive: false,
     steps: `<strong>Signes opposés</strong> : (−) ÷ (+) → résultat <span style="color:var(--wrong);font-weight:700">négatif</span>.<br>(−15) ÷ 5 = −3`,
   },
+  {
+    type: 'mul', exKind: 'signe',
+    exprHtml: '(−6) × (−1)',
+    isPositive: true,
+    steps: `<strong>Mêmes signes</strong> : (−) × (−) → résultat <span style="color:var(--correct);font-weight:700">positif</span>.<br>(−6) × (−1) = +6`,
+  },
+  {
+    type: 'div', exKind: 'signe',
+    exprHtml: fr('18', '−3'),
+    isPositive: false,
+    steps: `<strong>Signes opposés</strong> : (+) ÷ (−) → résultat <span style="color:var(--wrong);font-weight:700">négatif</span>.<br>18 ÷ (−3) = −6`,
+  },
+];
+
+const HARD_SIGNE_BANK: EntiersSigneExercise[] = [
+  {
+    type: 'mul', exKind: 'signe',
+    exprHtml: '(−2) × 3 × (−4) × 5 × (−1)',
+    isPositive: false,
+    steps: `<strong>Compter les facteurs négatifs</strong> : 3 facteurs négatifs → nombre <em>impair</em> → résultat <span style="color:var(--wrong);font-weight:700">négatif</span>.<br>(−2) × 3 × (−4) × 5 × (−1) = −120`,
+  },
+  {
+    type: 'mul', exKind: 'signe',
+    exprHtml: '(−1) × (−2) × (−3) × (−4) × 5',
+    isPositive: true,
+    steps: `<strong>Compter les facteurs négatifs</strong> : 4 facteurs négatifs → nombre <em>pair</em> → résultat <span style="color:var(--correct);font-weight:700">positif</span>.<br>(−1) × (−2) × (−3) × (−4) × 5 = +120`,
+  },
+  {
+    type: 'mul', exKind: 'signe',
+    exprHtml: '2 × (−3) × 4 × (−5) × (−6)',
+    isPositive: false,
+    steps: `<strong>Compter les facteurs négatifs</strong> : 3 facteurs négatifs → nombre <em>impair</em> → résultat <span style="color:var(--wrong);font-weight:700">négatif</span>.<br>2 × (−3) × 4 × (−5) × (−6) = −720`,
+  },
+  {
+    type: 'mul', exKind: 'signe',
+    exprHtml: '(−1) × (−2) × (−3) × (−4) × (−5)',
+    isPositive: false,
+    steps: `<strong>Compter les facteurs négatifs</strong> : 5 facteurs négatifs → nombre <em>impair</em> → résultat <span style="color:var(--wrong);font-weight:700">négatif</span>.<br>(−1) × (−2) × (−3) × (−4) × (−5) = −120`,
+  },
+  {
+    type: 'mul', exKind: 'signe',
+    exprHtml: '(−2) × (−3) × (−4) × (−5) × 6',
+    isPositive: true,
+    steps: `<strong>Compter les facteurs négatifs</strong> : 4 facteurs négatifs → nombre <em>pair</em> → résultat <span style="color:var(--correct);font-weight:700">positif</span>.<br>(−2) × (−3) × (−4) × (−5) × 6 = +720`,
+  },
+  {
+    type: 'mul', exKind: 'signe',
+    exprHtml: '(−1) × 2 × (−3) × 4 × (−5) × 6',
+    isPositive: false,
+    steps: `<strong>Compter les facteurs négatifs</strong> : 3 facteurs négatifs → nombre <em>impair</em> → résultat <span style="color:var(--wrong);font-weight:700">négatif</span>.<br>(−1) × 2 × (−3) × 4 × (−5) × 6 = −720`,
+  },
+  {
+    type: 'mul', exKind: 'signe',
+    exprHtml: '(−2) × (−3) × (−4) × (−5) × 6 × 7',
+    isPositive: true,
+    steps: `<strong>Compter les facteurs négatifs</strong> : 4 facteurs négatifs → nombre <em>pair</em> → résultat <span style="color:var(--correct);font-weight:700">positif</span>.<br>(−2) × (−3) × (−4) × (−5) × 6 × 7 = +2520`,
+  },
+  {
+    type: 'mul', exKind: 'signe',
+    exprHtml: '2 × (−3) × 4 × (−5) × 6 × (−7)',
+    isPositive: false,
+    steps: `<strong>Compter les facteurs négatifs</strong> : 3 facteurs négatifs → nombre <em>impair</em> → résultat <span style="color:var(--wrong);font-weight:700">négatif</span>.<br>2 × (−3) × 4 × (−5) × 6 × (−7) = −2520`,
+  },
+  {
+    type: 'mul', exKind: 'signe',
+    exprHtml: '(−1) × (−2) × (−3) × 4 × 5 × (−6)',
+    isPositive: true,
+    steps: `<strong>Compter les facteurs négatifs</strong> : 4 facteurs négatifs → nombre <em>pair</em> → résultat <span style="color:var(--correct);font-weight:700">positif</span>.<br>(−1) × (−2) × (−3) × 4 × 5 × (−6) = +720`,
+  },
+  {
+    type: 'mul', exKind: 'signe',
+    exprHtml: '3 × (−2) × (−1) × 4 × (−5) × (−6) × 7',
+    isPositive: true,
+    steps: `<strong>Compter les facteurs négatifs</strong> : 4 facteurs négatifs → nombre <em>pair</em> → résultat <span style="color:var(--correct);font-weight:700">positif</span>.<br>3 × (−2) × (−1) × 4 × (−5) × (−6) × 7 = +5040`,
+  },
+  {
+    type: 'mul', exKind: 'signe',
+    exprHtml: '(−1) × 2 × (−3) × (−4) × 5 × 6 × (−7)',
+    isPositive: true,
+    steps: `<strong>Compter les facteurs négatifs</strong> : 4 facteurs négatifs → nombre <em>pair</em> → résultat <span style="color:var(--correct);font-weight:700">positif</span>.<br>(−1) × 2 × (−3) × (−4) × 5 × 6 × (−7) = +2520`,
+  },
+  {
+    type: 'mul', exKind: 'signe',
+    exprHtml: '(−2) × 3 × (−4) × 5 × 6 × (−7) × (−8)',
+    isPositive: true,
+    steps: `<strong>Compter les facteurs négatifs</strong> : 4 facteurs négatifs → nombre <em>pair</em> → résultat <span style="color:var(--correct);font-weight:700">positif</span>.<br>(−2) × 3 × (−4) × 5 × 6 × (−7) × (−8) = +40320`,
+  },
 ];
 
 export function generateSigneSeries(): EntiersSigneExercise[] {
-  return shuf(SIGNE_BANK).slice(0, 5);
+  const easy = shuf(EASY_SIGNE_BANK).slice(0, 5);
+  const hard = shuf(HARD_SIGNE_BANK).slice(0, 5);
+  return [...easy, ...hard];
 }
