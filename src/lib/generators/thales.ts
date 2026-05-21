@@ -276,6 +276,13 @@ function genCompleter(cfg: ThalesCompleterConfig, shape: Shape): ThalesCompleter
   };
 }
 
+const fr = (n: string, d: string) =>
+  `<span style="display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 2px;line-height:1.15;">` +
+  `<span>${n}</span>` +
+  `<span style="width:100%;border-top:1.5px solid currentColor;display:block;margin:1px 0;"></span>` +
+  `<span>${d}</span>` +
+  `</span>`;
+
 interface DragDropConfig {
   text: string;
   figure: string;
@@ -288,8 +295,8 @@ const THALES_DD_CONFIGS: DragDropConfig[] = [
     figure: thalesSVG(1 / 3, SHAPES[0]!, { apex: 'S', bl: 'A', br: 'B', ml: 'M', mr: 'N' }),
     steps: [
       'Dans le triangle SAB, M ∈ [SA] et N ∈ [SB] et (MN) ∥ (AB).',
-      "D'après le théorème de Thalès : SM/SA = MN/AB",
-      'soit 3/9 = MN/12',
+      `D'après le théorème de Thalès : ${fr('SM','SA')} = ${fr('MN','AB')}`,
+      `soit ${fr('3','9')} = ${fr('MN','12')}`,
       'MN = 3 × 12 ÷ 9',
       'MN = 4 cm',
     ],
@@ -299,8 +306,8 @@ const THALES_DD_CONFIGS: DragDropConfig[] = [
     figure: thalesSVG(2 / 5, SHAPES[1]!, { apex: 'O', bl: 'P', br: 'Q', ml: 'E', mr: 'F' }),
     steps: [
       'Dans le triangle OPQ, E ∈ [OP] et F ∈ [OQ] et (EF) ∥ (PQ).',
-      "D'après le théorème de Thalès : OE/OP = EF/PQ",
-      'soit 4/10 = 6/PQ',
+      `D'après le théorème de Thalès : ${fr('OE','OP')} = ${fr('EF','PQ')}`,
+      `soit ${fr('4','10')} = ${fr('6','PQ')}`,
       'PQ = 6 × 10 ÷ 4',
       'PQ = 15 cm',
     ],
@@ -310,8 +317,8 @@ const THALES_DD_CONFIGS: DragDropConfig[] = [
     figure: thalesSVG(1 / 2, SHAPES[2]!, { apex: 'P', bl: 'B', br: 'C', ml: 'M', mr: 'N' }),
     steps: [
       'Dans le triangle PBC, M ∈ [PB] et N ∈ [PC] et (MN) ∥ (BC).',
-      "D'après le théorème de Thalès : PM/PB = MN/BC",
-      'soit PM/10 = 4/8',
+      `D'après le théorème de Thalès : ${fr('PM','PB')} = ${fr('MN','BC')}`,
+      `soit ${fr('PM','10')} = ${fr('4','8')}`,
       'PM = 4 × 10 ÷ 8',
       'PM = 5 cm',
     ],
