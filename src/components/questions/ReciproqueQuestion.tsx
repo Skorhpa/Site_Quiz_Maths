@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import type { ReciproqueDemoExercise, ReciproqueExercise, ReciproqueTableExercise } from '@/types';
+import { useRef, useState } from 'react';
+import type { ReciproqueDemoExercise, ReciproqueDragDropExercise, ReciproqueExercise, ReciproqueTableExercise } from '@/types';
 
 interface AnswerState {
   value: string;
@@ -28,7 +28,168 @@ export function ReciproqueQuestion(props: Props) {
   if (props.exercise.rpType === 'table') {
     return <ReciproqueTable {...props} exercise={props.exercise} />;
   }
+  if (props.exercise.rpType === 'dragdrop') {
+    return <ReciproqueDragDrop {...props} exercise={props.exercise} />;
+  }
   return <ReciproqueDemo {...props} exercise={props.exercise} />;
+}
+
+type DragSrc =
+  | { from: 'pool'; text: string }
+  | { from: 'slot'; idx: number; text: string };
+
+function ReciproqueDragDrop({ index, exercise, answer, onSubmit }: Props & { exercise: ReciproqueDragDropExercise }) {
+  const [placed, setPlaced] = useState<(string | null)[]>(() => Array(exercise.steps.length).fill(null));
+  const [pool, setPool] = useState<string[]>(() => [...exercise.shuffled]);
+  const [hintOpen, setHintOpen] = useState(false);
+  const [feedback, setFeedback] = useState<{ text: string; cls: string }>({ text: '', cls: 'feedback' });
+  const dragSrc = useRef<DragSrc | null>(null);
+  const disabled = answer.status !== 'pending';
+
+  const dropToSlot = (toIdx: number) => {
+    if (!dragSrc.current || disabled) return;
+    const src = dragSrc.current;
+    dragSrc.current = null;
+    if (src.from === 'pool') {
+      const existing = placed[toIdx];
+      setPool((p) => {
+        const filtered = p.filter((s) => s !== src.text);
+        return existing !== null ? [...filtered, existing] : filtered;
+      });
+      setPlaced((prev) => {
+        const next = [...prev];
+        next[toIdx] = src.text;
+        return next;
+      });
+    } else {
+      setPlaced((prev) => {
+        const next = [...prev];
+        const existing = next[toIdx];
+        next[src.idx] = existing;
+        next[toIdx] = src.text;
+        return next;
+      });
+    }
+  };
+
+  const dropToPool = () => {
+    if (!dragSrc.current || disabled) return;
+    const src = dragSrc.current;
+    dragSrc.current = null;
+    if (src.from === 'slot') {
+      setPool((p) => [...p, src.text]);
+      setPlaced((prev) => {
+        const next = [...prev];
+        next[src.idx] = null;
+        return next;
+      });
+    }
+  };
+
+  const handleVerify = () => {
+    if (disabled) return;
+    if (placed.some((p) => p === null)) {
+      setFeedback({ text: '✗ Place toutes les étapes avant de vérifier.', cls: 'feedback ko' });
+      return;
+    }
+    const ok = placed.every((p, i) => p === exercise.steps[i]);
+    setFeedback({
+      text: ok ? '✓ Parfait ! Les étapes sont dans le bon ordre.' : "✗ L'ordre n'est pas correct.",
+      cls: ok ? 'feedback ok' : 'feedback ko',
+    });
+    onSubmit(ok);
+  };
+
+  const finalFb = answer.status === 'revealed'
+    ? { text: "Voici l'ordre correct ci-dessous.", cls: 'feedback ko' }
+    : feedback;
+
+  return (
+    <div className={`qcard ${CARD_CLASS[answer.status]}`} style={{ borderLeft: `3px solid ${ACCENT}` }}>
+      <div className="qcard-header">
+        <span className="qnum">Q{String(index + 1).padStart(2, '0')}</span>
+        <div className="qtext" dangerouslySetInnerHTML={{ __html: exercise.text }} />
+      </div>
+      <div className="qbody" style={{ alignItems: 'flex-start', gap: '1.5rem', flexWrap: 'wrap' }}>
+        <div dangerouslySetInnerHTML={{ __html: exercise.figure }} />
+        <div style={{ flex: 1, minWidth: 260 }}>
+          {!disabled && (
+            <>
+              <p style={{ fontSize: 12, color: 'var(--muted)', marginBottom: 8 }}>Étapes à placer :</p>
+              <div className="drag-pool" onDragOver={(e) => e.preventDefault()} onDrop={dropToPool}>
+                {pool.length === 0 ? (
+                  <span style={{ fontSize: 12, color: 'var(--muted)', fontStyle: 'italic' }}>
+                    Glisse une étape ici pour la retirer.
+                  </span>
+                ) : (
+                  pool.map((step) => (
+                    <div
+                      key={step}
+                      className="drag-item"
+                      draggable
+                      onDragStart={() => { dragSrc.current = { from: 'pool', text: step }; }}
+                    >
+                      {step}
+                    </div>
+                  ))
+                )}
+              </div>
+              <p style={{ fontSize: 12, color: 'var(--muted)', margin: '12px 0 8px' }}>
+                Remets les étapes dans l'ordre :
+              </p>
+            </>
+          )}
+          {disabled && (
+            <p style={{ fontSize: 12, color: 'var(--muted)', marginBottom: 8 }}>Ordre correct :</p>
+          )}
+          <div className="drag-slots">
+            {exercise.steps.map((correctStep, i) => {
+              const content = disabled ? correctStep : placed[i];
+              return (
+                <div
+                  key={i}
+                  className="drag-slot"
+                  onDragOver={(e) => { if (!disabled) e.preventDefault(); }}
+                  onDrop={() => { if (!disabled) dropToSlot(i); }}
+                >
+                  <span className="drag-slot-num">{i + 1}.</span>
+                  {content != null ? (
+                    <div
+                      className="drag-item drag-slot-item"
+                      draggable={!disabled}
+                      onDragStart={!disabled ? () => { dragSrc.current = { from: 'slot', idx: i, text: content }; } : undefined}
+                    >
+                      {content}
+                    </div>
+                  ) : (
+                    <span className="drag-slot-empty">Glisse une étape ici…</span>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+      <div style={{ marginTop: 12 }}>
+        <button type="button" className="hint-toggle" onClick={() => setHintOpen((v) => !v)} style={{ color: ACCENT }}>
+          <span>{hintOpen ? '▼' : '▶'}</span> Voir la correction
+        </button>
+        <div className={`steps-box${hintOpen ? ' open' : ''}`}>
+          {exercise.steps.map((step, i) => (
+            <div key={i}>
+              <span className="step-eq">{i + 1}. {step}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div style={{ display: 'flex', gap: 8, marginTop: 12, alignItems: 'center' }}>
+        <button type="button" className="btn-primary" disabled={disabled} onClick={handleVerify} style={{ background: ACCENT }}>
+          Vérifier
+        </button>
+        <div className={finalFb.cls}>{finalFb.text}</div>
+      </div>
+    </div>
+  );
 }
 
 function ReciproqueTable({ index, exercise, answer, onSubmit }: Props & { exercise: ReciproqueTableExercise }) {

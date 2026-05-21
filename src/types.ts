@@ -203,7 +203,15 @@ export interface ThalesCompleterExercise extends BaseExercise {
   cfg: ThalesCompleterConfig;
 }
 
-export type ThalesExercise = ThalesCalcExercise | ThalesCompleterExercise;
+export interface ThalesDragDropExercise extends BaseExercise {
+  thType: 'dragdrop';
+  text: string;
+  figure: string;
+  steps: string[];
+  shuffled: string[];
+}
+
+export type ThalesExercise = ThalesCalcExercise | ThalesCompleterExercise | ThalesDragDropExercise;
 
 export type FractionOp = 'add' | 'sub' | 'mul' | 'div';
 
@@ -248,7 +256,15 @@ export interface ReciproqueDemoExercise extends BaseExercise {
   label: string;
 }
 
-export type ReciproqueExercise = ReciproqueTableExercise | ReciproqueDemoExercise;
+export interface ReciproqueDragDropExercise extends BaseExercise {
+  rpType: 'dragdrop';
+  text: string;
+  figure: string;
+  steps: string[];
+  shuffled: string[];
+}
+
+export type ReciproqueExercise = ReciproqueTableExercise | ReciproqueDemoExercise | ReciproqueDragDropExercise;
 
 export type EqType = 't1' | 't2' | 't3' | 't4';
 
@@ -335,7 +351,7 @@ export interface PropExercise extends BaseExercise {
   probDotted?: boolean;
 }
 
-export interface ThalesReciproqueExercise extends BaseExercise {
+export interface ThalesReciproqueProofExercise extends BaseExercise {
   rtType: 'reciproque';
   apex: string;
   ptL: string;
@@ -360,6 +376,16 @@ export interface ThalesReciproqueExercise extends BaseExercise {
   /** When set, D'autre part uses MN/AB instead of SN/SB. */
   altRatio?: { mn: number; ab: number };
 }
+
+export interface ThalesRecipDragDropExercise extends BaseExercise {
+  rtType: 'dragdrop';
+  text: string;
+  figure: string;
+  steps: string[];
+  shuffled: string[];
+}
+
+export type ThalesReciproqueExercise = ThalesReciproqueProofExercise | ThalesRecipDragDropExercise;
 
 export type Exercise =
   | NumberExercise
