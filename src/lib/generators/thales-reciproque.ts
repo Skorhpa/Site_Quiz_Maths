@@ -122,6 +122,13 @@ function makeEx(
   };
 }
 
+const fr = (n: string, d: string) =>
+  `<span style="display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 2px;line-height:1.15;">` +
+  `<span>${n}</span>` +
+  `<span style="width:100%;border-top:1.5px solid currentColor;display:block;margin:1px 0;"></span>` +
+  `<span>${d}</span>` +
+  `</span>`;
+
 interface RecipDDConfig {
   text: string;
   figure: string;
@@ -143,9 +150,9 @@ const RECIP_DD_CONFIGS: RecipDDConfig[] = [
     figure: makeFig('S', 'A', 'B', 'M', 'N', 1 / 3, 1 / 3),
     steps: [
       'Dans le triangle SAB, M ∈ [SA] et N ∈ [SB].',
-      "D'une part : SM/SA = 2/6 = 1/3",
-      "D'autre part : SN/SB = 3/9 = 1/3",
-      'Donc SM/SA = SN/SB',
+      `D'une part : ${fr('SM','SA')} = ${fr('2','6')} = ${fr('1','3')}`,
+      `D'autre part : ${fr('SN','SB')} = ${fr('3','9')} = ${fr('1','3')}`,
+      `Donc ${fr('SM','SA')} = ${fr('SN','SB')}`,
       "D'après la réciproque du théorème de Thalès, (MN) ∥ (AB).",
     ],
   },
@@ -154,9 +161,9 @@ const RECIP_DD_CONFIGS: RecipDDConfig[] = [
     figure: makeFig('S', 'A', 'B', 'M', 'N', 1 / 3, 4 / 9),
     steps: [
       'Dans le triangle SAB, M ∈ [SA] et N ∈ [SB].',
-      "D'une part : SM/SA = 2/6 = 1/3",
-      "D'autre part : SN/SB = 4/9",
-      'Donc SM/SA ≠ SN/SB',
+      `D'une part : ${fr('SM','SA')} = ${fr('2','6')} = ${fr('1','3')}`,
+      `D'autre part : ${fr('SN','SB')} = ${fr('4','9')}`,
+      `Donc ${fr('SM','SA')} ≠ ${fr('SN','SB')}`,
       "D'après la contraposée du théorème de Thalès, (MN) et (AB) ne sont pas parallèles.",
     ],
   },

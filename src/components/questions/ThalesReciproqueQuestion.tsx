@@ -279,9 +279,8 @@ function ThalesRecipDragDrop({ index, exercise, answer, onSubmit }: Props & { ex
                       className="drag-item"
                       draggable
                       onDragStart={() => { dragSrc.current = { from: 'pool', text: step }; }}
-                    >
-                      {step}
-                    </div>
+                      dangerouslySetInnerHTML={{ __html: step }}
+                    />
                   ))
                 )}
               </div>
@@ -309,9 +308,8 @@ function ThalesRecipDragDrop({ index, exercise, answer, onSubmit }: Props & { ex
                       className="drag-item drag-slot-item"
                       draggable={!disabled}
                       onDragStart={!disabled ? () => { dragSrc.current = { from: 'slot', idx: i, text: content }; } : undefined}
-                    >
-                      {content}
-                    </div>
+                      dangerouslySetInnerHTML={{ __html: content }}
+                    />
                   ) : (
                     <span className="drag-slot-empty">Glisse une étape ici…</span>
                   )}
@@ -328,7 +326,7 @@ function ThalesRecipDragDrop({ index, exercise, answer, onSubmit }: Props & { ex
         <div className={`steps-box${hintOpen ? ' open' : ''}`}>
           {exercise.steps.map((step, i) => (
             <div key={i}>
-              <span className="step-eq">{i + 1}. {step}</span>
+              <span className="step-eq" dangerouslySetInnerHTML={{ __html: `${i + 1}. ${step}` }} />
             </div>
           ))}
         </div>
