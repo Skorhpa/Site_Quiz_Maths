@@ -1,4 +1,4 @@
-import type { ReciproqueDemoExercise, ReciproqueExercise, ReciproqueTableExercise } from '@/types';
+import type { ReciproqueDemoExercise, ReciproqueDragDropExercise, ReciproqueExercise, ReciproqueTableExercise } from '@/types';
 
 const RP_TRIPLES: [number, number, number][] = [
   [3, 4, 5], [5, 12, 13], [8, 15, 17], [7, 24, 25], [20, 21, 29],
@@ -130,6 +130,66 @@ function makeNonRect(): ReciproqueDemoExercise {
   };
 }
 
+interface RPDDConfig {
+  text: string;
+  figure: string;
+  steps: string[];
+}
+
+const RP_DD_CONFIGS: RPDDConfig[] = [
+  {
+    text: "Remets les étapes dans le bon ordre pour démontrer que le triangle <strong>PQR est rectangle en P</strong>.",
+    figure: `<svg width="195" height="125" viewBox="0 0 195 125" fill="none" style="display:block;margin:8px 0;">
+    <polygon points="10,110 10,15 185,110" fill="rgba(167,139,250,0.07)" stroke="var(--crp)" stroke-width="1.5"/>
+    <rect x="10" y="96" width="14" height="14" fill="none" stroke="var(--crp)" stroke-width="1.2"/>
+    <text x="3" y="12" fill="#F0EDE8" font-family="DM Mono,monospace" font-size="13" font-weight="bold">Q</text>
+    <text x="0" y="122" fill="#A0A8B8" font-family="DM Mono,monospace" font-size="13" font-weight="bold">P</text>
+    <text x="181" y="122" fill="#A0A8B8" font-family="DM Mono,monospace" font-size="13" font-weight="bold">R</text>
+    <text x="2" y="65" fill="#A0A8B8" font-family="DM Mono,monospace" font-size="11">3 m</text>
+    <text x="90" y="122" fill="#A0A8B8" font-family="DM Mono,monospace" font-size="11">4 m</text>
+    <text x="102" y="58" fill="var(--crp)" font-family="DM Mono,monospace" font-size="11">5 m</text>
+  </svg>`,
+    steps: [
+      "[QR] est l'hypoténuse supposée car 5 est le plus grand des 3 côtés.",
+      "QR² = 5² = 25",
+      "PQ² + PR² = 3² + 4² = 9 + 16 = 25",
+      "QR² = PQ² + PR²",
+      "D'après la réciproque du théorème de Pythagore, le triangle PQR est rectangle en P.",
+    ],
+  },
+  {
+    text: "Remets les étapes dans le bon ordre pour démontrer que le triangle <strong>EFG n'est pas rectangle</strong>.",
+    figure: `<svg width="195" height="125" viewBox="0 0 195 125" fill="none" style="display:block;margin:8px 0;">
+    <polygon points="10,110 30,10 185,110" fill="rgba(167,139,250,0.07)" stroke="var(--crp)" stroke-width="1.5"/>
+    <text x="25" y="8" fill="#F0EDE8" font-family="DM Mono,monospace" font-size="13" font-weight="bold">F</text>
+    <text x="0" y="122" fill="#A0A8B8" font-family="DM Mono,monospace" font-size="13" font-weight="bold">E</text>
+    <text x="181" y="122" fill="#A0A8B8" font-family="DM Mono,monospace" font-size="13" font-weight="bold">G</text>
+    <text x="4" y="63" fill="#A0A8B8" font-family="DM Mono,monospace" font-size="11">5 m</text>
+    <text x="90" y="122" fill="#A0A8B8" font-family="DM Mono,monospace" font-size="11">7 m</text>
+    <text x="110" y="52" fill="var(--crp)" font-family="DM Mono,monospace" font-size="11">9 m</text>
+  </svg>`,
+    steps: [
+      "[FG] est l'hypoténuse supposée car 9 est le plus grand des 3 côtés.",
+      "FG² = 9² = 81",
+      "EF² + EG² = 5² + 7² = 25 + 49 = 74",
+      "FG² ≠ EF² + EG²",
+      "D'après la contraposée du théorème de Pythagore, le triangle EFG n'est pas rectangle.",
+    ],
+  },
+];
+
+function makeRecipDragDrop(): ReciproqueDragDropExercise {
+  const cfg = RP_DD_CONFIGS[Math.floor(Math.random() * RP_DD_CONFIGS.length)]!;
+  return {
+    type: 'default',
+    rpType: 'dragdrop',
+    text: cfg.text,
+    figure: cfg.figure,
+    steps: cfg.steps,
+    shuffled: shuffle([...cfg.steps]),
+  };
+}
+
 export function generateReciproqueSeries(): ReciproqueExercise[] {
-  return [makeTable(), makeRect(), makeNonRect()];
+  return [makeTable(), makeRecipDragDrop(), makeRect(), makeNonRect()];
 }

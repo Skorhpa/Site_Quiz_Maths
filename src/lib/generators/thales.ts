@@ -1,4 +1,4 @@
-import type { ThalesCalcExercise, ThalesCompleterConfig, ThalesCompleterExercise, ThalesExercise } from '@/types';
+import type { ThalesCalcExercise, ThalesCompleterConfig, ThalesCompleterExercise, ThalesDragDropExercise, ThalesExercise } from '@/types';
 
 const isWhole = (x: number) => Math.abs(x - Math.round(x)) < 0.001;
 const fmt = (x: number) => (isWhole(x) ? Math.round(x) : Math.round(x * 10) / 10);
@@ -276,6 +276,61 @@ function genCompleter(cfg: ThalesCompleterConfig, shape: Shape): ThalesCompleter
   };
 }
 
+interface DragDropConfig {
+  text: string;
+  figure: string;
+  steps: string[];
+}
+
+const THALES_DD_CONFIGS: DragDropConfig[] = [
+  {
+    text: 'Remets les étapes dans le bon ordre pour trouver <strong>MN</strong>.',
+    figure: thalesSVG(1 / 3, SHAPES[0]!, { apex: 'S', bl: 'A', br: 'B', ml: 'M', mr: 'N' }),
+    steps: [
+      "(MN) ∥ (AB), donc d'après le théorème de Thalès dans le triangle SAB :",
+      'SM/SA = MN/AB',
+      '3/9 = MN/12',
+      'MN = 3 × 12 ÷ 9',
+      'MN = 4 cm',
+    ],
+  },
+  {
+    text: 'Remets les étapes dans le bon ordre pour trouver <strong>PQ</strong>.',
+    figure: thalesSVG(2 / 5, SHAPES[1]!, { apex: 'O', bl: 'P', br: 'Q', ml: 'E', mr: 'F' }),
+    steps: [
+      "(EF) ∥ (PQ), donc d'après le théorème de Thalès dans le triangle OPQ :",
+      'OE/OP = EF/PQ',
+      '4/10 = 6/PQ',
+      'PQ = 6 × 10 ÷ 4',
+      'PQ = 15 cm',
+    ],
+  },
+  {
+    text: 'Remets les étapes dans le bon ordre pour trouver <strong>PM</strong>.',
+    figure: thalesSVG(1 / 2, SHAPES[2]!, { apex: 'P', bl: 'B', br: 'C', ml: 'M', mr: 'N' }),
+    steps: [
+      "(MN) ∥ (BC), donc d'après le théorème de Thalès dans le triangle PBC :",
+      'PM/PB = MN/BC',
+      'PM/10 = 4/8',
+      'PM = 4 × 10 ÷ 8',
+      'PM = 5 cm',
+    ],
+  },
+];
+
+function makeDragDrop(): ThalesDragDropExercise {
+  const cfg = THALES_DD_CONFIGS[Math.floor(Math.random() * THALES_DD_CONFIGS.length)]!;
+  const shuffled = shuf([...cfg.steps]);
+  return {
+    type: 'default',
+    thType: 'dragdrop',
+    text: cfg.text,
+    figure: cfg.figure,
+    steps: cfg.steps,
+    shuffled,
+  };
+}
+
 const shuf = <T>(arr: T[]): T[] => {
   const a = [...arr];
   for (let i = a.length - 1; i > 0; i--) {
@@ -295,5 +350,5 @@ export function generateThalesSeries(): ThalesExercise[] {
     genCompleter(cPool[0]!, shapes[4 % shapes.length]!),
     genCompleter(cPool[1]!, shapes[5 % shapes.length]!),
   ];
-  return [...calcQs, ...completerQs];
+  return [...calcQs, makeDragDrop(), ...completerQs];
 }

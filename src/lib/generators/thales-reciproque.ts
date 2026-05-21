@@ -1,4 +1,4 @@
-import type { ThalesReciproqueExercise } from '@/types';
+import type { ThalesRecipDragDropExercise, ThalesReciproqueExercise, ThalesReciproqueProofExercise } from '@/types';
 
 const ri = (a: number, b: number) => Math.floor(Math.random() * (b - a + 1)) + a;
 
@@ -64,7 +64,7 @@ function makeEx(
   isParallel: boolean,
   variant: 'direct' | 'complement',
   useAltRatio = false,
-): ThalesReciproqueExercise {
+): ThalesReciproqueProofExercise {
   const { apex, ptL, ptR, ptM, ptN } = letters;
 
   const ratio1 = pickRatio();
@@ -122,15 +122,67 @@ function makeEx(
   };
 }
 
+interface RecipDDConfig {
+  text: string;
+  figure: string;
+  steps: string[];
+}
+
+const shuf = <T>(arr: T[]): T[] => {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j]!, a[i]!];
+  }
+  return a;
+};
+
+const RECIP_DD_CONFIGS: RecipDDConfig[] = [
+  {
+    text: 'Remets les étapes dans le bon ordre pour montrer que <strong>(MN) ∥ (AB)</strong>.',
+    figure: makeFig('S', 'A', 'B', 'M', 'N', 1 / 3, 1 / 3),
+    steps: [
+      'Dans le triangle SAB, M ∈ [SA] et N ∈ [SB].',
+      "D'une part : SM/SA = 2/6 = 1/3",
+      "D'autre part : SN/SB = 3/9 = 1/3",
+      'Donc SM/SA = SN/SB',
+      "D'après la réciproque du théorème de Thalès, (MN) ∥ (AB).",
+    ],
+  },
+  {
+    text: 'Remets les étapes dans le bon ordre pour montrer que <strong>(MN)</strong> et <strong>(AB)</strong> ne sont pas parallèles.',
+    figure: makeFig('S', 'A', 'B', 'M', 'N', 1 / 3, 4 / 9),
+    steps: [
+      'Dans le triangle SAB, M ∈ [SA] et N ∈ [SB].',
+      "D'une part : SM/SA = 2/6 = 1/3",
+      "D'autre part : SN/SB = 4/9",
+      'Donc SM/SA ≠ SN/SB',
+      "D'après la contraposée du théorème de Thalès, (MN) et (AB) ne sont pas parallèles.",
+    ],
+  },
+];
+
+function makeRecipDragDrop(): ThalesRecipDragDropExercise {
+  const cfg = RECIP_DD_CONFIGS[Math.floor(Math.random() * RECIP_DD_CONFIGS.length)]!;
+  return {
+    type: 'default',
+    rtType: 'dragdrop',
+    text: cfg.text,
+    figure: cfg.figure,
+    steps: cfg.steps,
+    shuffled: shuf([...cfg.steps]),
+  };
+}
+
 export function generateThalesReciproqueSeries(): ThalesReciproqueExercise[] {
   // Shuffle letter sets, pick 4
   const sets = [...LETTER_SETS].sort(() => Math.random() - 0.5).slice(0, 4);
-  const exs: ThalesReciproqueExercise[] = [
+  const proofExs: ThalesReciproqueProofExercise[] = [
     makeEx(sets[0]!, true, 'direct'),
     makeEx(sets[1]!, true, 'complement'),
     makeEx(sets[2]!, false, 'direct', true),
     makeEx(sets[3]!, false, 'complement'),
   ];
   // Shuffle order so parallel/non-parallel exercises are mixed
-  return exs.sort(() => Math.random() - 0.5);
+  return [makeRecipDragDrop(), ...proofExs.sort(() => Math.random() - 0.5)];
 }
