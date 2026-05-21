@@ -479,7 +479,17 @@ export function EntiersHub({ accent, accentSecondary }: { accent: string; accent
   };
 
   const submit = (i: number, correct?: boolean, wrongParens?: boolean) => {
-    if (correct === undefined || answers[i]?.status !== 'pending') return;
+    const ans = answers[i];
+    if (!ans || ans.status !== 'pending') return;
+    if (correct === undefined) {
+      // NumberExercise: check the answer from the typed value
+      if (ans.value.trim() === '') return;
+      const num = Number(ans.value.trim().replace(',', '.'));
+      const ex = exercises[i] as NumberExercise;
+      const ok = !Number.isNaN(num) && num === ex.ans;
+      updateAnswer(i, { status: ok ? 'correct' : 'wrong', wrongParens: false });
+      return;
+    }
     updateAnswer(i, { status: correct ? 'correct' : 'wrong', wrongParens: wrongParens ?? false });
   };
 
