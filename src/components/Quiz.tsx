@@ -35,6 +35,7 @@ import { ReciproqueQuestion } from './questions/ReciproqueQuestion';
 import { PuissancesQuestion } from './questions/PuissancesQuestion';
 import { PropQuestion } from './questions/PropQuestion';
 import { ThalesReciproqueQuestion } from './questions/ThalesReciproqueQuestion';
+import { EntiersHub } from './questions/EntiersHub';
 
 // Isolates a render crash in one exercise so the quiz controls still work.
 class ExerciseErrorBoundary extends Component<
@@ -244,6 +245,10 @@ export default function Quiz({ quiz }: QuizProps) {
         {quiz.subtitle && <p className="er-sub">{quiz.subtitle}</p>}
         {quiz.notice && <p className="er-sub" dangerouslySetInnerHTML={{ __html: quiz.notice }} />}
       </div>
+
+      {quiz.renderer === 'entiers-hub' ? (
+        <EntiersHub accent={quiz.accent} accentSecondary={quiz.accentSecondary} />
+      ) : (<>
 
       {quiz.formulaBanner && (
         <div
@@ -546,6 +551,8 @@ export default function Quiz({ quiz }: QuizProps) {
           </div>
         </div>
       )}
+
+      </>)}
     </div>
   );
 }
