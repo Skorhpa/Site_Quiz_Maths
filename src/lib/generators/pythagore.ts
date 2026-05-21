@@ -1,6 +1,7 @@
 import type {
   PythagoreCompleterConfig,
   PythagoreCompleterExercise,
+  PythagoreDragDropExercise,
   PythagoreExercise,
   PythagoreRegularExercise,
 } from '@/types';
@@ -276,6 +277,85 @@ function completerSVG(cfg: PythagoreCompleterConfig, variant: 0 | 1): string {
   </svg>`;
 }
 
+interface DragDropConfig {
+  a: number;
+  b: number;
+  c: number;
+  missing: 'a' | 'b' | 'c';
+  text: string;
+  steps: string[];
+}
+
+const DRAG_DROP_CONFIGS: DragDropConfig[] = [
+  {
+    a: 3, b: 4, c: 5, missing: 'c',
+    text: "Dans le triangle ABC rectangle en C, AC = <strong>3 cm</strong> et BC = <strong>4 cm</strong>. Remets les étapes du calcul de AB dans l'ordre.",
+    steps: [
+      "Le triangle ABC est rectangle en C, d'après le théorème de Pythagore :",
+      "AB² = AC² + BC²",
+      "AB² = 3² + 4²",
+      "AB² = 9 + 16 = 25",
+      "AB = √25 = 5 cm",
+    ],
+  },
+  {
+    a: 5, b: 12, c: 13, missing: 'a',
+    text: "Dans le triangle ABC rectangle en C, AB = <strong>13 cm</strong> et BC = <strong>12 cm</strong>. Remets les étapes du calcul de AC dans l'ordre.",
+    steps: [
+      "Le triangle ABC est rectangle en C, d'après le théorème de Pythagore :",
+      "AB² = AC² + BC²",
+      "13² = AC² + 12²",
+      "AC² = 13² − 12² = 169 − 144 = 25",
+      "AC = √25 = 5 cm",
+    ],
+  },
+  {
+    a: 6, b: 8, c: 10, missing: 'c',
+    text: "Dans le triangle ABC rectangle en C, AC = <strong>6 cm</strong> et BC = <strong>8 cm</strong>. Remets les étapes du calcul de AB dans l'ordre.",
+    steps: [
+      "Le triangle ABC est rectangle en C, d'après le théorème de Pythagore :",
+      "AB² = AC² + BC²",
+      "AB² = 6² + 8²",
+      "AB² = 36 + 64 = 100",
+      "AB = √100 = 10 cm",
+    ],
+  },
+  {
+    a: 8, b: 15, c: 17, missing: 'c',
+    text: "Dans le triangle ABC rectangle en C, AC = <strong>8 cm</strong> et BC = <strong>15 cm</strong>. Remets les étapes du calcul de AB dans l'ordre.",
+    steps: [
+      "Le triangle ABC est rectangle en C, d'après le théorème de Pythagore :",
+      "AB² = AC² + BC²",
+      "AB² = 8² + 15²",
+      "AB² = 64 + 225 = 289",
+      "AB = √289 = 17 cm",
+    ],
+  },
+];
+
+function makeDragDrop(): PythagoreDragDropExercise {
+  const cfg = pick(DRAG_DROP_CONFIGS);
+  const fig = Math.random() < 0.5
+    ? figureABC(cfg.a, cfg.b, cfg.c, cfg.missing)
+    : figureABC2(cfg.a, cfg.b, cfg.c, cfg.missing);
+  const shuffled = [...cfg.steps];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j]!, shuffled[i]!];
+  }
+  if (shuffled.every((s, i) => s === cfg.steps[i])) {
+    [shuffled[0], shuffled[1]] = [shuffled[1]!, shuffled[0]!];
+  }
+  return {
+    type: 'default',
+    pythType: 'dragdrop',
+    text: cfg.text,
+    figure: fig,
+    steps: cfg.steps,
+    shuffled,
+  };
+}
+
 function makeCompleter(): PythagoreCompleterExercise {
   const cfg = pick(COMPLETER_CONFIGS);
   const variant: 0 | 1 = Math.random() < 0.5 ? 0 : 1;
@@ -297,6 +377,7 @@ export function generatePythagoreSeries(): PythagoreExercise[] {
     makeLegDecimal(false),
     makeHypDecimal(false),
     makeLeg(false),
+    makeDragDrop(),
     makeCompleter(),
   ];
 }
