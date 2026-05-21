@@ -346,7 +346,12 @@ function QuizView({
               answer={ans}
               accent={accent}
               onChange={(v) => onUpdateAnswer(i, { value: v })}
-              onSubmit={(correct) => onSubmit(i, correct)}
+              onSubmit={() => {
+                if (ans.value.trim() === '') return;
+                const num = Number(ans.value.trim().replace(',', '.'));
+                const ok = !Number.isNaN(num) && num === (ex as NumberExercise).ans;
+                onSubmit(i, ok);
+              }}
             />
           );
         })}

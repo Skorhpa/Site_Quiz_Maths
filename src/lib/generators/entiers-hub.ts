@@ -335,6 +335,43 @@ const HARD_SIGNE_BANK: EntiersSigneExercise[] = [
     isPositive: true,
     steps: `<strong>Compter les facteurs négatifs</strong> : 4 facteurs négatifs → nombre <em>pair</em> → résultat <span style="color:var(--correct);font-weight:700">positif</span>.<br>(−2) × 3 × (−4) × 5 × 6 × (−7) × (−8) = +40320`,
   },
+  // quotients de produits
+  {
+    type: 'div', exKind: 'signe',
+    exprHtml: fr('(−2) × 3', '4 × (−5)'),
+    isPositive: true,
+    steps: `<strong>Compter les facteurs négatifs</strong> (numérateur + dénominateur) : 2 facteurs négatifs → nombre <em>pair</em> → résultat <span style="color:var(--correct);font-weight:700">positif</span>.<br>Numérateur : (−2) × 3 = −6 &nbsp;|&nbsp; Dénominateur : 4 × (−5) = −20<br>−6 ÷ (−20) = +0,3`,
+  },
+  {
+    type: 'div', exKind: 'signe',
+    exprHtml: fr('(−3) × (−4)', '2 × (−5)'),
+    isPositive: false,
+    steps: `<strong>Compter les facteurs négatifs</strong> (numérateur + dénominateur) : 3 facteurs négatifs → nombre <em>impair</em> → résultat <span style="color:var(--wrong);font-weight:700">négatif</span>.<br>Numérateur : (−3) × (−4) = +12 &nbsp;|&nbsp; Dénominateur : 2 × (−5) = −10<br>12 ÷ (−10) = −1,2`,
+  },
+  {
+    type: 'div', exKind: 'signe',
+    exprHtml: fr('5 × (−2)', '(−3) × (−4)'),
+    isPositive: false,
+    steps: `<strong>Compter les facteurs négatifs</strong> (numérateur + dénominateur) : 3 facteurs négatifs → nombre <em>impair</em> → résultat <span style="color:var(--wrong);font-weight:700">négatif</span>.<br>Numérateur : 5 × (−2) = −10 &nbsp;|&nbsp; Dénominateur : (−3) × (−4) = +12<br>(−10) ÷ 12 = −0,83…`,
+  },
+  {
+    type: 'div', exKind: 'signe',
+    exprHtml: fr('(−2) × (−3) × 4', '5 × (−6)'),
+    isPositive: false,
+    steps: `<strong>Compter les facteurs négatifs</strong> (numérateur + dénominateur) : 3 facteurs négatifs → nombre <em>impair</em> → résultat <span style="color:var(--wrong);font-weight:700">négatif</span>.<br>Numérateur : (−2) × (−3) × 4 = +24 &nbsp;|&nbsp; Dénominateur : 5 × (−6) = −30<br>24 ÷ (−30) = −0,8`,
+  },
+  {
+    type: 'div', exKind: 'signe',
+    exprHtml: fr('(−1) × (−2) × (−3)', '(−4) × 5'),
+    isPositive: true,
+    steps: `<strong>Compter les facteurs négatifs</strong> (numérateur + dénominateur) : 4 facteurs négatifs → nombre <em>pair</em> → résultat <span style="color:var(--correct);font-weight:700">positif</span>.<br>Numérateur : (−1) × (−2) × (−3) = −6 &nbsp;|&nbsp; Dénominateur : (−4) × 5 = −20<br>(−6) ÷ (−20) = +0,3`,
+  },
+  {
+    type: 'div', exKind: 'signe',
+    exprHtml: fr('(−6) × (−2)', '3 × (−4)'),
+    isPositive: false,
+    steps: `<strong>Compter les facteurs négatifs</strong> (numérateur + dénominateur) : 3 facteurs négatifs → nombre <em>impair</em> → résultat <span style="color:var(--wrong);font-weight:700">négatif</span>.<br>Numérateur : (−6) × (−2) = +12 &nbsp;|&nbsp; Dénominateur : 3 × (−4) = −12<br>12 ÷ (−12) = −1`,
+  },
 ];
 
 export function generateSigneSeries(): EntiersSigneExercise[] {
