@@ -79,6 +79,13 @@ function thalesSVG(ratio: number, shape: Shape, letters: Letters): string {
   </svg>`;
 }
 
+const fr = (n: string | number, d: string | number) =>
+  `<span style="display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 2px;line-height:1.15;">` +
+  `<span>${n}</span>` +
+  `<span style="width:100%;border-top:1.5px solid currentColor;display:block;margin:1px 0;"></span>` +
+  `<span>${d}</span>` +
+  `</span>`;
+
 interface CalcConfig {
   ratio: number;
   PM: number | null;
@@ -144,36 +151,36 @@ function genCalc(cfg: CalcConfig, shape: Shape, letters: Letters): ThalesCalcExe
   let steps: { eq: string }[] = [];
   if (uk === 'mn') {
     steps = [
-      { eq: `${nPM}/${nPB} = ${nMN}/${nBC}` },
-      { eq: `${fmt(PM!)}/${fmt(PB!)} = ${nMN}/${fmt(BC!)}` },
+      { eq: `${fr(nPM, nPB)} = ${fr(nMN, nBC)}` },
+      { eq: `${fr(fmt(PM!), fmt(PB!))} = ${fr(nMN, fmt(BC!))}` },
       { eq: `${nMN} = ${fmt(PM!)} × ${fmt(BC!)} ÷ ${fmt(PB!)}` },
       { eq: `${nMN} = ${thalesFormatAns(ans, 'cm')}` },
     ];
   } else if (uk === 'bc') {
     steps = [
-      { eq: `${nPM}/${nPB} = ${nMN}/${nBC}` },
-      { eq: `${fmt(PM!)}/${fmt(PB!)} = ${fmt(MN!)}/${nBC}` },
+      { eq: `${fr(nPM, nPB)} = ${fr(nMN, nBC)}` },
+      { eq: `${fr(fmt(PM!), fmt(PB!))} = ${fr(fmt(MN!), nBC)}` },
       { eq: `${nBC} = ${fmt(MN!)} × ${fmt(PB!)} ÷ ${fmt(PM!)}` },
       { eq: `${nBC} = ${thalesFormatAns(ans, 'cm')}` },
     ];
   } else if (uk === 'pb') {
     steps = [
-      { eq: `${nPM}/${nPB} = ${nMN}/${nBC}` },
-      { eq: `${fmt(PM!)}/${nPB} = ${fmt(MN!)}/${fmt(BC!)}` },
+      { eq: `${fr(nPM, nPB)} = ${fr(nMN, nBC)}` },
+      { eq: `${fr(fmt(PM!), nPB)} = ${fr(fmt(MN!), fmt(BC!))}` },
       { eq: `${nPB} = ${fmt(PM!)} × ${fmt(BC!)} ÷ ${fmt(MN!)}` },
       { eq: `${nPB} = ${thalesFormatAns(ans, 'cm')}` },
     ];
   } else if (uk === 'pm') {
     steps = [
-      { eq: `${nPM}/${nPB} = ${nMN}/${nBC}` },
-      { eq: `${nPM}/${fmt(PB!)} = ${fmt(MN!)}/${fmt(BC!)}` },
+      { eq: `${fr(nPM, nPB)} = ${fr(nMN, nBC)}` },
+      { eq: `${fr(nPM, fmt(PB!))} = ${fr(fmt(MN!), fmt(BC!))}` },
       { eq: `${nPM} = ${fmt(PB!)} × ${fmt(MN!)} ÷ ${fmt(BC!)}` },
       { eq: `${nPM} = ${thalesFormatAns(ans, 'cm')}` },
     ];
   } else if (uk === 'pc') {
     steps = [
-      { eq: `${nPN}/${nPC} = ${nMN}/${nBC}` },
-      { eq: `${fmt(PN!)}/${nPC} = ${fmt(MN!)}/${fmt(BC!)}` },
+      { eq: `${fr(nPN, nPC)} = ${fr(nMN, nBC)}` },
+      { eq: `${fr(fmt(PN!), nPC)} = ${fr(fmt(MN!), fmt(BC!))}` },
       { eq: `${nPC} = ${fmt(PN!)} × ${fmt(BC!)} ÷ ${fmt(MN!)}` },
       { eq: `${nPC} = ${thalesFormatAns(ans, 'cm')}` },
     ];
@@ -212,10 +219,10 @@ const COMPLETER_CONFIGS: ThalesCompleterConfig[] = [
     ptOnRight: { pt: 'S', seg: '[TR]' },
     parallelSeg: 'AS',
     parallelTo: 'BR',
-    ratioExpr: 'TA/TB = TS/TR = AS/BR',
-    numericRatio: '2,4/TB = 3/4 = AS/6',
-    calc1: { unknown: 'TB', ratioUsed: 'TA/TB = TS/TR', s1: '2,4/TB = 3/4', s2: 'TB = 2,4 × 4 ÷ 3', s3: 'TB = 9,6 ÷ 3', result: 'TB = 3,2 cm' },
-    calc2: { unknown: 'AS', ratioUsed: 'AS/BR = TS/TR', s1: 'AS/6 = 3/4', s2: 'AS = 3 × 6 ÷ 4', s3: 'AS = 18 ÷ 4', result: 'AS = 4,5 cm' },
+    ratioExpr: `${fr('TA','TB')} = ${fr('TS','TR')} = ${fr('AS','BR')}`,
+    numericRatio: `${fr('2,4','TB')} = ${fr('3','4')} = ${fr('AS','6')}`,
+    calc1: { unknown: 'TB', ratioUsed: `${fr('TA','TB')} = ${fr('TS','TR')}`, s1: `${fr('2,4','TB')} = ${fr('3','4')}`, s2: 'TB = 2,4 × 4 ÷ 3', s3: 'TB = 9,6 ÷ 3', result: 'TB = 3,2 cm' },
+    calc2: { unknown: 'AS', ratioUsed: `${fr('AS','BR')} = ${fr('TS','TR')}`, s1: `${fr('AS','6')} = ${fr('3','4')}`, s2: 'AS = 3 × 6 ÷ 4', s3: 'AS = 18 ÷ 4', result: 'AS = 4,5 cm' },
   },
   {
     letters: { apex: 'O', bl: 'P', br: 'Q', ml: 'E', mr: 'F' },
@@ -228,10 +235,10 @@ const COMPLETER_CONFIGS: ThalesCompleterConfig[] = [
     ptOnRight: { pt: 'F', seg: '[OQ]' },
     parallelSeg: 'EF',
     parallelTo: 'PQ',
-    ratioExpr: 'OE/OP = OF/OQ = EF/PQ',
-    numericRatio: '3/9 = OF/18 = EF/12',
-    calc1: { unknown: 'OF', ratioUsed: 'OE/OP = OF/OQ', s1: '3/9 = OF/18', s2: 'OF = 3 × 18 ÷ 9', s3: 'OF = 54 ÷ 9', result: 'OF = 6 cm' },
-    calc2: { unknown: 'EF', ratioUsed: 'EF/PQ = OE/OP', s1: 'EF/12 = 3/9', s2: 'EF = 3 × 12 ÷ 9', s3: 'EF = 36 ÷ 9', result: 'EF = 4 cm' },
+    ratioExpr: `${fr('OE','OP')} = ${fr('OF','OQ')} = ${fr('EF','PQ')}`,
+    numericRatio: `${fr('3','9')} = ${fr('OF','18')} = ${fr('EF','12')}`,
+    calc1: { unknown: 'OF', ratioUsed: `${fr('OE','OP')} = ${fr('OF','OQ')}`, s1: `${fr('3','9')} = ${fr('OF','18')}`, s2: 'OF = 3 × 18 ÷ 9', s3: 'OF = 54 ÷ 9', result: 'OF = 6 cm' },
+    calc2: { unknown: 'EF', ratioUsed: `${fr('EF','PQ')} = ${fr('OE','OP')}`, s1: `${fr('EF','12')} = ${fr('3','9')}`, s2: 'EF = 3 × 12 ÷ 9', s3: 'EF = 36 ÷ 9', result: 'EF = 4 cm' },
   },
   {
     letters: { apex: 'S', bl: 'D', br: 'E', ml: 'J', mr: 'K' },
@@ -244,10 +251,10 @@ const COMPLETER_CONFIGS: ThalesCompleterConfig[] = [
     ptOnRight: { pt: 'K', seg: '[SE]' },
     parallelSeg: 'JK',
     parallelTo: 'DE',
-    ratioExpr: 'SJ/SD = SK/SE = JK/DE',
-    numericRatio: '4/10 = SK/12,5 = JK/15',
-    calc1: { unknown: 'SK', ratioUsed: 'SJ/SD = SK/SE', s1: '4/10 = SK/12,5', s2: 'SK = 4 × 12,5 ÷ 10', s3: 'SK = 50 ÷ 10', result: 'SK = 5 cm' },
-    calc2: { unknown: 'JK', ratioUsed: 'JK/DE = SJ/SD', s1: 'JK/15 = 4/10', s2: 'JK = 4 × 15 ÷ 10', s3: 'JK = 60 ÷ 10', result: 'JK = 6 cm' },
+    ratioExpr: `${fr('SJ','SD')} = ${fr('SK','SE')} = ${fr('JK','DE')}`,
+    numericRatio: `${fr('4','10')} = ${fr('SK','12,5')} = ${fr('JK','15')}`,
+    calc1: { unknown: 'SK', ratioUsed: `${fr('SJ','SD')} = ${fr('SK','SE')}`, s1: `${fr('4','10')} = ${fr('SK','12,5')}`, s2: 'SK = 4 × 12,5 ÷ 10', s3: 'SK = 50 ÷ 10', result: 'SK = 5 cm' },
+    calc2: { unknown: 'JK', ratioUsed: `${fr('JK','DE')} = ${fr('SJ','SD')}`, s1: `${fr('JK','15')} = ${fr('4','10')}`, s2: 'JK = 4 × 15 ÷ 10', s3: 'JK = 60 ÷ 10', result: 'JK = 6 cm' },
   },
   {
     letters: { apex: 'R', bl: 'G', br: 'H', ml: 'M', mr: 'N' },
@@ -260,10 +267,10 @@ const COMPLETER_CONFIGS: ThalesCompleterConfig[] = [
     ptOnRight: { pt: 'N', seg: '[RH]' },
     parallelSeg: 'MN',
     parallelTo: 'GH',
-    ratioExpr: 'RM/RG = RN/RH = MN/GH',
-    numericRatio: '5/15 = RN/18 = MN/12',
-    calc1: { unknown: 'RN', ratioUsed: 'RM/RG = RN/RH', s1: '5/15 = RN/18', s2: 'RN = 5 × 18 ÷ 15', s3: 'RN = 90 ÷ 15', result: 'RN = 6 cm' },
-    calc2: { unknown: 'MN', ratioUsed: 'MN/GH = RM/RG', s1: 'MN/12 = 5/15', s2: 'MN = 5 × 12 ÷ 15', s3: 'MN = 60 ÷ 15', result: 'MN = 4 cm' },
+    ratioExpr: `${fr('RM','RG')} = ${fr('RN','RH')} = ${fr('MN','GH')}`,
+    numericRatio: `${fr('5','15')} = ${fr('RN','18')} = ${fr('MN','12')}`,
+    calc1: { unknown: 'RN', ratioUsed: `${fr('RM','RG')} = ${fr('RN','RH')}`, s1: `${fr('5','15')} = ${fr('RN','18')}`, s2: 'RN = 5 × 18 ÷ 15', s3: 'RN = 90 ÷ 15', result: 'RN = 6 cm' },
+    calc2: { unknown: 'MN', ratioUsed: `${fr('MN','GH')} = ${fr('RM','RG')}`, s1: `${fr('MN','12')} = ${fr('5','15')}`, s2: 'MN = 5 × 12 ÷ 15', s3: 'MN = 60 ÷ 15', result: 'MN = 4 cm' },
   },
 ];
 
@@ -275,13 +282,6 @@ function genCompleter(cfg: ThalesCompleterConfig, shape: Shape): ThalesCompleter
     cfg,
   };
 }
-
-const fr = (n: string, d: string) =>
-  `<span style="display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 2px;line-height:1.15;">` +
-  `<span>${n}</span>` +
-  `<span style="width:100%;border-top:1.5px solid currentColor;display:block;margin:1px 0;"></span>` +
-  `<span>${d}</span>` +
-  `</span>`;
 
 interface DragDropConfig {
   text: string;

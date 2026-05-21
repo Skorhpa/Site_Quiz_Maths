@@ -73,7 +73,7 @@ function ThalesCalc({ index, exercise, answer, onChange, onSubmit }: Props & { e
           <div className={`steps-box${hintOpen ? ' open' : ''}`}>
             {exercise.steps.map((s, j) => (
               <div key={j}>
-                <span className="step-eq">{s.eq}</span>
+                <span className="step-eq" dangerouslySetInnerHTML={{ __html: s.eq }} />
               </div>
             ))}
           </div>
@@ -272,6 +272,14 @@ function ThalesCompleter({ index, exercise, answer, onSubmit }: Props & { exerci
   const set = (id: string, v: string) => setFields((s) => ({ ...s, [id]: v }));
   const get = (id: string) => fields[id] ?? '';
 
+  const inpFr = (topId: string, botId: string, w = 48) => (
+    <span style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', verticalAlign: 'middle', margin: '0 2px', lineHeight: '1.15' }}>
+      {inp(topId, w)}
+      <span style={{ width: '100%', borderTop: '1.5px solid currentColor', display: 'block', margin: '1px 0' }} />
+      {inp(botId, w)}
+    </span>
+  );
+
   const inp = (id: string, w = 55) => (
     <input
       type="text"
@@ -325,8 +333,8 @@ function ThalesCompleter({ index, exercise, answer, onSubmit }: Props & { exerci
     <div style={{ background: 'var(--bg)', borderRadius: 8, padding: '10px 14px' }}>
       <div style={{ fontWeight: 600, color: 'var(--text)', marginBottom: 6 }}>Calcul de {calc.unknown}</div>
       <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 12, color: 'var(--muted)', lineHeight: 2.2 }}>
-        <div style={{ color: 'var(--c4)' }}>{calc.ratioUsed}</div>
-        <div>{calc.s1}</div>
+        <div style={{ color: 'var(--c4)' }} dangerouslySetInnerHTML={{ __html: calc.ratioUsed }} />
+        <div dangerouslySetInnerHTML={{ __html: calc.s1 }} />
         <div>{calc.s2}</div>
         <div>{calc.s3}</div>
         <div style={{ color: 'var(--correct)', fontWeight: 700, marginTop: 4 }}>→ {calc.result}</div>
@@ -351,11 +359,11 @@ function ThalesCompleter({ index, exercise, answer, onSubmit }: Props & { exerci
           </div>
           <div style={{ fontSize: 13, color: 'var(--muted)', margin: '4px 0 2px' }}>D'après le théorème de Thalès :</div>
           <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 13, display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap', marginBottom: 4 }}>
-            {inp('r1', 48)} / {inp('r2', 48)} = {inp('r3', 48)} / {inp('r4', 48)} = {inp('r5', 48)} / {inp('r6', 48)}
+            {inpFr('r1', 'r2')} = {inpFr('r3', 'r4')} = {inpFr('r5', 'r6')}
           </div>
           <div style={{ fontSize: 12, color: 'var(--muted)', marginBottom: 4 }}>soit :</div>
           <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 13, display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-            {inp('n1', 48)} / {inp('n2', 48)} = {inp('n3', 48)} / {inp('n4', 48)} = {inp('n5', 48)} / {inp('n6', 48)}
+            {inpFr('n1', 'n2')} = {inpFr('n3', 'n4')} = {inpFr('n5', 'n6')}
           </div>
         </div>
       </div>
@@ -363,17 +371,17 @@ function ThalesCompleter({ index, exercise, answer, onSubmit }: Props & { exerci
         <div>
           <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 8 }}>Calcul de {f1}</div>
           <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 13, lineHeight: 2.6, color: 'var(--text)' }}>
-            {inp('c1a', 48)} / {inp('c1b', 48)} = {inp('c1c', 48)} / {inp('c1d', 48)}<br />
-            {f1} = {inp('c1e', 48)} × {inp('c1f', 48)} ÷ {inp('c1g', 48)}<br />
-            <strong>Donc {f1} = </strong>{inp('c1ans', 60)} cm
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>{inpFr('c1a', 'c1b')} = {inpFr('c1c', 'c1d')}</div>
+            <div>{f1} = {inp('c1e', 48)} × {inp('c1f', 48)} ÷ {inp('c1g', 48)}</div>
+            <div><strong>Donc {f1} = </strong>{inp('c1ans', 60)} cm</div>
           </div>
         </div>
         <div>
           <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 8 }}>Calcul de {f2}</div>
           <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 13, lineHeight: 2.6, color: 'var(--text)' }}>
-            {inp('c2a', 48)} / {inp('c2b', 48)} = {inp('c2c', 48)} / {inp('c2d', 48)}<br />
-            {f2} = {inp('c2e', 48)} × {inp('c2f', 48)} ÷ {inp('c2g', 48)}<br />
-            <strong>Donc {f2} = </strong>{inp('c2ans', 60)} cm
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>{inpFr('c2a', 'c2b')} = {inpFr('c2c', 'c2d')}</div>
+            <div>{f2} = {inp('c2e', 48)} × {inp('c2f', 48)} ÷ {inp('c2g', 48)}</div>
+            <div><strong>Donc {f2} = </strong>{inp('c2ans', 60)} cm</div>
           </div>
         </div>
       </div>
@@ -386,10 +394,8 @@ function ThalesCompleter({ index, exercise, answer, onSubmit }: Props & { exerci
             Dans le triangle <strong>{cfg.bigTri}</strong>, {cfg.ptOnLeft.pt} ∈ {cfg.ptOnLeft.seg} et {cfg.ptOnRight.pt} ∈ {cfg.ptOnRight.seg} et ({cfg.parallelSeg}) // ({cfg.parallelTo}).
           </div>
           <div style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 4 }}>D'après le théorème de Thalès :</div>
-          <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 13, color: 'var(--c4)', marginBottom: 4 }}>{cfg.ratioExpr}</div>
-          <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 13, color: 'var(--text)', marginBottom: 12 }}>
-            soit &nbsp;{cfg.numericRatio}
-          </div>
+          <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 13, color: 'var(--c4)', marginBottom: 4 }} dangerouslySetInnerHTML={{ __html: cfg.ratioExpr }} />
+          <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 13, color: 'var(--text)', marginBottom: 12 }} dangerouslySetInnerHTML={{ __html: `soit &nbsp;${cfg.numericRatio}` }} />
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
             {corrBlock(cfg.calc1)}
             {corrBlock(cfg.calc2)}
