@@ -238,7 +238,7 @@ function QuizView({
   accentSecondary?: string;
   seriesKey: number;
   onUpdateAnswer: (i: number, patch: Partial<AnswerState>) => void;
-  onSubmit: (i: number, correct?: boolean, wrongParens?: boolean) => void;
+  onSubmit: (i: number, correct: boolean, wrongParens?: boolean) => void;
   onResetErrors: () => void;
   onNewSeries: () => void;
   onBack: () => void;
@@ -478,8 +478,8 @@ export function EntiersHub({ accent, accentSecondary }: { accent: string; accent
     setAnswers((prev) => prev.map((a, idx) => (idx === i ? { ...a, ...patch } : a)));
   };
 
-  const submit = (i: number, correct?: boolean, wrongParens?: boolean) => {
-    if (correct === undefined || answers[i]?.status !== 'pending') return;
+  const submit = (i: number, correct: boolean, wrongParens?: boolean) => {
+    if (answers[i]?.status !== 'pending') return;
     updateAnswer(i, { status: correct ? 'correct' : 'wrong', wrongParens: wrongParens ?? false });
   };
 
