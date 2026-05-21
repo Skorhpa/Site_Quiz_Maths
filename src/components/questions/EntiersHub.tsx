@@ -106,7 +106,7 @@ function EntiersTrouQuestion({
             textAlign: 'center',
           }}
         />
-        <span>{exercise.part2} =</span>
+        <span>{exercise.part2}</span>
       </div>
       <div className="input-row" style={{ marginTop: 6 }}>
         <button className="btn-secondary" disabled={disabled} onClick={handleSubmit}>OK</button>
