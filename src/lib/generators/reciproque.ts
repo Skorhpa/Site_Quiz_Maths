@@ -134,11 +134,12 @@ interface RPDDConfig {
   text: string;
   figure: string;
   steps: string[];
+  swappableSteps: [number, number];
 }
 
 const RP_DD_CONFIGS: RPDDConfig[] = [
   {
-    text: "Remets les étapes dans le bon ordre pour démontrer que le triangle <strong>PQR est rectangle en P</strong>.",
+    text: "Le triangle PQR est tel que : PQ = 3 m ; PR = 4 m ; QR = 5 m.<br>Remets les étapes dans le bon ordre pour démontrer qu'il est <strong>rectangle en P</strong>.",
     figure: `<svg width="195" height="125" viewBox="0 0 195 125" fill="none" style="display:block;margin:8px 0;">
     <polygon points="10,110 10,15 185,110" fill="rgba(167,139,250,0.07)" stroke="var(--crp)" stroke-width="1.5"/>
     <rect x="10" y="96" width="14" height="14" fill="none" stroke="var(--crp)" stroke-width="1.2"/>
@@ -156,9 +157,10 @@ const RP_DD_CONFIGS: RPDDConfig[] = [
       "QR² = PQ² + PR²",
       "D'après la réciproque du théorème de Pythagore, le triangle PQR est rectangle en P.",
     ],
+    swappableSteps: [1, 2],
   },
   {
-    text: "Remets les étapes dans le bon ordre pour démontrer que le triangle <strong>EFG n'est pas rectangle</strong>.",
+    text: "Le triangle EFG est tel que : EF = 5 m ; EG = 7 m ; FG = 9 m.<br>Remets les étapes dans le bon ordre pour démontrer qu'il <strong>n'est pas rectangle</strong>.",
     figure: `<svg width="195" height="125" viewBox="0 0 195 125" fill="none" style="display:block;margin:8px 0;">
     <polygon points="10,110 30,10 185,110" fill="rgba(167,139,250,0.07)" stroke="var(--crp)" stroke-width="1.5"/>
     <text x="25" y="8" fill="#F0EDE8" font-family="DM Mono,monospace" font-size="13" font-weight="bold">F</text>
@@ -175,6 +177,7 @@ const RP_DD_CONFIGS: RPDDConfig[] = [
       "FG² ≠ EF² + EG²",
       "D'après la contraposée du théorème de Pythagore, le triangle EFG n'est pas rectangle.",
     ],
+    swappableSteps: [1, 2],
   },
 ];
 
@@ -187,6 +190,7 @@ function makeRecipDragDrop(): ReciproqueDragDropExercise {
     figure: cfg.figure,
     steps: cfg.steps,
     shuffled: shuffle([...cfg.steps]),
+    swappableSteps: cfg.swappableSteps,
   };
 }
 

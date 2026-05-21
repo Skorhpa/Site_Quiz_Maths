@@ -284,34 +284,34 @@ interface DragDropConfig {
 
 const THALES_DD_CONFIGS: DragDropConfig[] = [
   {
-    text: 'Remets les étapes dans le bon ordre pour trouver <strong>MN</strong>.',
+    text: '(MN) ∥ (AB) &nbsp;·&nbsp; SM = 3 cm &nbsp;·&nbsp; SA = 9 cm &nbsp;·&nbsp; AB = 12 cm<br>Remets les étapes dans le bon ordre pour trouver <strong>MN</strong>.',
     figure: thalesSVG(1 / 3, SHAPES[0]!, { apex: 'S', bl: 'A', br: 'B', ml: 'M', mr: 'N' }),
     steps: [
-      "(MN) ∥ (AB), donc d'après le théorème de Thalès dans le triangle SAB :",
-      'SM/SA = MN/AB',
-      '3/9 = MN/12',
+      'Dans le triangle SAB, M ∈ [SA] et N ∈ [SB] et (MN) ∥ (AB).',
+      "D'après le théorème de Thalès : SM/SA = MN/AB",
+      'soit 3/9 = MN/12',
       'MN = 3 × 12 ÷ 9',
       'MN = 4 cm',
     ],
   },
   {
-    text: 'Remets les étapes dans le bon ordre pour trouver <strong>PQ</strong>.',
+    text: '(EF) ∥ (PQ) &nbsp;·&nbsp; OE = 4 cm &nbsp;·&nbsp; OP = 10 cm &nbsp;·&nbsp; EF = 6 cm<br>Remets les étapes dans le bon ordre pour trouver <strong>PQ</strong>.',
     figure: thalesSVG(2 / 5, SHAPES[1]!, { apex: 'O', bl: 'P', br: 'Q', ml: 'E', mr: 'F' }),
     steps: [
-      "(EF) ∥ (PQ), donc d'après le théorème de Thalès dans le triangle OPQ :",
-      'OE/OP = EF/PQ',
-      '4/10 = 6/PQ',
+      'Dans le triangle OPQ, E ∈ [OP] et F ∈ [OQ] et (EF) ∥ (PQ).',
+      "D'après le théorème de Thalès : OE/OP = EF/PQ",
+      'soit 4/10 = 6/PQ',
       'PQ = 6 × 10 ÷ 4',
       'PQ = 15 cm',
     ],
   },
   {
-    text: 'Remets les étapes dans le bon ordre pour trouver <strong>PM</strong>.',
+    text: '(MN) ∥ (BC) &nbsp;·&nbsp; MN = 4 cm &nbsp;·&nbsp; BC = 8 cm &nbsp;·&nbsp; PB = 10 cm<br>Remets les étapes dans le bon ordre pour trouver <strong>PM</strong>.',
     figure: thalesSVG(1 / 2, SHAPES[2]!, { apex: 'P', bl: 'B', br: 'C', ml: 'M', mr: 'N' }),
     steps: [
-      "(MN) ∥ (BC), donc d'après le théorème de Thalès dans le triangle PBC :",
-      'PM/PB = MN/BC',
-      'PM/10 = 4/8',
+      'Dans le triangle PBC, M ∈ [PB] et N ∈ [PC] et (MN) ∥ (BC).',
+      "D'après le théorème de Thalès : PM/PB = MN/BC",
+      'soit PM/10 = 4/8',
       'PM = 4 × 10 ÷ 8',
       'PM = 5 cm',
     ],

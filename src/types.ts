@@ -262,6 +262,8 @@ export interface ReciproqueDragDropExercise extends BaseExercise {
   figure: string;
   steps: string[];
   shuffled: string[];
+  /** Indices of two adjacent steps that can appear in either order and still be counted correct. */
+  swappableSteps?: [number, number];
 }
 
 export type ReciproqueExercise = ReciproqueTableExercise | ReciproqueDemoExercise | ReciproqueDragDropExercise;

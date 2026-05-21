@@ -92,7 +92,14 @@ function ReciproqueDragDrop({ index, exercise, answer, onSubmit }: Props & { exe
       setFeedback({ text: '✗ Place toutes les étapes avant de vérifier.', cls: 'feedback ko' });
       return;
     }
-    const ok = placed.every((p, i) => p === exercise.steps[i]);
+    const normalOk = placed.every((p, i) => p === exercise.steps[i]);
+    const [si, sj] = exercise.swappableSteps ?? [-1, -1];
+    const swappedOk = si >= 0 && placed.every((p, i) => {
+      if (i === si) return p === exercise.steps[sj];
+      if (i === sj) return p === exercise.steps[si];
+      return p === exercise.steps[i];
+    });
+    const ok = normalOk || swappedOk;
     setFeedback({
       text: ok ? '✓ Parfait ! Les étapes sont dans le bon ordre.' : "✗ L'ordre n'est pas correct.",
       cls: ok ? 'feedback ok' : 'feedback ko',

@@ -139,7 +139,7 @@ const shuf = <T>(arr: T[]): T[] => {
 
 const RECIP_DD_CONFIGS: RecipDDConfig[] = [
   {
-    text: 'Remets les étapes dans le bon ordre pour montrer que <strong>(MN) ∥ (AB)</strong>.',
+    text: 'SM = 2 cm &nbsp;·&nbsp; SA = 6 cm &nbsp;·&nbsp; SN = 3 cm &nbsp;·&nbsp; SB = 9 cm<br>Remets les étapes dans le bon ordre pour montrer que <strong>(MN) ∥ (AB)</strong>.',
     figure: makeFig('S', 'A', 'B', 'M', 'N', 1 / 3, 1 / 3),
     steps: [
       'Dans le triangle SAB, M ∈ [SA] et N ∈ [SB].',
@@ -150,7 +150,7 @@ const RECIP_DD_CONFIGS: RecipDDConfig[] = [
     ],
   },
   {
-    text: 'Remets les étapes dans le bon ordre pour montrer que <strong>(MN)</strong> et <strong>(AB)</strong> ne sont pas parallèles.',
+    text: 'SM = 2 cm &nbsp;·&nbsp; SA = 6 cm &nbsp;·&nbsp; SN = 4 cm &nbsp;·&nbsp; SB = 9 cm<br>Remets les étapes dans le bon ordre pour montrer que <strong>(MN)</strong> et <strong>(AB)</strong> ne sont pas parallèles.',
     figure: makeFig('S', 'A', 'B', 'M', 'N', 1 / 3, 4 / 9),
     steps: [
       'Dans le triangle SAB, M ∈ [SA] et N ∈ [SB].',
