@@ -391,8 +391,6 @@ export type ThalesReciproqueExercise = ThalesReciproqueProofExercise | ThalesRec
 
 export type Exercise =
   | NumberExercise
-  | EntiersTrouExercise
-  | EntiersSigneExercise
   | RoundingExercise
   | LiteralExercise
   | ProduitExercise
@@ -408,23 +406,7 @@ export type Exercise =
   | PropExercise
   | ThalesReciproqueExercise;
 
-export interface EntiersTrouExercise extends BaseExercise {
-  exKind: 'trou';
-  part1: string;
-  part2: string;
-  ans: number;
-  requiresParens: boolean;
-  steps: string;
-}
-
-export interface EntiersSigneExercise extends BaseExercise {
-  exKind: 'signe';
-  exprHtml: string;
-  isPositive: boolean;
-  steps: string;
-}
-
-export type RendererKind = 'number' | 'rounding' | 'literal' | 'produit' | 'arith' | 'programme' | 'pythagore' | 'thales' | 'fractions' | 'fractions-comp' | 'equation' | 'reciproque' | 'puissances' | 'prop' | 'thales-reciproque' | 'entiers-hub';
+export type RendererKind = 'number' | 'rounding' | 'literal' | 'produit' | 'arith' | 'programme' | 'pythagore' | 'thales' | 'fractions' | 'fractions-comp' | 'equation' | 'reciproque' | 'puissances' | 'prop' | 'thales-reciproque';
 
 export type IntegerOp = 'add' | 'sub' | 'mul';
 

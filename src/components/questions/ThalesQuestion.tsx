@@ -307,12 +307,6 @@ function ThalesCompleter({ index, exercise, answer, onSubmit }: Props & { exerci
     if (disabled) return;
     const v1 = parseFloat(get('c1ans').replace(',', '.'));
     const v2 = parseFloat(get('c2ans').replace(',', '.'));
-    const hasAnswers = !Number.isNaN(v1) || !Number.isNaN(v2);
-    const ratioFilled = ['r1', 'r2', 'r3', 'r4', 'r5', 'r6'].some((f) => get(f).trim() !== '');
-    if (hasAnswers && !ratioFilled) {
-      setFeedback({ text: '✗ Tous les champs du raisonnement doivent être complétés, pas seulement les réponses finales.', cls: 'feedback ko' });
-      return;
-    }
     const ok1 = !Number.isNaN(v1) && Math.abs(v1 - a1) < 0.06;
     const ok2 = !Number.isNaN(v2) && Math.abs(v2 - a2) < 0.06;
     if (ok1 && ok2) {
