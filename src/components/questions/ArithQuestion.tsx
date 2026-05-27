@@ -199,7 +199,7 @@ export function ArithQuestion({ index, exercise, answer, onSubmit }: ArithQuesti
     if (exercise.subtype === 'decompo') {
       return (
         <>
-          <div style={{ fontSize: 14, color: 'var(--text)', marginBottom: 8 }}>{exercise.question}</div>
+          <div style={{ fontSize: 14, color: 'var(--text)', marginBottom: 8 }} dangerouslySetInnerHTML={{ __html: exercise.question! }} />
           {exercise.nums!.map(({ n }, j) => (
             <div key={j} style={{ display: 'flex', alignItems: 'center', gap: 10, margin: '8px 0', flexWrap: 'wrap' }}>
               <span style={{ fontFamily: "'DM Mono', monospace", fontSize: '1.2rem', fontWeight: 700, minWidth: 40 }}>{n} =</span>
