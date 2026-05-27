@@ -30,7 +30,7 @@ export function ArithQuestion({ index, exercise, answer, onSubmit }: ArithQuesti
   const [decompoInputs, setDecompoInputs] = useState<Record<number, string>>({});
   const [pgcdPa, setPgcdPa] = useState('');
   const [pgcdPb, setPgcdPb] = useState('');
-  const [pgcdDivInputs, setPgcdDivInputs] = useState<Record<number, string>>({});
+  const [pgcdRowInputs, setPgcdRowInputs] = useState<Record<number, { d: string; n1: string; n2: string }>>({});
   const [feedback, setFeedback] = useState<{ text: string; cls: string }>({ text: '', cls: 'feedback' });
 
   const disabled = answer.status !== 'pending';
@@ -107,19 +107,21 @@ export function ArithQuestion({ index, exercise, answer, onSubmit }: ArithQuesti
     } else if (exercise.subtype === 'pgcd') {
       const okA = factorsEqual(pgcdPa, exercise.fnN!);
       const okB = factorsEqual(pgcdPb, exercise.fnM!);
-      const enteredDivs = exercise.gDivs!.map((_, j) => parseInt((pgcdDivInputs[j] || '').trim(), 10));
-      const sortedEntered = enteredDivs.slice().sort((a, b) => a - b);
-      const sortedExpected = exercise.gDivs!.slice().sort((a, b) => a - b);
+      const expected = exercise.gDivs!.map((d) => ({ d, n1: exercise.N! / d, n2: exercise.M! / d }));
+      const entered = exercise.gDivs!.map((_, j) => {
+        const row = pgcdRowInputs[j] ?? { d: '', n1: '', n2: '' };
+        return { d: parseInt(row.d.trim(), 10), n1: parseInt(row.n1.trim(), 10), n2: parseInt(row.n2.trim(), 10) };
+      });
       const pcOk =
-        !enteredDivs.some(Number.isNaN) &&
-        sortedEntered.length === sortedExpected.length &&
-        sortedEntered.every((v, j) => v === sortedExpected[j]);
+        !entered.some((e) => Number.isNaN(e.d) || Number.isNaN(e.n1) || Number.isNaN(e.n2)) &&
+        new Set(entered.map((e) => e.d)).size === entered.length &&
+        entered.every((e) => expected.some((x) => x.d === e.d && x.n1 === e.n1 && x.n2 === e.n2));
       ok = okA && okB && pcOk;
       if (!ok) {
         const parts: string[] = [];
         if (!okA) parts.push(`décomposition de ${exercise.N} (attendu : ${exercise.fnN})`);
         if (!okB) parts.push(`décomposition de ${exercise.M} (attendu : ${exercise.fnM})`);
-        if (!pcOk) parts.push(`compositions incorrectes (attendu : ${exercise.gDivs!.join(', ')} ${exercise.unitLabelP})`);
+        if (!pcOk) parts.push(`compositions incorrectes`);
         msg = `✗ ${parts.join(' · ')}`;
       }
     }
@@ -282,31 +284,42 @@ export function ArithQuestion({ index, exercise, answer, onSubmit }: ArithQuesti
         <div style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 6, fontWeight: 600 }}>
           b) Donne toutes les compositions possibles :
         </div>
-        {exercise.gDivs!.map((_, j) => (
-          <div key={j} style={{ display: 'flex', alignItems: 'center', gap: 8, margin: '6px 0', flexWrap: 'wrap' }}>
-            <span style={{ fontSize: 13, color: 'var(--text)', minWidth: 130 }}>
-              Nombre de {exercise.unitLabelP} :
-            </span>
+        {exercise.gDivs!.map((_, j) => {
+          const row = pgcdRowInputs[j] ?? { d: '', n1: '', n2: '' };
+          const setField = (field: 'd' | 'n1' | 'n2') => (e: React.ChangeEvent<HTMLInputElement>) =>
+            setPgcdRowInputs((s) => ({ ...s, [j]: { ...(s[j] ?? { d: '', n1: '', n2: '' }), [field]: e.target.value } }));
+          const inp = (field: 'd' | 'n1' | 'n2') => (
             <input
               type="text"
-              value={pgcdDivInputs[j] || ''}
+              value={row[field]}
               placeholder="…"
               disabled={disabled}
-              onChange={(e) => setPgcdDivInputs((s) => ({ ...s, [j]: e.target.value }))}
+              onChange={setField(field)}
               onKeyDown={handleKey}
               style={{
                 fontFamily: "'DM Mono', monospace",
                 fontSize: 13,
-                padding: '5px 10px',
+                padding: '4px 8px',
                 borderRadius: 7,
                 border: '1px solid var(--border2)',
                 background: 'var(--bg)',
                 color: 'var(--text)',
-                width: 70,
+                width: 55,
+                textAlign: 'center',
               }}
             />
-          </div>
-        ))}
+          );
+          return (
+            <div key={j} style={{ display: 'flex', alignItems: 'center', gap: 5, margin: '6px 0', flexWrap: 'wrap', fontSize: 13, color: 'var(--text)' }}>
+              {inp('d')}
+              <span>{exercise.unitLabelP} :</span>
+              {inp('n1')}
+              <span>{exercise.ctx!.obj1} et</span>
+              {inp('n2')}
+              <span>{exercise.ctx!.obj2} par {exercise.unitLabel}</span>
+            </div>
+          );
+        })}
       </>
     );
   };
