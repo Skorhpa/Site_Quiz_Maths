@@ -7,7 +7,6 @@ import { arrondisQuiz } from './arrondis';
 import { litteralQuiz } from './litteral';
 import { litteralComplexQuiz } from './litteral-complex';
 import { produitQuiz } from './produit';
-import { arithQuiz } from './arith';
 import { arithHubQuiz } from './arith-hub';
 import { progQuiz } from './prog';
 import { pythQuiz } from './pyth';
@@ -34,7 +33,6 @@ export const topics: Topic[] = [
   progQuiz,
   produitQuiz,
   arithHubQuiz,
-  arithQuiz,
   recipQuiz,
   recipThalesQuiz,
   scientifiqueQuiz,
