@@ -9,12 +9,11 @@ import { litteralComplexQuiz } from './litteral-complex';
 import { produitQuiz } from './produit';
 import { arithHubQuiz } from './arith-hub';
 import { progQuiz } from './prog';
-import { pythQuiz } from './pyth';
+import { pythHubQuiz } from './pyth-hub';
 import { thalesQuiz } from './thales';
 import { fractionsHubQuiz } from './fractions-hub';
 import { fractionsComplexQuiz } from './fractions-complex';
 import { eqQuiz } from './eq';
-import { recipQuiz } from './recip';
 import { recipThalesQuiz } from './recip-thales';
 
 
@@ -22,7 +21,7 @@ import { recipThalesQuiz } from './recip-thales';
 export const topics: Topic[] = [
   entiersQuiz,
   entiersComplexQuiz,
-  pythQuiz,
+  pythHubQuiz,
   eqQuiz,
   thalesQuiz,
   arrondisQuiz,
@@ -33,7 +32,6 @@ export const topics: Topic[] = [
   progQuiz,
   produitQuiz,
   arithHubQuiz,
-  recipQuiz,
   recipThalesQuiz,
   scientifiqueQuiz,
   proportionnaliteQuiz,
