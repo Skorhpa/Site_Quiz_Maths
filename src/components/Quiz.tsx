@@ -38,6 +38,7 @@ import { ThalesReciproqueQuestion } from './questions/ThalesReciproqueQuestion';
 import { EntiersHub } from './questions/EntiersHub';
 import { FractionsHub } from './questions/FractionsHub';
 import { ArithHub } from './questions/ArithHub';
+import { PythHub } from './questions/PythHub';
 
 // Isolates a render crash in one exercise so the quiz controls still work.
 class ExerciseErrorBoundary extends Component<
@@ -254,6 +255,8 @@ export default function Quiz({ quiz }: QuizProps) {
         <FractionsHub accent={quiz.accent} accentSecondary={quiz.accentSecondary} />
       ) : quiz.renderer === 'arith-hub' ? (
         <ArithHub accent={quiz.accent} accentSecondary={quiz.accentSecondary} />
+      ) : quiz.renderer === 'pyth-hub' ? (
+        <PythHub />
       ) : (<>
 
       {quiz.formulaBanner && (
