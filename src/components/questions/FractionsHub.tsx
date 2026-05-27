@@ -7,6 +7,7 @@ import {
   generateMulSeries,
   generateDivSeries,
   generateFractionsComplexSeries,
+  generateProblemsSeries,
   fH,
   frEqual,
 } from '@/lib/generators/fractions';
@@ -14,7 +15,7 @@ import { generateCompSeries, generateSimplSeries } from '@/lib/generators/fracti
 import { FractionQuestion } from './FractionQuestion';
 import { FractionsCompQuestion } from './FractionsCompQuestion';
 
-type HubMode = 'mdc' | 'calculs' | 'comp' | 'simpl';
+type HubMode = 'mdc' | 'calculs' | 'comp' | 'simpl' | 'problemes';
 type CalcSubMode = 'add' | 'sub' | 'mul' | 'div' | 'complex';
 type FracHubExercise = MDCExercise | FractionExercise | FractionsCompExercise;
 
@@ -75,7 +76,10 @@ function MDCQuestion({ index, exercise, answer, accent, onSubmit }: {
     const ok1 = frEqual(vn1, vd1, exercise.frac1.n, exercise.frac1.d);
     const ok2 = frEqual(vn2, vd2, exercise.frac2.n, exercise.frac2.d);
     if (ok1 && ok2) {
-      setFeedback({ html: '✓ Correct !', cls: 'feedback ok' });
+      const simpleHint = exercise.kind === 'multiple' && vd1 !== exercise.lcd
+        ? ` Il y avait une façon plus simple de faire, regarde la correction.`
+        : '';
+      setFeedback({ html: `✓ Correct !${simpleHint}`, cls: 'feedback ok' });
       onSubmit(true);
     } else {
       const msgs: string[] = [];
@@ -361,6 +365,12 @@ const MAIN_MODES: { id: HubMode; label: string; icon: string; desc: string }[] =
     icon: '↓',
     desc: '6 exercices · simplification par PGCD et décomposition en facteurs premiers',
   },
+  {
+    id: 'problemes',
+    label: 'Problèmes',
+    icon: '📚',
+    desc: '4 exercices · problèmes en contexte',
+  },
 ];
 
 const CALCULS_SUBMODES: { id: CalcSubMode; label: string; icon: string; desc: string }[] = [
@@ -377,14 +387,6 @@ function MainModeSelector({ onSelect, accent }: { onSelect: (m: HubMode) => void
       {MAIN_MODES.map((m) => (
         <ModeCard key={m.id} label={m.label} icon={m.icon} desc={m.desc} accent={accent} onClick={() => onSelect(m.id)} />
       ))}
-      <ModeCard
-        label="Problèmes"
-        icon="📚"
-        desc="Bientôt disponible"
-        accent={accent}
-        onClick={() => {}}
-        disabled
-      />
     </div>
   );
 }
@@ -423,6 +425,7 @@ export function FractionsHub({ accent, accentSecondary }: { accent: string; acce
     if (m === 'mdc') exs = generateMDCSeries();
     else if (m === 'comp') exs = generateCompSeries();
     else if (m === 'simpl') exs = generateSimplSeries();
+    else if (m === 'problemes') exs = generateProblemsSeries();
     else if (m === 'calculs' && csm !== null) {
       if (csm === 'add') exs = generateAddSeries();
       else if (csm === 'sub') exs = generateSubSeries();
@@ -486,6 +489,7 @@ export function FractionsHub({ accent, accentSecondary }: { accent: string; acce
     if (mode === 'mdc') return 'Mise au même dénominateur';
     if (mode === 'comp') return 'Comparaisons';
     if (mode === 'simpl') return 'Simplification';
+    if (mode === 'problemes') return 'Problèmes';
     if (mode === 'calculs') {
       if (calcSubMode === 'add') return 'Addition';
       if (calcSubMode === 'sub') return 'Soustraction';
