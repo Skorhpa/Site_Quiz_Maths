@@ -437,3 +437,172 @@ export function generateArithSeries(): ArithExercise[] {
     makePgcdProblem(Math.floor(Math.random() * 3) + 3),
   ];
 }
+
+function makeListPrimes(): ArithExercise {
+  const primes = [2, 3, 5, 7, 11, 13, 17, 19];
+  const pills = primes
+    .map((p) => `<span style="background:rgba(253,164,175,0.15);padding:2px 8px;border-radius:6px;margin:2px;font-family:'DM Mono',monospace;">${p}</span>`)
+    .join(' ');
+  const steps = `<div style="margin-bottom:8px;"><strong>Définition :</strong> un nombre premier est un entier ≥ 2 qui n'a exactement que deux diviseurs : 1 et lui-même. <strong>1 n'est pas premier</strong> (un seul diviseur).</div>
+    <div>Les nombres premiers inférieurs à 20 :</div>
+    <div style="margin-top:6px;">${pills}</div>
+    <div style="margin-top:8px;color:var(--muted);font-size:12px;">Vérification : 4=2×2, 6=2×3, 8=2×4, 9=3×3, 10=2×5, 12=2×6, 14=2×7, 15=3×5, 16=2×8, 18=2×9 → composés. 2 3 5 7 11 13 17 19 → premiers.</div>`;
+  return {
+    type: 'default',
+    subtype: 'primeslist',
+    label: 'Nombres premiers',
+    color: COLORS.spotnonprime,
+    question: 'Écris tous les nombres premiers inférieurs à 20 (séparés par des points-virgules) :',
+    placeholder: 'Ex : 2 ; 3 ; 5 ; …',
+    steps,
+  };
+}
+
+function makeLargestMult(): ArithExercise {
+  const ks = [6, 7, 8, 9, 11, 12, 13, 14, 17];
+  const k = randFrom(ks);
+  let high = Math.floor(Math.random() * 80) + 50;
+  while (high % k === 0) high++;
+  const lm = Math.floor((high - 1) / k) * k;
+  const q = Math.floor(high / k);
+  const steps = `<div>On cherche le plus grand multiple de <strong>${k}</strong> strictement inférieur à <strong>${high}</strong>.</div>
+    <div style="margin-top:6px;">On divise : ${high} ÷ ${k} = ${(high / k).toFixed(2)}… → partie entière = ${q}</div>
+    <div style="margin-top:4px;">Mais ${q} × ${k} = ${q * k}${q * k === high ? ` = ${high} n'est pas strictement inférieur, on prend ${q - 1}` : ` < ${high} ✓`}</div>
+    <div style="margin-top:6px;"><strong>${k} × ${lm / k} = <span style="color:var(--correct);">${lm}</span></strong></div>`;
+  return {
+    type: 'default',
+    subtype: 'largestmult',
+    label: 'Multiples',
+    color: COLORS.multiples,
+    question: `Donne le plus grand multiple de <strong>${k}</strong> strictement inférieur à <strong>${high}</strong>.`,
+    k,
+    high,
+    largestMult: lm,
+    placeholder: `Ex : ${lm}`,
+    steps,
+  };
+}
+
+function makeSpotNonPrimeLarge(): ArithExercise {
+  const primePool = [17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97];
+  const compPool: { n: number; why: string }[] = [
+    { n: 15, why: '3 × 5' }, { n: 21, why: '3 × 7' }, { n: 22, why: '2 × 11' },
+    { n: 25, why: '5²' }, { n: 27, why: '3³' }, { n: 33, why: '3 × 11' },
+    { n: 35, why: '5 × 7' }, { n: 39, why: '3 × 13' }, { n: 45, why: '9 × 5' },
+    { n: 49, why: '7²' }, { n: 51, why: '3 × 17' }, { n: 55, why: '5 × 11' },
+    { n: 57, why: '3 × 19' }, { n: 63, why: '9 × 7' }, { n: 65, why: '5 × 13' },
+    { n: 77, why: '7 × 11' }, { n: 85, why: '5 × 17' }, { n: 91, why: '7 × 13' },
+  ];
+  const howMany = Math.random() < 0.4 ? 1 : 2;
+  const nonPrimesInfo = shuffleArr([...compPool]).slice(0, howMany);
+  const nonPrimes = nonPrimesInfo.map((x) => x.n);
+  const primes = shuffleArr([...primePool]).slice(0, 5 - howMany);
+  const list = shuffleArr([...primes, ...nonPrimes]);
+  const listDisplay = list
+    .map((n) => `<span style="display:inline-block;font-family:'DM Mono',monospace;font-size:1.15rem;font-weight:700;padding:4px 12px;background:var(--surface2);border-radius:8px;margin:3px;">${n}</span>`)
+    .join(' ');
+  const detailLines = list
+    .map((x) => {
+      const np = nonPrimesInfo.find((c) => c.n === x);
+      return np
+        ? `<div style="font-family:'DM Mono',monospace;">${x} = ${np.why} → <span style="color:#f87171;">non premier</span></div>`
+        : `<div style="font-family:'DM Mono',monospace;">${x} → <span style="color:var(--correct);">premier</span></div>`;
+    })
+    .join('');
+  const steps = `<div style="color:var(--text);margin-bottom:6px;"><strong>Rappel :</strong> un nombre premier est un entier ≥ 2 qui n'a que deux diviseurs : 1 et lui-même.</div>${detailLines}`;
+  return {
+    type: 'default',
+    subtype: 'spotnonprime',
+    label: 'Nombres premiers',
+    color: COLORS.spotnonprime,
+    question: `Dans la liste suivante, quels nombres ne sont <strong>pas</strong> premiers ?<div style="margin-top:10px;padding:10px 14px;background:var(--surface2);border-radius:10px;line-height:2.4;">${listDisplay}</div>`,
+    list,
+    nonPrimes: nonPrimes.slice().sort((a, b) => a - b),
+    placeholder: `Écris les non-premiers séparés par ; (ex : ${nonPrimes.length > 0 ? nonPrimes[0] : 25})`,
+    steps,
+  };
+}
+
+function decompoTreeHTML(n: number, factors: number[]): string {
+  const lines: string[] = [];
+  let rem = n;
+  for (const p of factors) {
+    lines.push(`<div style="font-family:'DM Mono',monospace;">${rem} ÷ <span style="color:var(--car);">${p}</span> = <strong>${rem / p}</strong></div>`);
+    rem = rem / p;
+  }
+  lines.push(`<div style="font-family:'DM Mono',monospace;">${rem} est premier.</div>`);
+  lines.push(`<div style="margin-top:4px;font-family:'DM Mono',monospace;"><strong>${n} = <span style="color:var(--correct);">${factors.join(' × ')}</span></strong></div>`);
+  return lines.join('');
+}
+
+function makeDecompoDetailed(nFactors: number): ArithExercise {
+  function makeNum() {
+    const factors: number[] = [];
+    for (let i = 0; i < nFactors; i++) factors.push(randFrom(PRIMES_UNDER_13));
+    factors.sort((a, b) => a - b);
+    return { n: factors.reduce((a, b) => a * b, 1), factors };
+  }
+  const nums = [makeNum(), makeNum(), makeNum()];
+  while (nums[1]!.n === nums[0]!.n) nums[1] = makeNum();
+  while (nums[2]!.n === nums[0]!.n || nums[2]!.n === nums[1]!.n) nums[2] = makeNum();
+  const corrBlocks = nums
+    .map(({ n, factors }) => `<div style="margin-bottom:10px;">${decompoTreeHTML(n, factors)}</div>`)
+    .join('');
+  const steps = `<div style="color:var(--muted);margin-bottom:8px;">Méthode : on divise successivement par le plus petit nombre premier possible.</div>${corrBlocks}`;
+  const label =
+    nFactors === 2 ? 'Décomposition (2 facteurs)'
+    : nFactors === 3 ? 'Décomposition (3 facteurs)'
+    : 'Décomposition (4 facteurs)';
+  return {
+    type: 'default',
+    subtype: 'decompo',
+    label,
+    color: COLORS.decompo,
+    question: 'Décompose chacun de ces nombres en produit de nombres premiers :',
+    nums,
+    nFactors,
+    steps,
+  };
+}
+
+/** 5 exercises: 3 divisors + 2 divisibility criteria */
+export function generateArithDiviseursSeries(): ArithExercise[] {
+  return [
+    makeDivisors(),
+    makeDivisors(),
+    makeDivisors(),
+    makeDivCriteria(),
+    makeDivCriteria(),
+  ];
+}
+
+/** 5 exercises: 2 regular multiples + 1 regular + 2 largest-multiple */
+export function generateArithMultiplesSeries(): ArithExercise[] {
+  return [
+    makeMultiples(),
+    makeMultiples(),
+    makeMultiples(),
+    makeLargestMult(),
+    makeLargestMult(),
+  ];
+}
+
+/** 5 exercises: list primes + spot-non-prime (15–100) + detailed decompo ×3 */
+export function generateArithPrimesSeries(): ArithExercise[] {
+  return [
+    makeListPrimes(),
+    makeSpotNonPrimeLarge(),
+    makeDecompoDetailed(2),
+    makeDecompoDetailed(3),
+    makeDecompoDetailed(4),
+  ];
+}
+
+/** 2 exercises: 2 PGCD problems with distinct contexts */
+export function generateArithProblemesSeries(): ArithExercise[] {
+  const offset = Math.floor(Math.random() * PGCD_CONTEXTS.length);
+  return [
+    makePgcdProblem(offset),
+    makePgcdProblem((offset + Math.floor(PGCD_CONTEXTS.length / 2)) % PGCD_CONTEXTS.length),
+  ];
+}

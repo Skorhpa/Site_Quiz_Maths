@@ -241,6 +241,31 @@ function makeMulProblem1(): FractionExercise {
       ans: { n: 6, d: 15 },
       steps: `${fH(3, 5)} × ${fH(2, 3)} = ${fH('3×2', '5×3', 'var(--c6)')} = ${fH(6, 15, 'var(--c6)')} = ${fH(2, 5, 'var(--correct)')} (simplifié)`,
     },
+    {
+      text: `Un magasin a vendu les ${fH(3, 4)} de ses stocks, dont les ${fH(2, 9)} étaient des articles soldés. Quelle fraction du stock total était des articles soldés vendus ?`,
+      ans: { n: 6, d: 36 },
+      steps: `${fH(3, 4)} × ${fH(2, 9)} = ${fH('3×2', '4×9', 'var(--c6)')} = ${fH(6, 36, 'var(--c6)')} = ${fH(1, 6, 'var(--correct)')} (simplifié)`,
+    },
+    {
+      text: `Dans une école, les ${fH(2, 5)} des élèves font du sport, et parmi eux les ${fH(3, 4)} jouent au football. Quelle fraction de l'école joue au football ?`,
+      ans: { n: 6, d: 20 },
+      steps: `${fH(2, 5)} × ${fH(3, 4)} = ${fH('2×3', '5×4', 'var(--c6)')} = ${fH(6, 20, 'var(--c6)')} = ${fH(3, 10, 'var(--correct)')} (simplifié)`,
+    },
+    {
+      text: `Les ${fH(5, 8)} des animaux d'une ferme sont des vaches, dont les ${fH(1, 5)} sont laitières. Quelle fraction des animaux sont des vaches laitières ?`,
+      ans: { n: 5, d: 40 },
+      steps: `${fH(5, 8)} × ${fH(1, 5)} = ${fH('5×1', '8×5', 'var(--c6)')} = ${fH(5, 40, 'var(--c6)')} = ${fH(1, 8, 'var(--correct)')} (simplifié)`,
+    },
+    {
+      text: `Les ${fH(4, 7)} des joueurs d'un tournoi sont des adultes, et ${fH(3, 8)} d'entre eux jouent en finale. Quelle fraction des joueurs sont des adultes en finale ?`,
+      ans: { n: 12, d: 56 },
+      steps: `${fH(4, 7)} × ${fH(3, 8)} = ${fH('4×3', '7×8', 'var(--c6)')} = ${fH(12, 56, 'var(--c6)')} = ${fH(3, 14, 'var(--correct)')} (simplifié)`,
+    },
+    {
+      text: `Les ${fH(3, 5)} des livres d'une bibliothèque sont des romans, dont les ${fH(5, 6)} ont été lus au moins une fois. Quelle fraction des livres sont des romans lus ?`,
+      ans: { n: 15, d: 30 },
+      steps: `${fH(3, 5)} × ${fH(5, 6)} = ${fH('3×5', '5×6', 'var(--c6)')} = ${fH(15, 30, 'var(--c6)')} = ${fH(1, 2, 'var(--correct)')} (simplifié)`,
+    },
   ];
   const p = pick(probs);
   return ex({
@@ -272,8 +297,43 @@ function makeMulProblem2(): FractionExercise {
       text: `Une bibliothèque a 60 livres. Les ${fH(2, 5)} sont des romans. Des romans, les ${fH(3, 4)} sont empruntés. Combien de romans sont empruntés ?`,
       step1: `60 × ${fH(2, 5)} = 24 romans`,
       step2: '(ici pas de reste, on applique directement)',
-      step3: '24 × ' + fH(3, 4) + ' = 18 romans empruntés',
+      step3: `24 × ${fH(3, 4)} = 18 romans empruntés`,
       ans: { n: 18, d: 1 },
+    },
+    {
+      text: `Une épicière a 36 pommes. Elle en vend les ${fH(1, 4)} le matin. Avec ce qui reste, elle utilise les ${fH(2, 3)} pour faire des tartes. Combien de pommes utilise-t-elle pour les tartes ?`,
+      step1: `36 × ${fH(1, 4)} = 9 pommes vendues`,
+      step2: 'Reste = 36 − 9 = 27 pommes',
+      step3: `27 × ${fH(2, 3)} = 18 pommes pour les tartes`,
+      ans: { n: 18, d: 1 },
+    },
+    {
+      text: `Un boulanger prépare 48 croissants. Il en distribue les ${fH(1, 6)} à une association. Avec ce qui reste, il en vend les ${fH(3, 4)} en boutique. Combien de croissants vend-il en boutique ?`,
+      step1: `48 × ${fH(1, 6)} = 8 croissants distribués`,
+      step2: 'Reste = 48 − 8 = 40 croissants',
+      step3: `40 × ${fH(3, 4)} = 30 croissants vendus en boutique`,
+      ans: { n: 30, d: 1 },
+    },
+    {
+      text: `Sophie a 60 billes. Elle donne les ${fH(2, 5)} à son frère. Avec ce qui reste, elle perd les ${fH(1, 3)} au jeu. Combien de billes perd-elle ?`,
+      step1: `60 × ${fH(2, 5)} = 24 billes données`,
+      step2: 'Reste = 60 − 24 = 36 billes',
+      step3: `36 × ${fH(1, 3)} = 12 billes perdues`,
+      ans: { n: 12, d: 1 },
+    },
+    {
+      text: `Un fermier a 80 poules. Il en vend les ${fH(3, 8)} au marché. Avec ce qui reste, les ${fH(1, 5)} pondent chaque jour. Combien de poules pondent chaque jour ?`,
+      step1: `80 × ${fH(3, 8)} = 30 poules vendues`,
+      step2: 'Reste = 80 − 30 = 50 poules',
+      step3: `50 × ${fH(1, 5)} = 10 poules pondent chaque jour`,
+      ans: { n: 10, d: 1 },
+    },
+    {
+      text: `Une école a 120 élèves. Les ${fH(1, 4)} sont absents un lundi. Parmi les présents, les ${fH(2, 5)} participent au sport. Combien d'élèves participent au sport ?`,
+      step1: `120 × ${fH(1, 4)} = 30 élèves absents`,
+      step2: 'Présents = 120 − 30 = 90 élèves',
+      step3: `90 × ${fH(2, 5)} = 36 élèves participent au sport`,
+      ans: { n: 36, d: 1 },
     },
   ];
   const p = pick(probs);
@@ -426,31 +486,131 @@ export function generateDivSeries(): FractionExercise[] {
 }
 
 function makeResidualProblem1(): FractionExercise {
-  const text = `Dans une classe, les élèves ont voté pour leurs activités préférées : ${fH(1, 3)} ont choisi la natation, ${fH(1, 4)} le football et ${fH(1, 6)} le tennis. Quelle fraction des élèves n'a pas voté pour ces trois activités ?`;
-  const steps = `<div><strong>Étape 1 :</strong> trouver le dénominateur commun de 3, 4 et 6. C'est <strong>12</strong>.</div>
-    <div style="margin-top:6px;">${showExpand(1, 3, 4, 'var(--c6)')} &nbsp;; ${showExpand(1, 4, 3, 'var(--c6)')} &nbsp;; ${showExpand(1, 6, 2, 'var(--c6)')}</div>
-    <div style="margin-top:6px;">${fH(4, 12)} + ${fH(3, 12)} + ${fH(2, 12)} = ${fH('4+3+2', 12, 'var(--c6)')} = ${fH(9, 12, 'var(--c6)')} = ${fH(3, 4, 'var(--c6)')} (simplifié)</div>
-    <div style="margin-top:8px;"><strong>Étape 2 :</strong> calculer le reste : 1 − ${fH(3, 4)} = ${fH(4, 4)} − ${fH(3, 4)} = ${fH(1, 4, 'var(--correct)')}</div>`;
+  const probs = [
+    {
+      text: `Dans une classe, les élèves ont voté pour leurs activités préférées : ${fH(1, 3)} ont choisi la natation, ${fH(1, 4)} le football et ${fH(1, 6)} le tennis. Quelle fraction des élèves n'a pas voté pour ces trois activités ?`,
+      lcd: 12, k1: 4, k2: 3, k3: 2, n1: 1, d1: 3, n2: 1, d2: 4, n3: 1, d3: 6,
+      sum: { n: 3, d: 4 }, ans: { n: 1, d: 4 },
+      context: 'dénominateur commun de 3, 4 et 6',
+    },
+    {
+      text: `Une classe choisit des activités parascolaires : ${fH(1, 2)} des élèves font de la lecture, ${fH(1, 5)} du sport et ${fH(1, 10)} de la musique. Quelle fraction ne participe à aucune de ces activités ?`,
+      lcd: 10, k1: 5, k2: 2, k3: 1, n1: 1, d1: 2, n2: 1, d2: 5, n3: 1, d3: 10,
+      sum: { n: 4, d: 5 }, ans: { n: 1, d: 5 },
+      context: 'dénominateur commun de 2, 5 et 10',
+    },
+    {
+      text: `Dans un club, ${fH(3, 8)} des membres font du dessin, ${fH(1, 4)} de la danse et ${fH(1, 8)} du théâtre. Quelle fraction des membres ne pratique aucune de ces activités ?`,
+      lcd: 8, k1: 1, k2: 2, k3: 1, n1: 3, d1: 8, n2: 1, d2: 4, n3: 1, d3: 8,
+      sum: { n: 3, d: 4 }, ans: { n: 1, d: 4 },
+      context: 'dénominateur commun de 8, 4 et 8',
+    },
+    {
+      text: `Lors d'un vote, ${fH(5, 12)} des élèves ont choisi le football, ${fH(1, 3)} le basket et ${fH(1, 12)} le volley. Quelle fraction des élèves n'a voté pour aucun de ces sports ?`,
+      lcd: 12, k1: 1, k2: 4, k3: 1, n1: 5, d1: 12, n2: 1, d2: 3, n3: 1, d3: 12,
+      sum: { n: 5, d: 6 }, ans: { n: 1, d: 6 },
+      context: 'dénominateur commun de 12, 3 et 12',
+    },
+    {
+      text: `Des élèves choisissent un sport : ${fH(1, 4)} font de la natation, ${fH(1, 3)} du vélo et ${fH(1, 6)} de la course à pied. Quelle fraction ne pratique aucun de ces sports ?`,
+      lcd: 12, k1: 3, k2: 4, k3: 2, n1: 1, d1: 4, n2: 1, d2: 3, n3: 1, d3: 6,
+      sum: { n: 3, d: 4 }, ans: { n: 1, d: 4 },
+      context: 'dénominateur commun de 4, 3 et 6',
+    },
+    {
+      text: `Dans un atelier d'arts plastiques, ${fH(3, 10)} des élèves font de la peinture, ${fH(2, 5)} de la sculpture et ${fH(1, 10)} de la photographie. Quelle fraction ne participe à aucune de ces activités ?`,
+      lcd: 10, k1: 1, k2: 2, k3: 1, n1: 3, d1: 10, n2: 2, d2: 5, n3: 1, d3: 10,
+      sum: { n: 4, d: 5 }, ans: { n: 1, d: 5 },
+      context: 'dénominateur commun de 10, 5 et 10',
+    },
+    {
+      text: `Une classe choisit des loisirs numériques : ${fH(2, 5)} jouent aux jeux vidéo, ${fH(1, 4)} font du sport et ${fH(3, 20)} regardent des séries. Quelle fraction ne fait aucune de ces activités ?`,
+      lcd: 20, k1: 4, k2: 5, k3: 1, n1: 2, d1: 5, n2: 1, d2: 4, n3: 3, d3: 20,
+      sum: { n: 4, d: 5 }, ans: { n: 1, d: 5 },
+      context: 'dénominateur commun de 5, 4 et 20',
+    },
+    {
+      text: `Dans une équipe, ${fH(7, 12)} jouent au football, ${fH(1, 6)} font de la natation et ${fH(1, 12)} jouent au basket. Quelle fraction ne pratique aucun de ces sports ?`,
+      lcd: 12, k1: 1, k2: 2, k3: 1, n1: 7, d1: 12, n2: 1, d2: 6, n3: 1, d3: 12,
+      sum: { n: 5, d: 6 }, ans: { n: 1, d: 6 },
+      context: 'dénominateur commun de 12, 6 et 12',
+    },
+  ];
+  const p = pick(probs);
+  const stepsExpand = p.k1 > 1
+    ? `${showExpand(p.n1, p.d1, p.k1, 'var(--c6)')} &nbsp;; ${showExpand(p.n2, p.d2, p.k2, 'var(--c6)')}${p.k3 > 1 ? ` &nbsp;; ${showExpand(p.n3, p.d3, p.k3, 'var(--c6)')}` : ` &nbsp;; ${fH(p.n3, p.d3)} (déjà au bon dénominateur)`}`
+    : `${fH(p.n1, p.d1)} (déjà au bon dénominateur) &nbsp;; ${showExpand(p.n2, p.d2, p.k2, 'var(--c6)')}${p.k3 > 1 ? ` &nbsp;; ${showExpand(p.n3, p.d3, p.k3, 'var(--c6)')}` : ` &nbsp;; ${fH(p.n3, p.d3)} (déjà au bon dénominateur)`}`;
+  const r1 = p.n1 * p.k1, r2 = p.n2 * p.k2, r3 = p.n3 * p.k3;
+  const steps = `<div><strong>Étape 1 :</strong> trouver le ${p.context}. C'est <strong>${p.lcd}</strong>.</div>
+    <div style="margin-top:6px;">${stepsExpand}</div>
+    <div style="margin-top:6px;">${fH(r1, p.lcd)} + ${fH(r2, p.lcd)} + ${fH(r3, p.lcd)} = ${fH(`${r1}+${r2}+${r3}`, p.lcd, 'var(--c6)')} = ${fH(r1+r2+r3, p.lcd, 'var(--c6)')} = ${fH(p.sum.n, p.sum.d, 'var(--c6)')} (simplifié)</div>
+    <div style="margin-top:8px;"><strong>Étape 2 :</strong> calculer le reste : 1 − ${fH(p.sum.n, p.sum.d)} = ${fH(p.sum.d, p.sum.d)} − ${fH(p.sum.n, p.sum.d)} = ${fH(p.ans.n, p.ans.d, 'var(--correct)')}</div>`;
   return ex({
     op: 'add',
     label: 'Problème',
-    expr: `<span style="font-size:14px;line-height:1.8;">${text}</span>`,
-    ans: { n: 1, d: 4 },
+    expr: `<span style="font-size:14px;line-height:1.8;">${p.text}</span>`,
+    ans: p.ans,
     steps: `<div style="line-height:2;">${steps}</div>`,
   });
 }
 
 function makeResidualProblem2(): FractionExercise {
-  const text = `Julie prépare un gâteau. Elle utilise ${fH(1, 3)} de son sac de farine pour la pâte, ${fH(3, 8)} pour la crème et ${fH(1, 6)} pour les finitions. Quelle fraction du sac de farine lui reste-t-il ?`;
-  const steps = `<div><strong>Étape 1 :</strong> trouver le dénominateur commun de 3, 8 et 6. C'est <strong>24</strong>.</div>
-    <div style="margin-top:6px;">${showExpand(1, 3, 8, 'var(--c6)')} &nbsp;; ${showExpand(3, 8, 3, 'var(--c6)')} &nbsp;; ${showExpand(1, 6, 4, 'var(--c6)')}</div>
-    <div style="margin-top:6px;">${fH(8, 24)} + ${fH(9, 24)} + ${fH(4, 24)} = ${fH('8+9+4', 24, 'var(--c6)')} = ${fH(21, 24, 'var(--c6)')} = ${fH(7, 8, 'var(--c6)')} (simplifié)</div>
-    <div style="margin-top:8px;"><strong>Étape 2 :</strong> calculer le reste : 1 − ${fH(7, 8)} = ${fH(8, 8)} − ${fH(7, 8)} = ${fH(1, 8, 'var(--correct)')}</div>`;
+  const probs = [
+    {
+      text: `Julie prépare un gâteau. Elle utilise ${fH(1, 3)} de son sac de farine pour la pâte, ${fH(3, 8)} pour la crème et ${fH(1, 6)} pour les finitions. Quelle fraction du sac de farine lui reste-t-il ?`,
+      lcd: 24, k1: 8, k2: 3, k3: 4, n1: 1, d1: 3, n2: 3, d2: 8, n3: 1, d3: 6,
+      sum: { n: 7, d: 8 }, ans: { n: 1, d: 8 }, context: 'dénominateur commun de 3, 8 et 6',
+    },
+    {
+      text: `Un maçon utilise ${fH(1, 4)} de son sac de ciment pour les fondations, ${fH(3, 8)} pour les murs et ${fH(1, 8)} pour les finitions. Quelle fraction du sac reste-t-il ?`,
+      lcd: 8, k1: 2, k2: 1, k3: 1, n1: 1, d1: 4, n2: 3, d2: 8, n3: 1, d3: 8,
+      sum: { n: 3, d: 4 }, ans: { n: 1, d: 4 }, context: 'dénominateur commun de 4, 8 et 8',
+    },
+    {
+      text: `Marie prépare une corbeille de fruits. Elle utilise ${fH(2, 5)} du panier pour les pommes, ${fH(1, 4)} pour les poires et ${fH(1, 10)} pour les cerises. Quelle fraction du panier reste vide ?`,
+      lcd: 20, k1: 4, k2: 5, k3: 2, n1: 2, d1: 5, n2: 1, d2: 4, n3: 1, d3: 10,
+      sum: { n: 3, d: 4 }, ans: { n: 1, d: 4 }, context: 'dénominateur commun de 5, 4 et 10',
+    },
+    {
+      text: `Un boulanger utilise ${fH(5, 12)} de sa farine le matin, ${fH(1, 3)} l'après-midi et ${fH(1, 12)} le soir. Quelle fraction de la farine lui reste-t-il ?`,
+      lcd: 12, k1: 1, k2: 4, k3: 1, n1: 5, d1: 12, n2: 1, d2: 3, n3: 1, d3: 12,
+      sum: { n: 5, d: 6 }, ans: { n: 1, d: 6 }, context: 'dénominateur commun de 12, 3 et 12',
+    },
+    {
+      text: `Thomas consacre ${fH(3, 10)} de son temps libre à la lecture, ${fH(2, 5)} au sport et ${fH(1, 5)} à la musique. Quelle fraction de son temps libre lui reste-t-il ?`,
+      lcd: 10, k1: 1, k2: 2, k3: 2, n1: 3, d1: 10, n2: 2, d2: 5, n3: 1, d3: 5,
+      sum: { n: 9, d: 10 }, ans: { n: 1, d: 10 }, context: 'dénominateur commun de 10, 5 et 5',
+    },
+    {
+      text: `Un jardinier consacre ${fH(5, 12)} de son terrain à la pelouse, ${fH(1, 4)} aux fleurs et ${fH(1, 6)} au potager. Quelle fraction du terrain n'est pas encore aménagée ?`,
+      lcd: 12, k1: 1, k2: 3, k3: 2, n1: 5, d1: 12, n2: 1, d2: 4, n3: 1, d3: 6,
+      sum: { n: 5, d: 6 }, ans: { n: 1, d: 6 }, context: 'dénominateur commun de 12, 4 et 6',
+    },
+    {
+      text: `Une peintre utilise ${fH(2, 5)} de son pot pour les murs, ${fH(1, 4)} pour le plafond et ${fH(3, 20)} pour les boiseries. Quelle fraction du pot lui reste-t-il ?`,
+      lcd: 20, k1: 4, k2: 5, k3: 1, n1: 2, d1: 5, n2: 1, d2: 4, n3: 3, d3: 20,
+      sum: { n: 4, d: 5 }, ans: { n: 1, d: 5 }, context: 'dénominateur commun de 5, 4 et 20',
+    },
+    {
+      text: `Une imprimante utilise ${fH(7, 24)} de son encre pour les titres, ${fH(5, 12)} pour le texte et ${fH(1, 8)} pour les images. Quelle fraction de l'encre reste-t-il ?`,
+      lcd: 24, k1: 1, k2: 2, k3: 3, n1: 7, d1: 24, n2: 5, d2: 12, n3: 1, d3: 8,
+      sum: { n: 5, d: 6 }, ans: { n: 1, d: 6 }, context: 'dénominateur commun de 24, 12 et 8',
+    },
+  ];
+  const p = pick(probs);
+  const r1 = p.n1 * p.k1, r2 = p.n2 * p.k2, r3 = p.n3 * p.k3;
+  const expand1 = p.k1 > 1 ? showExpand(p.n1, p.d1, p.k1, 'var(--c6)') : `${fH(p.n1, p.d1)} (déjà au bon dénominateur)`;
+  const expand2 = p.k2 > 1 ? showExpand(p.n2, p.d2, p.k2, 'var(--c6)') : `${fH(p.n2, p.d2)} (déjà au bon dénominateur)`;
+  const expand3 = p.k3 > 1 ? showExpand(p.n3, p.d3, p.k3, 'var(--c6)') : `${fH(p.n3, p.d3)} (déjà au bon dénominateur)`;
+  const steps = `<div><strong>Étape 1 :</strong> trouver le ${p.context}. C'est <strong>${p.lcd}</strong>.</div>
+    <div style="margin-top:6px;">${expand1} &nbsp;; ${expand2} &nbsp;; ${expand3}</div>
+    <div style="margin-top:6px;">${fH(r1, p.lcd)} + ${fH(r2, p.lcd)} + ${fH(r3, p.lcd)} = ${fH(`${r1}+${r2}+${r3}`, p.lcd, 'var(--c6)')} = ${fH(r1+r2+r3, p.lcd, 'var(--c6)')} = ${fH(p.sum.n, p.sum.d, 'var(--c6)')} (simplifié)</div>
+    <div style="margin-top:8px;"><strong>Étape 2 :</strong> calculer le reste : 1 − ${fH(p.sum.n, p.sum.d)} = ${fH(p.sum.d, p.sum.d)} − ${fH(p.sum.n, p.sum.d)} = ${fH(p.ans.n, p.ans.d, 'var(--correct)')}</div>`;
   return ex({
     op: 'add',
     label: 'Problème',
-    expr: `<span style="font-size:14px;line-height:1.8;">${text}</span>`,
-    ans: { n: 1, d: 8 },
+    expr: `<span style="font-size:14px;line-height:1.8;">${p.text}</span>`,
+    ans: p.ans,
     steps: `<div style="line-height:2;">${steps}</div>`,
   });
 }

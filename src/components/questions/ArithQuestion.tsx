@@ -61,6 +61,20 @@ export function ArithQuestion({ index, exercise, answer, onSubmit }: ArithQuesti
       const expected = exercise.mults!.slice().sort((a, b) => a - b);
       ok = v.length === expected.length && v.every((x, j) => x === expected[j]);
       if (!ok) msg = `✗ Multiples de ${exercise.k} entre ${exercise.low} et ${exercise.high} : ${exercise.mults!.join(' ; ')}`;
+    } else if (exercise.subtype === 'largestmult') {
+      const v = parseInt(singleInput.trim(), 10);
+      ok = !Number.isNaN(v) && v === exercise.largestMult;
+      if (!ok) msg = `✗ Réponse : ${exercise.largestMult}`;
+    } else if (exercise.subtype === 'primeslist') {
+      const PRIMES = [2, 3, 5, 7, 11, 13, 17, 19];
+      const v = normList(singleInput);
+      if (v.includes(1)) {
+        msg = '✗ 1 n\'est pas un nombre premier ! Un nombre premier a exactement 2 diviseurs (1 et lui-même), or 1 n\'en a qu\'un seul.';
+        ok = false;
+      } else {
+        ok = v.length === PRIMES.length && v.every((x, j) => x === PRIMES[j]);
+        if (!ok) msg = `✗ Réponse : ${PRIMES.join(' ; ')}`;
+      }
     } else if (exercise.subtype === 'spotnonprime') {
       const v = normList(singleInput);
       const expected = exercise.nonPrimes!.slice().sort((a, b) => a - b);
@@ -114,7 +128,7 @@ export function ArithQuestion({ index, exercise, answer, onSubmit }: ArithQuesti
   };
 
   const renderBody = () => {
-    if (exercise.subtype === 'divisors' || exercise.subtype === 'multiples' || exercise.subtype === 'spotnonprime') {
+    if (exercise.subtype === 'divisors' || exercise.subtype === 'multiples' || exercise.subtype === 'spotnonprime' || exercise.subtype === 'primeslist' || exercise.subtype === 'largestmult') {
       return (
         <>
           <div
@@ -308,6 +322,8 @@ export function ArithQuestion({ index, exercise, answer, onSubmit }: ArithQuesti
       let text = 'Voir la correction ci-dessous.';
       if (exercise.subtype === 'divisors') text = `Réponse : ${exercise.divs!.join(' ; ')}`;
       else if (exercise.subtype === 'multiples') text = `Réponse : ${exercise.mults!.join(' ; ')}`;
+      else if (exercise.subtype === 'largestmult') text = `Réponse : ${exercise.largestMult}`;
+      else if (exercise.subtype === 'primeslist') text = 'Réponse : 2 ; 3 ; 5 ; 7 ; 11 ; 13 ; 17 ; 19';
       else if (exercise.subtype === 'decompo')
         text = `Réponse : ${exercise.nums!.map(({ n, factors }) => `${n}=${factStr(factors)}`).join(' · ')}`;
       return { text, cls: 'feedback ko' };
