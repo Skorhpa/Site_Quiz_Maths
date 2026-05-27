@@ -425,6 +425,40 @@ export function generateDivSeries(): FractionExercise[] {
   return [makeDiv('fracbyfrac'), makeDiv('fracbyfrac'), makeDiv('fracbyfrac'), makeDiv('fracbyint'), makeDivNeg()];
 }
 
+function makeResidualProblem1(): FractionExercise {
+  const text = `Dans une classe, les élèves ont voté pour leurs activités préférées : ${fH(1, 3)} ont choisi la natation, ${fH(1, 4)} le football et ${fH(1, 6)} le tennis. Quelle fraction des élèves n'a pas voté pour ces trois activités ?`;
+  const steps = `<div><strong>Étape 1 :</strong> trouver le dénominateur commun de 3, 4 et 6. C'est <strong>12</strong>.</div>
+    <div style="margin-top:6px;">${showExpand(1, 3, 4, 'var(--c6)')} &nbsp;; ${showExpand(1, 4, 3, 'var(--c6)')} &nbsp;; ${showExpand(1, 6, 2, 'var(--c6)')}</div>
+    <div style="margin-top:6px;">${fH(4, 12)} + ${fH(3, 12)} + ${fH(2, 12)} = ${fH('4+3+2', 12, 'var(--c6)')} = ${fH(9, 12, 'var(--c6)')} = ${fH(3, 4, 'var(--c6)')} (simplifié)</div>
+    <div style="margin-top:8px;"><strong>Étape 2 :</strong> calculer le reste : 1 − ${fH(3, 4)} = ${fH(4, 4)} − ${fH(3, 4)} = ${fH(1, 4, 'var(--correct)')}</div>`;
+  return ex({
+    op: 'add',
+    label: 'Problème',
+    expr: `<span style="font-size:14px;line-height:1.8;">${text}</span>`,
+    ans: { n: 1, d: 4 },
+    steps: `<div style="line-height:2;">${steps}</div>`,
+  });
+}
+
+function makeResidualProblem2(): FractionExercise {
+  const text = `Julie prépare un gâteau. Elle utilise ${fH(1, 3)} de son sac de farine pour la pâte, ${fH(3, 8)} pour la crème et ${fH(1, 6)} pour les finitions. Quelle fraction du sac de farine lui reste-t-il ?`;
+  const steps = `<div><strong>Étape 1 :</strong> trouver le dénominateur commun de 3, 8 et 6. C'est <strong>24</strong>.</div>
+    <div style="margin-top:6px;">${showExpand(1, 3, 8, 'var(--c6)')} &nbsp;; ${showExpand(3, 8, 3, 'var(--c6)')} &nbsp;; ${showExpand(1, 6, 4, 'var(--c6)')}</div>
+    <div style="margin-top:6px;">${fH(8, 24)} + ${fH(9, 24)} + ${fH(4, 24)} = ${fH('8+9+4', 24, 'var(--c6)')} = ${fH(21, 24, 'var(--c6)')} = ${fH(7, 8, 'var(--c6)')} (simplifié)</div>
+    <div style="margin-top:8px;"><strong>Étape 2 :</strong> calculer le reste : 1 − ${fH(7, 8)} = ${fH(8, 8)} − ${fH(7, 8)} = ${fH(1, 8, 'var(--correct)')}</div>`;
+  return ex({
+    op: 'add',
+    label: 'Problème',
+    expr: `<span style="font-size:14px;line-height:1.8;">${text}</span>`,
+    ans: { n: 1, d: 8 },
+    steps: `<div style="line-height:2;">${steps}</div>`,
+  });
+}
+
+export function generateProblemsSeries(): FractionExercise[] {
+  return [makeMulProblem1(), makeMulProblem2(), makeResidualProblem1(), makeResidualProblem2()];
+}
+
 export const FRACTIONS_OP_COLORS: Record<FractionExercise['op'], string> = {
   add: '#6EE7C0',
   sub: '#60A5FA',
@@ -487,7 +521,7 @@ const FC_BANK: { label: string; expr: string; ans: { n: number; d: number }; ste
     label: 'Opération mixte',
     expr: `( ${fH(5, 6)} − ${fH(1, 3)} ) × ${fH(12, 7)}`,
     ans: { n: 36, d: 42 },
-    steps: `<div><strong>Étape 1 :</strong> calculer la parenthèse (LCD = 6).</div>
+    steps: `<div><strong>Étape 1 :</strong> calculer la parenthèse (dénominateur commun = 6).</div>
         <div style="margin-top:6px;">${showExpand(1, 3, 2, 'var(--c6)')} &nbsp;→&nbsp; ${fH(5, 6)} − ${fH(2, 6)} = ${fH(3, 6, 'var(--c6)')} = ${fH(1, 2, 'var(--c6)')} (simplifié)</div>
         <div style="margin-top:8px;"><strong>Étape 2 :</strong> multiplier.</div>
         <div style="margin-top:6px;">${fH(1, 2)} × ${fH(12, 7)} = ${fH('1×12', '2×7', 'var(--c6)')} = ${fH(12, 14, 'var(--c6)')} = ${fH(6, 7, 'var(--correct)')} (simplifié)</div>`,
@@ -505,7 +539,7 @@ const FC_BANK: { label: string; expr: string; ans: { n: number; d: number }; ste
     label: "Division d'une expression",
     expr: `${fH(3, 4)} ÷ ( ${fH(1, 2)} + ${fH(1, 4)} )`,
     ans: { n: 12, d: 12 },
-    steps: `<div><strong>Étape 1 :</strong> calculer la parenthèse (LCD = 4).</div>
+    steps: `<div><strong>Étape 1 :</strong> calculer la parenthèse (dénominateur commun = 4).</div>
         <div style="margin-top:6px;">${showExpand(1, 2, 2, 'var(--c6)')} &nbsp;→&nbsp; ${fH(2, 4)} + ${fH(1, 4)} = ${fH(3, 4, 'var(--c6)')}</div>
         <div style="margin-top:8px;"><strong>Étape 2 :</strong> diviser.</div>
         <div style="margin-top:6px;">${fH(3, 4)} ÷ ${fH(3, 4)} = ${fH(3, 4)} × ${fH(4, 3, 'var(--c6)')} = ${fH('3×4', '4×3', 'var(--c6)')} = ${fH(12, 12, 'var(--c6)')} = <strong style="color:var(--correct);">1</strong></div>`,
@@ -514,7 +548,7 @@ const FC_BANK: { label: string; expr: string; ans: { n: number; d: number }; ste
     label: "Division d'une expression",
     expr: `( ${fH(1, 2)} + ${fH(1, 3)} ) ÷ ${fH(5, 6)}`,
     ans: { n: 30, d: 30 },
-    steps: `<div><strong>Étape 1 :</strong> calculer la parenthèse (LCD = 6).</div>
+    steps: `<div><strong>Étape 1 :</strong> calculer la parenthèse (dénominateur commun = 6).</div>
         <div style="margin-top:6px;">${showExpand(1, 2, 3, 'var(--c6)')} &nbsp;; ${showExpand(1, 3, 2, 'var(--c6)')} &nbsp;→&nbsp; ${fH(3, 6)} + ${fH(2, 6)} = ${fH(5, 6, 'var(--c6)')}</div>
         <div style="margin-top:8px;"><strong>Étape 2 :</strong> diviser.</div>
         <div style="margin-top:6px;">${fH(5, 6)} ÷ ${fH(5, 6)} = ${fH(5, 6)} × ${fH(6, 5, 'var(--c6)')} = ${fH('5×6', '6×5', 'var(--c6)')} = ${fH(30, 30, 'var(--c6)')} = <strong style="color:var(--correct);">1</strong></div>`,
@@ -532,9 +566,9 @@ const FC_BANK: { label: string; expr: string; ans: { n: number; d: number }; ste
     label: 'Expression complexe',
     expr: `( ${fH(5, 8)} − ${fH(1, 4)} ) ÷ ( ${fH(1, 2)} + ${fH(1, 8)} )`,
     ans: { n: 24, d: 40 },
-    steps: `<div><strong>Étape 1 :</strong> parenthèse du numérateur (LCD = 8).</div>
+    steps: `<div><strong>Étape 1 :</strong> parenthèse du numérateur (dénominateur commun = 8).</div>
         <div style="margin-top:6px;">${showExpand(1, 4, 2, 'var(--c6)')} &nbsp;→&nbsp; ${fH(5, 8)} − ${fH(2, 8)} = ${fH(3, 8, 'var(--c6)')}</div>
-        <div style="margin-top:8px;"><strong>Étape 2 :</strong> parenthèse du dénominateur (LCD = 8).</div>
+        <div style="margin-top:8px;"><strong>Étape 2 :</strong> parenthèse du dénominateur (dénominateur commun = 8).</div>
         <div style="margin-top:6px;">${showExpand(1, 2, 4, 'var(--c6)')} &nbsp;→&nbsp; ${fH(4, 8)} + ${fH(1, 8)} = ${fH(5, 8, 'var(--c6)')}</div>
         <div style="margin-top:8px;"><strong>Étape 3 :</strong> diviser.</div>
         <div style="margin-top:6px;">${fH(3, 8)} ÷ ${fH(5, 8)} = ${fH(3, 8)} × ${fH(8, 5, 'var(--c6)')} = ${fH('3×8', '8×5', 'var(--c6)')} = ${fH(24, 40, 'var(--c6)')} = ${fH(3, 5, 'var(--correct)')} (simplifié)</div>`,
@@ -546,7 +580,7 @@ const FC_BANK: { label: string; expr: string; ans: { n: number; d: number }; ste
     steps: `<div><strong>Attention :</strong> la multiplication est prioritaire sur l'addition.</div>
         <div style="margin-top:8px;"><strong>Étape 1 :</strong> multiplication.</div>
         <div style="margin-top:6px;">${fH(1, 2)} × ${fH(2, 3)} = ${fH('1×2', '2×3', 'var(--c6)')} = ${fH(2, 6, 'var(--c6)')} = ${fH(1, 3, 'var(--c6)')} (simplifié)</div>
-        <div style="margin-top:8px;"><strong>Étape 2 :</strong> addition (LCD = 12).</div>
+        <div style="margin-top:8px;"><strong>Étape 2 :</strong> addition (dénominateur commun = 12).</div>
         <div style="margin-top:6px;">${showExpand(3, 4, 3, 'var(--c6)')} &nbsp;; ${showExpand(1, 3, 4, 'var(--c6)')} &nbsp;→&nbsp; ${fH(9, 12)} + ${fH(4, 12)} = ${fH(13, 12, 'var(--correct)')}</div>`,
   },
   {
@@ -556,7 +590,7 @@ const FC_BANK: { label: string; expr: string; ans: { n: number; d: number }; ste
     steps: `<div><strong>Attention :</strong> la multiplication est prioritaire sur la soustraction.</div>
         <div style="margin-top:8px;"><strong>Étape 1 :</strong> multiplication.</div>
         <div style="margin-top:6px;">${fH(1, 4)} × ${fH(2, 3)} = ${fH('1×2', '4×3', 'var(--c6)')} = ${fH(2, 12, 'var(--c6)')} = ${fH(1, 6, 'var(--c6)')} (simplifié)</div>
-        <div style="margin-top:8px;"><strong>Étape 2 :</strong> soustraction (LCD = 6, déjà commun).</div>
+        <div style="margin-top:8px;"><strong>Étape 2 :</strong> soustraction (dénominateur commun = 6).</div>
         <div style="margin-top:6px;">${fH(5, 6)} − ${fH(1, 6)} = ${fH('5−1', 6, 'var(--c6)')} = ${fH(4, 6, 'var(--c6)')} = ${fH(2, 3, 'var(--correct)')} (simplifié)</div>`,
   },
 ];

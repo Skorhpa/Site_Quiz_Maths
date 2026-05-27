@@ -302,6 +302,7 @@ export interface FractionsCompExercise extends BaseExercise {
 
 export interface MDCExercise extends BaseExercise {
   exKind: 'mdc';
+  kind: 'multiple' | 'coprime' | 'common';
   frac1: { n: number; d: number };
   frac2: { n: number; d: number };
   lcd: number;
