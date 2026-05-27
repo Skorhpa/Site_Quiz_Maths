@@ -194,3 +194,11 @@ export function generateFractionsCompSeries(): FractionsCompExercise[] {
     makePrimeFacLarge(),
   ];
 }
+
+export function generateCompSeries(): FractionsCompExercise[] {
+  return [makeComp('same_denom'), makeComp('same_num'), makeComp('multiple'), makeComp('coprime'), makeComp('coprime')];
+}
+
+export function generateSimplSeries(): FractionsCompExercise[] {
+  return [makeSimplify(), makeSimplify(), makeSimplify(), makePrimeFac(), makePrimeFac(), makePrimeFacLarge()];
+}

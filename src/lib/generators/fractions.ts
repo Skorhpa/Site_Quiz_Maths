@@ -409,6 +409,22 @@ export function generateFractionsSeries(): FractionExercise[] {
   ];
 }
 
+export function generateAddSeries(): FractionExercise[] {
+  return [makeAdd('same'), makeAdd('multiple'), makeAdd('coprime'), makeAdd('coprime'), makeAddNeg()];
+}
+
+export function generateSubSeries(): FractionExercise[] {
+  return [makeSub('same'), makeSub('multiple'), makeSub('coprime'), makeSub('coprime'), makeSubNeg()];
+}
+
+export function generateMulSeries(): FractionExercise[] {
+  return [makeMulSimple(), makeMulSimple(), makeMulNeg(), makeMulBig()];
+}
+
+export function generateDivSeries(): FractionExercise[] {
+  return [makeDiv('fracbyfrac'), makeDiv('fracbyfrac'), makeDiv('fracbyfrac'), makeDiv('fracbyint'), makeDivNeg()];
+}
+
 export const FRACTIONS_OP_COLORS: Record<FractionExercise['op'], string> = {
   add: '#6EE7C0',
   sub: '#60A5FA',

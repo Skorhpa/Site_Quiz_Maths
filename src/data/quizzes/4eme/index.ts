@@ -11,6 +11,7 @@ import { arithQuiz } from './arith';
 import { progQuiz } from './prog';
 import { pythQuiz } from './pyth';
 import { thalesQuiz } from './thales';
+import { fractionsHubQuiz } from './fractions-hub';
 import { fractionsQuiz } from './fractions';
 import { fractionsComplexQuiz } from './fractions-complex';
 import { fractionsCompQuiz } from './fractions-comp';
@@ -27,6 +28,7 @@ export const topics: Topic[] = [
   eqQuiz,
   thalesQuiz,
   arrondisQuiz,
+  fractionsHubQuiz,
   fractionsQuiz,
   fractionsComplexQuiz,
   fractionsCompQuiz,

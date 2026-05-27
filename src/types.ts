@@ -300,6 +300,14 @@ export interface FractionsCompExercise extends BaseExercise {
   ansDStr?: string;
 }
 
+export interface MDCExercise extends BaseExercise {
+  exKind: 'mdc';
+  frac1: { n: number; d: number };
+  frac2: { n: number; d: number };
+  lcd: number;
+  steps: string;
+}
+
 export type PuissancesSubtype = 'power' | 'scientific' | 'exponent';
 
 export interface PuissancesExercise extends BaseExercise {
@@ -402,6 +410,7 @@ export type Exercise =
   | ThalesExercise
   | FractionExercise
   | FractionsCompExercise
+  | MDCExercise
   | EquationExercise
   | ReciproqueExercise
   | PuissancesExercise
@@ -424,7 +433,7 @@ export interface EntiersSigneExercise extends BaseExercise {
   steps: string;
 }
 
-export type RendererKind = 'number' | 'rounding' | 'literal' | 'produit' | 'arith' | 'programme' | 'pythagore' | 'thales' | 'fractions' | 'fractions-comp' | 'equation' | 'reciproque' | 'puissances' | 'prop' | 'thales-reciproque' | 'entiers-hub';
+export type RendererKind = 'number' | 'rounding' | 'literal' | 'produit' | 'arith' | 'programme' | 'pythagore' | 'thales' | 'fractions' | 'fractions-comp' | 'equation' | 'reciproque' | 'puissances' | 'prop' | 'thales-reciproque' | 'entiers-hub' | 'fractions-hub';
 
 export type IntegerOp = 'add' | 'sub' | 'mul';
 
