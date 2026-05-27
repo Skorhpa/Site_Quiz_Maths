@@ -538,10 +538,14 @@ function decompoTreeHTML(n: number, factors: number[]): string {
 
 function makeDecompoDetailed(nFactors: number, allowCalc = false): ArithExercise {
   function makeNum() {
-    const factors: number[] = [];
-    for (let i = 0; i < nFactors; i++) factors.push(randFrom(PRIMES_UNDER_13));
-    factors.sort((a, b) => a - b);
-    return { n: factors.reduce((a, b) => a * b, 1), factors };
+    let result: { n: number; factors: number[] };
+    do {
+      const factors: number[] = [];
+      for (let i = 0; i < nFactors; i++) factors.push(randFrom(PRIMES_UNDER_13));
+      factors.sort((a, b) => a - b);
+      result = { n: factors.reduce((a, b) => a * b, 1), factors };
+    } while (result.n > 999);
+    return result;
   }
   const nums = [makeNum(), makeNum(), makeNum()];
   while (nums[1]!.n === nums[0]!.n) nums[1] = makeNum();
