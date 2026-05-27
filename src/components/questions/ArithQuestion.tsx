@@ -30,7 +30,7 @@ export function ArithQuestion({ index, exercise, answer, onSubmit }: ArithQuesti
   const [decompoInputs, setDecompoInputs] = useState<Record<number, string>>({});
   const [pgcdPa, setPgcdPa] = useState('');
   const [pgcdPb, setPgcdPb] = useState('');
-  const [pgcdPc, setPgcdPc] = useState('');
+  const [pgcdDivInputs, setPgcdDivInputs] = useState<Record<number, string>>({});
   const [feedback, setFeedback] = useState<{ text: string; cls: string }>({ text: '', cls: 'feedback' });
 
   const disabled = answer.status !== 'pending';
@@ -107,14 +107,19 @@ export function ArithQuestion({ index, exercise, answer, onSubmit }: ArithQuesti
     } else if (exercise.subtype === 'pgcd') {
       const okA = factorsEqual(pgcdPa, exercise.fnN!);
       const okB = factorsEqual(pgcdPb, exercise.fnM!);
-      const mentioned = exercise.gDivs!.filter((d) => pgcdPc.includes(String(d)));
-      const pcOk = mentioned.length === exercise.gDivs!.length;
+      const enteredDivs = exercise.gDivs!.map((_, j) => parseInt((pgcdDivInputs[j] || '').trim(), 10));
+      const sortedEntered = enteredDivs.slice().sort((a, b) => a - b);
+      const sortedExpected = exercise.gDivs!.slice().sort((a, b) => a - b);
+      const pcOk =
+        !enteredDivs.some(Number.isNaN) &&
+        sortedEntered.length === sortedExpected.length &&
+        sortedEntered.every((v, j) => v === sortedExpected[j]);
       ok = okA && okB && pcOk;
       if (!ok) {
         const parts: string[] = [];
         if (!okA) parts.push(`décomposition de ${exercise.N} (attendu : ${exercise.fnN})`);
         if (!okB) parts.push(`décomposition de ${exercise.M} (attendu : ${exercise.fnM})`);
-        if (!pcOk) parts.push(`il manque certaines compositions (${exercise.gDivs!.length} au total)`);
+        if (!pcOk) parts.push(`compositions incorrectes (attendu : ${exercise.gDivs!.join(', ')} ${exercise.unitLabelP})`);
         msg = `✗ ${parts.join(' · ')}`;
       }
     }
@@ -277,40 +282,31 @@ export function ArithQuestion({ index, exercise, answer, onSubmit }: ArithQuesti
         <div style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 6, fontWeight: 600 }}>
           b) Donne toutes les compositions possibles :
         </div>
-        <textarea
-          rows={3}
-          value={pgcdPc}
-          placeholder={
-            exercise.gDivs!.length > 1
-              ? exercise
-                  .gDivs!.map(
-                    (d) =>
-                      `${d} ${exercise.unitLabel}${d > 1 ? 's' : ''} : ${exercise.N! / d} ${exercise.ctx!.obj1} et ${
-                        exercise.M! / d
-                      } ${exercise.ctx!.obj2}`,
-                  )
-                  .slice(0, 2)
-                  .join(' / ')
-              : ''
-          }
-          disabled={disabled}
-          onChange={(e) => setPgcdPc(e.target.value)}
-          style={{
-            width: '100%',
-            fontFamily: "'DM Mono', monospace",
-            fontSize: 13,
-            padding: '8px 12px',
-            borderRadius: 8,
-            border: '1px solid var(--border2)',
-            background: 'var(--bg)',
-            color: 'var(--text)',
-            resize: 'vertical',
-          }}
-        />
-        <div style={{ fontSize: 11, color: 'var(--muted)', marginTop: 4 }}>
-          Indice : il y a <strong>{exercise.gDivs!.length}</strong> composition
-          {exercise.gDivs!.length > 1 ? 's' : ''} possible{exercise.gDivs!.length > 1 ? 's' : ''}.
-        </div>
+        {exercise.gDivs!.map((_, j) => (
+          <div key={j} style={{ display: 'flex', alignItems: 'center', gap: 8, margin: '6px 0', flexWrap: 'wrap' }}>
+            <span style={{ fontSize: 13, color: 'var(--text)', minWidth: 130 }}>
+              Nombre de {exercise.unitLabelP} :
+            </span>
+            <input
+              type="text"
+              value={pgcdDivInputs[j] || ''}
+              placeholder="…"
+              disabled={disabled}
+              onChange={(e) => setPgcdDivInputs((s) => ({ ...s, [j]: e.target.value }))}
+              onKeyDown={handleKey}
+              style={{
+                fontFamily: "'DM Mono', monospace",
+                fontSize: 13,
+                padding: '5px 10px',
+                borderRadius: 7,
+                border: '1px solid var(--border2)',
+                background: 'var(--bg)',
+                color: 'var(--text)',
+                width: 70,
+              }}
+            />
+          </div>
+        ))}
       </>
     );
   };

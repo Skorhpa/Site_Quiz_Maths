@@ -526,7 +526,8 @@ function makeSpotNonPrimeLarge(): ArithExercise {
 function decompoTreeHTML(n: number, factors: number[]): string {
   const lines: string[] = [];
   let rem = n;
-  for (const p of factors) {
+  for (let i = 0; i < factors.length - 1; i++) {
+    const p = factors[i]!;
     lines.push(`<div style="font-family:'DM Mono',monospace;">${rem} ÷ <span style="color:var(--car);">${p}</span> = <strong>${rem / p}</strong></div>`);
     rem = rem / p;
   }
@@ -535,7 +536,7 @@ function decompoTreeHTML(n: number, factors: number[]): string {
   return lines.join('');
 }
 
-function makeDecompoDetailed(nFactors: number): ArithExercise {
+function makeDecompoDetailed(nFactors: number, allowCalc = false): ArithExercise {
   function makeNum() {
     const factors: number[] = [];
     for (let i = 0; i < nFactors; i++) factors.push(randFrom(PRIMES_UNDER_13));
@@ -553,12 +554,15 @@ function makeDecompoDetailed(nFactors: number): ArithExercise {
     nFactors === 2 ? 'Décomposition (2 facteurs)'
     : nFactors === 3 ? 'Décomposition (3 facteurs)'
     : 'Décomposition (4 facteurs)';
+  const calcNote = allowCalc
+    ? `<div style="margin-top:4px;color:var(--muted);font-size:12px;">💡 Tu peux t'aider de la calculatrice.</div>`
+    : '';
   return {
     type: 'default',
     subtype: 'decompo',
     label,
     color: COLORS.decompo,
-    question: 'Décompose chacun de ces nombres en produit de nombres premiers :',
+    question: `Décompose chacun de ces nombres en produit de nombres premiers :${calcNote}`,
     nums,
     nFactors,
     steps,
@@ -593,8 +597,8 @@ export function generateArithPrimesSeries(): ArithExercise[] {
     makeListPrimes(),
     makeSpotNonPrimeLarge(),
     makeDecompoDetailed(2),
-    makeDecompoDetailed(3),
-    makeDecompoDetailed(4),
+    makeDecompoDetailed(3, true),
+    makeDecompoDetailed(4, true),
   ];
 }
 
