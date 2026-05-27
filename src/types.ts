@@ -58,7 +58,7 @@ export interface ProduitExercise extends BaseExercise {
   color: string;
 }
 
-export type ArithSubtype = 'divisors' | 'criteria' | 'multiples' | 'spotnonprime' | 'decompo' | 'pgcd';
+export type ArithSubtype = 'divisors' | 'criteria' | 'multiples' | 'spotnonprime' | 'decompo' | 'pgcd' | 'primeslist' | 'largestmult';
 
 export interface ArithExercise extends BaseExercise {
   subtype: ArithSubtype;
@@ -99,6 +99,8 @@ export interface ArithExercise extends BaseExercise {
   ctx?: { obj1: string; obj2: string; context: string; unit: string; unitP: string };
   unitLabel?: string;
   unitLabelP?: string;
+  // largestmult
+  largestMult?: number;
 }
 
 export interface ProgrammeExercise extends BaseExercise {
@@ -434,7 +436,7 @@ export interface EntiersSigneExercise extends BaseExercise {
   steps: string;
 }
 
-export type RendererKind = 'number' | 'rounding' | 'literal' | 'produit' | 'arith' | 'programme' | 'pythagore' | 'thales' | 'fractions' | 'fractions-comp' | 'equation' | 'reciproque' | 'puissances' | 'prop' | 'thales-reciproque' | 'entiers-hub' | 'fractions-hub';
+export type RendererKind = 'number' | 'rounding' | 'literal' | 'produit' | 'arith' | 'programme' | 'pythagore' | 'thales' | 'fractions' | 'fractions-comp' | 'equation' | 'reciproque' | 'puissances' | 'prop' | 'thales-reciproque' | 'entiers-hub' | 'fractions-hub' | 'arith-hub';
 
 export type IntegerOp = 'add' | 'sub' | 'mul';
 
