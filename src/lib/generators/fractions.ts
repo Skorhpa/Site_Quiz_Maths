@@ -10,6 +10,15 @@ export function frGcd(a: number, b: number): number {
   }
   return a;
 }
+
+function lcm2(a: number, b: number): number {
+  return (a / frGcd(a, b)) * b;
+}
+
+function lcmArr(arr: number[]): number {
+  return arr.reduce(lcm2, 1);
+}
+
 export function frSimplify(n: number, d: number): { n: number; d: number } {
   if (d === 0) return { n, d };
   if (d < 0) {
@@ -373,6 +382,67 @@ function makeDiv(subtype: 'fracbyfrac' | 'fracbyint'): FractionExercise {
   return ex({ op: 'div', label: 'Division', expr: `${fH(a, b)} ÷ ${k}`, ans: { n: rn, d: rd }, steps });
 }
 
+const ADD_COPRIME_TRIPLETS: [number, number, number][] = [
+  [2, 3, 4],
+  [3, 4, 6],
+  [2, 4, 5],
+  [2, 3, 5],
+];
+
+const ADD_COPRIME_QUADS: [number, number, number, number][] = [
+  [2, 3, 4, 6],
+  [2, 3, 4, 12],
+  [3, 4, 6, 12],
+];
+
+function makeAddMultipleN(count: 2 | 3 | 4): FractionExercise {
+  if (count === 2) return makeAdd('multiple');
+  const pairs: [number, number][] = [[3, 9], [4, 12], [5, 15], [2, 8], [3, 6], [5, 10], [2, 6], [4, 8]];
+  const [d1, d2] = pick(pairs);
+  const k = d2 / d1;
+  const a = Math.floor(Math.random() * (d1 - 1)) + 1;
+  const extras = Array.from({ length: count - 1 }, () => Math.floor(Math.random() * (d2 - 1)) + 1);
+  const an = a * k + extras.reduce((s, v) => s + v, 0);
+  const ad = d2;
+  const s = frSimplify(an, ad);
+  const expr = `${fH(a, d1)} + ${extras.map((n) => fH(n, d2)).join(' + ')}`;
+  const expandedFracs = [fH(a * k, d2), ...extras.map((n) => fH(n, d2))].join(' + ');
+  const sumStr = `${a * k}+${extras.join('+')}`;
+  const simplified = !frIsSimplified(an, ad) ? ` = ${fH(s.n, s.d, 'var(--correct)')} (simplifié)` : '';
+  const steps = `<div><strong>${d2}</strong> est dans la table de <strong>${d1}</strong> (${d1}×${k}=${d2}).</div>
+    <div style="margin-top:6px;">${showExpand(a, d1, k, 'var(--c6)')}</div>
+    <div style="margin-top:6px;">${expandedFracs} = ${fH(sumStr, d2, 'var(--c6)')} = ${fH(an, ad, 'var(--c6)')}${simplified}</div>`;
+  return ex({ op: 'add', label: 'Addition', expr, ans: { n: an, d: ad }, steps });
+}
+
+function makeAddCoprimeN(count: 2 | 3 | 4): FractionExercise {
+  if (count === 2) return makeAdd('coprime');
+  const denoms: number[] = count === 3 ? [...pick(ADD_COPRIME_TRIPLETS)] : [...pick(ADD_COPRIME_QUADS)];
+  const L = lcmArr(denoms);
+  const ks = denoms.map((d) => L / d);
+  const nums = denoms.map((d) => Math.floor(Math.random() * (d - 1)) + 1);
+  const rn = nums.reduce((acc, n, i) => acc + n * ks[i]!, 0);
+  const rd = L;
+  const s = frSimplify(rn, rd);
+  const expr = nums.map((n, i) => fH(n, denoms[i]!)).join(' + ');
+  const expandParts = nums.map((n, i) =>
+    ks[i]! === 1
+      ? `${fH(n, denoms[i]!)} (déjà au dénominateur ${L})`
+      : showExpand(n, denoms[i]!, ks[i]!, 'var(--c6)')
+  );
+  const expandedNums = nums.map((n, i) => n * ks[i]!);
+  const expandedFracs = expandedNums.map((n) => fH(n, L)).join(' + ');
+  const sumStr = expandedNums.join('+');
+  const simplified = !frIsSimplified(rn, rd) ? ` = ${fH(s.n, s.d, 'var(--correct)')} (simplifié)` : '';
+  const denomStr = count === 3
+    ? `${denoms[0]}, ${denoms[1]} et ${denoms[2]}`
+    : denoms.join(', ');
+  const steps = `<div>On cherche le PPCM de ${denomStr} : c'est <strong>${L}</strong>.</div>
+    <div style="margin-top:6px;">${expandParts.join(' &nbsp;; ')}</div>
+    <div style="margin-top:6px;">${expandedFracs} = ${fH(sumStr, L, 'var(--c6)')} = ${fH(rn, rd, 'var(--c6)')}${simplified}</div>`;
+  return ex({ op: 'add', label: 'Addition', expr, ans: { n: rn, d: rd }, steps });
+}
+
 function makeAddNeg(): FractionExercise {
   const pairs: [number, number][] = [[3, 4], [3, 5], [4, 5], [5, 7], [3, 7], [4, 7], [5, 8], [3, 8]];
   const [d1, d2] = pick(pairs);
@@ -389,6 +459,40 @@ function makeAddNeg(): FractionExercise {
     }</div>
     <div style="margin-top:4px;color:var(--muted);font-size:12px;">Rappel : ajouter un nombre négatif revient à soustraire sa valeur absolue.</div>`;
   return ex({ op: 'add', label: 'Addition', expr: `${fH(a, d1)} + ${fH(b, d2)}`, ans: { n: an, d: ad }, steps });
+}
+
+function makeAddNegN(count: 2 | 3 | 4): FractionExercise {
+  if (count === 2) return makeAddNeg();
+  const denoms: number[] = count === 3 ? [...pick(ADD_COPRIME_TRIPLETS)] : [...pick(ADD_COPRIME_QUADS)];
+  const L = lcmArr(denoms);
+  const ks = denoms.map((d) => L / d);
+  const nums = denoms.map((d, i) => {
+    const n = Math.floor(Math.random() * (d - 1)) + 1;
+    return i === 0 ? -n : n;
+  });
+  const rn = nums.reduce((acc, n, i) => acc + n * ks[i]!, 0);
+  const rd = L;
+  const s = frSimplify(Math.abs(rn), rd);
+  const expr = nums.map((n, i) => fH(n, denoms[i]!)).join(' + ');
+  const expandParts = nums.map((n, i) =>
+    ks[i]! === 1
+      ? `${fH(n, denoms[i]!)} (déjà au dénominateur ${L})`
+      : showExpand(n, denoms[i]!, ks[i]!, 'var(--c6)')
+  );
+  const expandedNums = nums.map((n, i) => n * ks[i]!);
+  const expandedFracs = expandedNums.map((n) => fH(n, L)).join(' + ');
+  const sumStr = expandedNums.map(String).join('+');
+  const simplified = !frIsSimplified(Math.abs(rn), rd)
+    ? ` = ${fH(rn < 0 ? -s.n : s.n, s.d, 'var(--correct)')} (simplifié)`
+    : '';
+  const denomStr = count === 3
+    ? `${denoms[0]}, ${denoms[1]} et ${denoms[2]}`
+    : denoms.join(', ');
+  const steps = `<div>On cherche le PPCM de ${denomStr} : c'est <strong>${L}</strong>.</div>
+    <div style="margin-top:6px;">${expandParts.join(' &nbsp;; ')}</div>
+    <div style="margin-top:6px;">${expandedFracs} = ${fH(sumStr, L, 'var(--c6)')} = ${fH(rn, rd, 'var(--c6)')}${simplified}</div>
+    <div style="margin-top:4px;color:var(--muted);font-size:12px;">Rappel : ajouter un nombre négatif revient à soustraire sa valeur absolue.</div>`;
+  return ex({ op: 'add', label: 'Addition', expr, ans: { n: rn, d: rd }, steps });
 }
 
 function makeSubNeg(): FractionExercise {
@@ -481,6 +585,13 @@ export function makeAddFirstQ(count: 2 | 3 | 4): FractionExercise {
   const steps = `<div>Les fractions ont le même dénominateur, on additionne les numérateurs.</div>
     <div style="margin-top:6px;">${fracs} = ${fH(numSum, d, 'var(--c6)')} = ${fH(rn, d, 'var(--c6)')}${simplified}</div>`;
   return ex({ op: 'add', label: 'Addition', expr: fracs, ans: { n: rn, d }, steps });
+}
+
+export function makeAddAtPos(pos: 0 | 1 | 2 | 3 | 4, count: 2 | 3 | 4): FractionExercise {
+  if (pos === 0) return makeAddFirstQ(count);
+  if (pos === 1) return makeAddMultipleN(count);
+  if (pos === 2 || pos === 3) return makeAddCoprimeN(count);
+  return makeAddNegN(count);
 }
 
 export function generateAddSeries(): FractionExercise[] {
