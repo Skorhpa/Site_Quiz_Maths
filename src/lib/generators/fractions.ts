@@ -692,11 +692,25 @@ function makeSubNegN(count: 2 | 3 | 4): FractionExercise {
   return ex({ op: 'sub', label: 'Soustraction', expr, ans: { n: rn, d: rd }, steps });
 }
 
-export function makeSubAtPos(pos: 0 | 1 | 2 | 3 | 4, count: 2 | 3 | 4): FractionExercise {
+function makeSubWholeQ(): FractionExercise {
+  const a = Math.floor(Math.random() * 8) + 2;
+  const d = pick([3, 4, 5, 6, 7, 8, 9, 10]);
+  let b: number;
+  do { b = Math.floor(Math.random() * (d - 1)) + 1; } while (!frIsSimplified(b, d));
+  const rn = a * d - b;
+  const rd = d;
+  const steps = `<div>Pour soustraire une fraction à un entier, on convertit l'entier en fraction de même dénominateur.</div>
+    <div style="margin-top:6px;">${a} = ${fH(`${a}×${d}`, d, 'var(--c6)')} = ${fH(a * d, d, 'var(--c6)')}</div>
+    <div style="margin-top:6px;">${fH(a * d, d)} − ${fH(b, d)} = ${fH(`${a * d}−${b}`, d, 'var(--c6)')} = ${fH(rn, rd, 'var(--c6)')}</div>`;
+  return ex({ op: 'sub', label: 'Soustraction', expr: `${a} − ${fH(b, d)}`, ans: { n: rn, d: rd }, steps });
+}
+
+export function makeSubAtPos(pos: 0 | 1 | 2 | 3 | 4 | 5, count: 2 | 3 | 4): FractionExercise {
   if (pos === 0) return makeSubFirstQ(count);
   if (pos === 1) return makeSubMultipleN(count);
   if (pos === 2 || pos === 3) return makeSubCoprimeN(count);
-  return makeSubNegN(count);
+  if (pos === 4) return makeSubNegN(count);
+  return makeSubWholeQ();
 }
 
 function makeMulNeg(): FractionExercise {
@@ -827,19 +841,33 @@ export function makeAddFirstQ(count: 2 | 3 | 4): FractionExercise {
   return ex({ op: 'add', label: 'Addition', expr: fracs, ans: { n: rn, d }, steps });
 }
 
-export function makeAddAtPos(pos: 0 | 1 | 2 | 3 | 4, count: 2 | 3 | 4): FractionExercise {
+function makeAddWholeQ(): FractionExercise {
+  const a = Math.floor(Math.random() * 8) + 2;
+  const d = pick([3, 4, 5, 6, 7, 8, 9, 10]);
+  let b: number;
+  do { b = Math.floor(Math.random() * (d - 1)) + 1; } while (!frIsSimplified(b, d));
+  const rn = a * d + b;
+  const rd = d;
+  const steps = `<div>Pour additionner un entier et une fraction, on convertit l'entier en fraction de même dénominateur.</div>
+    <div style="margin-top:6px;">${a} = ${fH(`${a}×${d}`, d, 'var(--c6)')} = ${fH(a * d, d, 'var(--c6)')}</div>
+    <div style="margin-top:6px;">${fH(a * d, d)} + ${fH(b, d)} = ${fH(`${a * d}+${b}`, d, 'var(--c6)')} = ${fH(rn, rd, 'var(--c6)')}</div>`;
+  return ex({ op: 'add', label: 'Addition', expr: `${a} + ${fH(b, d)}`, ans: { n: rn, d: rd }, steps });
+}
+
+export function makeAddAtPos(pos: 0 | 1 | 2 | 3 | 4 | 5, count: 2 | 3 | 4): FractionExercise {
   if (pos === 0) return makeAddFirstQ(count);
   if (pos === 1) return makeAddMultipleN(count);
   if (pos === 2 || pos === 3) return makeAddCoprimeN(count);
-  return makeAddNegN(count);
+  if (pos === 4) return makeAddNegN(count);
+  return makeAddWholeQ();
 }
 
 export function generateAddSeries(): FractionExercise[] {
-  return [makeAdd('same'), makeAdd('multiple'), makeAdd('coprime'), makeAdd('coprime'), makeAddNeg()];
+  return [makeAdd('same'), makeAdd('multiple'), makeAdd('coprime'), makeAdd('coprime'), makeAddNeg(), makeAddWholeQ()];
 }
 
 export function generateSubSeries(): FractionExercise[] {
-  return [makeSub('same'), makeSub('multiple'), makeSub('coprime'), makeSub('coprime'), makeSubNeg()];
+  return [makeSub('same'), makeSub('multiple'), makeSub('coprime'), makeSub('coprime'), makeSubNeg(), makeSubWholeQ()];
 }
 
 export function generateMulSeries(): FractionExercise[] {
