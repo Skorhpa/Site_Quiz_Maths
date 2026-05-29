@@ -9,6 +9,7 @@ import {
   generateFractionsComplexSeries,
   generateProblemsSeries,
   makeAddAtPos,
+  makeSubAtPos,
   fH,
   frEqual,
 } from '@/lib/generators/fractions';
@@ -465,7 +466,7 @@ export function FractionsHub({ accent, accentSecondary }: { accent: string; acce
       else if (csm === 'div') exs = generateDivSeries();
       else if (csm === 'complex') exs = generateFractionsComplexSeries();
     }
-    if (csm === 'add') setExCounts(new Array(5).fill(2) as (2 | 3 | 4)[]);
+    if (csm === 'add' || csm === 'sub') setExCounts(new Array(5).fill(2) as (2 | 3 | 4)[]);
     setExercises(exs);
     setAnswers(buildAnswers(exs.length));
     setSeriesKey((k) => k + 1);
@@ -480,7 +481,9 @@ export function FractionsHub({ accent, accentSecondary }: { accent: string; acce
       next[i] = count;
       return next;
     });
-    const newEx = makeAddAtPos(i as 0 | 1 | 2 | 3 | 4, count);
+    const newEx = calcSubMode === 'sub'
+      ? makeSubAtPos(i as 0 | 1 | 2 | 3 | 4, count)
+      : makeAddAtPos(i as 0 | 1 | 2 | 3 | 4, count);
     setExercises((prev) => prev.map((e, idx) => (idx === i ? newEx : e)));
     setAnswers((prev) =>
       prev.map((a, idx) =>
@@ -566,7 +569,7 @@ export function FractionsHub({ accent, accentSecondary }: { accent: string; acce
       accent={accent}
       accentSecondary={accentSecondary}
       seriesKey={seriesKey}
-      switcher={calcSubMode === 'add' ? { counts: exCounts, onChange: changeExCount } : undefined}
+      switcher={calcSubMode === 'add' || calcSubMode === 'sub' ? { counts: exCounts, onChange: changeExCount } : undefined}
       onSubmit={submit}
       onResetErrors={resetErrors}
       onNewSeries={newSeries}
