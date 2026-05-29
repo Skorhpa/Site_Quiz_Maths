@@ -183,7 +183,7 @@ function QuizView({
   accent: string;
   accentSecondary?: string;
   seriesKey: number;
-  switcher?: { counts: (2 | 3 | 4)[]; buttons: readonly (2 | 3 | 4)[]; onChange: (i: number, n: 2 | 3 | 4) => void };
+  switcher?: { counts: (2 | 3 | 4)[]; buttons: readonly (2 | 3 | 4)[]; maxIndex?: number; onChange: (i: number, n: 2 | 3 | 4) => void };
   onSubmit: (i: number, correct: boolean) => void;
   onResetErrors: () => void;
   onNewSeries: () => void;
@@ -281,7 +281,7 @@ function QuizView({
           }
           return (
             <div key={key}>
-              {switcher && (
+              {switcher && (switcher.maxIndex === undefined || i < switcher.maxIndex) && (
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8, flexWrap: 'wrap' }}>
                   <span style={{ fontSize: 13, color: 'var(--muted)' }}>Nombre de fractions :</span>
                   {switcher.buttons.map((n) => (
@@ -407,8 +407,8 @@ const MAIN_MODES: { id: HubMode; label: string; icon: string; desc: string }[] =
 ];
 
 const CALCULS_SUBMODES: { id: CalcSubMode; label: string; icon: string; desc: string }[] = [
-  { id: 'add', label: 'Addition', icon: '+', desc: '5 exercices · mêmes dénominateurs, multiples, premiers entre eux' },
-  { id: 'sub', label: 'Soustraction', icon: '−', desc: '5 exercices · mêmes dénominateurs, multiples, premiers entre eux' },
+  { id: 'add', label: 'Addition', icon: '+', desc: '6 exercices · multiples, premiers entre eux, entier + fraction' },
+  { id: 'sub', label: 'Soustraction', icon: '−', desc: '6 exercices · multiples, premiers entre eux, entier − fraction' },
   { id: 'mul', label: 'Multiplication', icon: '×', desc: '4 exercices · simplification, facteurs premiers' },
   { id: 'div', label: 'Division', icon: '÷', desc: '5 exercices · diviser par une fraction ou un entier' },
   { id: 'complex', label: 'Calculs complexes', icon: '()', desc: '10 exercices · opérations mixtes, priorités opératoires' },
@@ -477,17 +477,17 @@ export function FractionsHub({ accent, accentSecondary }: { accent: string; acce
 
   const changeExCount = (i: number, count: 2 | 3 | 4) => {
     if (answers[i]?.status !== 'pending') return;
-    if (i < 0 || i > 4) return;
+    if (i < 0 || i > 5) return;
     setExCounts((prev) => {
       const next = [...prev] as (2 | 3 | 4)[];
       next[i] = count;
       return next;
     });
     const newEx = calcSubMode === 'sub'
-      ? makeSubAtPos(i as 0 | 1 | 2 | 3 | 4, count)
+      ? makeSubAtPos(i as 0 | 1 | 2 | 3 | 4 | 5, count)
       : calcSubMode === 'mul'
         ? makeMulAtPos(i as 0 | 1 | 2 | 3, count as 2 | 3)
-        : makeAddAtPos(i as 0 | 1 | 2 | 3 | 4, count);
+        : makeAddAtPos(i as 0 | 1 | 2 | 3 | 4 | 5, count);
     setExercises((prev) => prev.map((e, idx) => (idx === i ? newEx : e)));
     setAnswers((prev) =>
       prev.map((a, idx) =>
@@ -575,7 +575,7 @@ export function FractionsHub({ accent, accentSecondary }: { accent: string; acce
       seriesKey={seriesKey}
       switcher={
         calcSubMode === 'add' || calcSubMode === 'sub'
-          ? { counts: exCounts, buttons: [2, 3, 4] as const, onChange: changeExCount }
+          ? { counts: exCounts, buttons: [2, 3, 4] as const, maxIndex: 5, onChange: changeExCount }
           : calcSubMode === 'mul'
             ? { counts: exCounts, buttons: [2, 3] as const, onChange: changeExCount }
             : undefined
