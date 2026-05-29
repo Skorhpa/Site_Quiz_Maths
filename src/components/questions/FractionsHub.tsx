@@ -10,6 +10,7 @@ import {
   generateProblemsSeries,
   makeAddAtPos,
   makeSubAtPos,
+  makeMulAtPos,
   fH,
   frEqual,
 } from '@/lib/generators/fractions';
@@ -182,7 +183,7 @@ function QuizView({
   accent: string;
   accentSecondary?: string;
   seriesKey: number;
-  switcher?: { counts: (2 | 3 | 4)[]; onChange: (i: number, n: 2 | 3 | 4) => void };
+  switcher?: { counts: (2 | 3 | 4)[]; buttons: readonly (2 | 3 | 4)[]; onChange: (i: number, n: 2 | 3 | 4) => void };
   onSubmit: (i: number, correct: boolean) => void;
   onResetErrors: () => void;
   onNewSeries: () => void;
@@ -283,7 +284,7 @@ function QuizView({
               {switcher && (
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8, flexWrap: 'wrap' }}>
                   <span style={{ fontSize: 13, color: 'var(--muted)' }}>Nombre de fractions :</span>
-                  {([2, 3, 4] as const).map((n) => (
+                  {switcher.buttons.map((n) => (
                     <button
                       key={n}
                       type="button"
@@ -363,7 +364,7 @@ function ModeCard({ label, icon, desc, accent, onClick, disabled = false }: {
       onMouseEnter={(e) => { if (!disabled) (e.currentTarget as HTMLElement).style.borderColor = accent; }}
       onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border)'; }}
     >
-      <span style={{ fontSize: 26, minWidth: 36, textAlign: 'center', color: disabled ? 'var(--muted)' : accent }}>{icon}</span>
+      <div style={{ width: 38, minWidth: 38, fontSize: 22, display: 'flex', justifyContent: 'center', alignItems: 'center', flexShrink: 0, color: disabled ? 'var(--muted)' : accent }}>{icon}</div>
       <div>
         <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 2 }}>{label}</div>
         <div style={{ fontSize: 12, color: 'var(--muted)' }}>{desc}</div>
@@ -467,6 +468,7 @@ export function FractionsHub({ accent, accentSecondary }: { accent: string; acce
       else if (csm === 'complex') exs = generateFractionsComplexSeries();
     }
     if (csm === 'add' || csm === 'sub') setExCounts(new Array(5).fill(2) as (2 | 3 | 4)[]);
+    if (csm === 'mul') setExCounts(new Array(4).fill(2) as (2 | 3 | 4)[]);
     setExercises(exs);
     setAnswers(buildAnswers(exs.length));
     setSeriesKey((k) => k + 1);
@@ -483,7 +485,9 @@ export function FractionsHub({ accent, accentSecondary }: { accent: string; acce
     });
     const newEx = calcSubMode === 'sub'
       ? makeSubAtPos(i as 0 | 1 | 2 | 3 | 4, count)
-      : makeAddAtPos(i as 0 | 1 | 2 | 3 | 4, count);
+      : calcSubMode === 'mul'
+        ? makeMulAtPos(i as 0 | 1 | 2 | 3, count as 2 | 3)
+        : makeAddAtPos(i as 0 | 1 | 2 | 3 | 4, count);
     setExercises((prev) => prev.map((e, idx) => (idx === i ? newEx : e)));
     setAnswers((prev) =>
       prev.map((a, idx) =>
@@ -569,7 +573,13 @@ export function FractionsHub({ accent, accentSecondary }: { accent: string; acce
       accent={accent}
       accentSecondary={accentSecondary}
       seriesKey={seriesKey}
-      switcher={calcSubMode === 'add' || calcSubMode === 'sub' ? { counts: exCounts, onChange: changeExCount } : undefined}
+      switcher={
+        calcSubMode === 'add' || calcSubMode === 'sub'
+          ? { counts: exCounts, buttons: [2, 3, 4] as const, onChange: changeExCount }
+          : calcSubMode === 'mul'
+            ? { counts: exCounts, buttons: [2, 3] as const, onChange: changeExCount }
+            : undefined
+      }
       onSubmit={submit}
       onResetErrors={resetErrors}
       onNewSeries={newSeries}

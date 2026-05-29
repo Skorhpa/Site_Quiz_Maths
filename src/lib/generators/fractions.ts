@@ -2,6 +2,24 @@ import type { FractionExercise } from '@/types';
 
 const pick = <T>(arr: readonly T[]): T => arr[Math.floor(Math.random() * arr.length)]!;
 
+function pickDistinct(count: number, maxVal: number): number[] {
+  const pool = Array.from({ length: maxVal }, (_, i) => i + 1);
+  for (let i = 0; i < Math.min(count, pool.length); i++) {
+    const j = i + Math.floor(Math.random() * (pool.length - i));
+    [pool[i], pool[j]] = [pool[j]!, pool[i]!];
+  }
+  return pool.slice(0, count);
+}
+
+function hasEquivFracs(nums: number[], denoms: number[]): boolean {
+  for (let i = 0; i < nums.length - 1; i++) {
+    for (let j = i + 1; j < nums.length; j++) {
+      if (Math.abs(nums[i]!) * denoms[j]! === Math.abs(nums[j]!) * denoms[i]!) return true;
+    }
+  }
+  return false;
+}
+
 export function frGcd(a: number, b: number): number {
   a = Math.abs(a);
   b = Math.abs(b);
@@ -436,7 +454,10 @@ function makeAddMultipleN(count: 2 | 3 | 4): FractionExercise {
   const denoms: number[] = count === 3 ? [...pick(MULTIPLE_TRIPLETS)] : [...pick(MULTIPLE_QUADS)];
   const D = denoms[denoms.length - 1]!;  // equals lcm of the others by construction
   const ks = denoms.map((d) => D / d);
-  const nums = denoms.map((d) => Math.floor(Math.random() * (d - 1)) + 1);
+  let nums = denoms.map((d) => Math.floor(Math.random() * (d - 1)) + 1);
+  for (let i = 0; i < 100 && (new Set(nums).size < 2 || hasEquivFracs(nums, denoms)); i++) {
+    nums = denoms.map((d) => Math.floor(Math.random() * (d - 1)) + 1);
+  }
   const rn = nums.reduce((acc, n, i) => acc + n * ks[i]!, 0);
   const rd = D;
   const s = frSimplify(rn, rd);
@@ -458,7 +479,10 @@ function makeAddCoprimeN(count: 2 | 3 | 4): FractionExercise {
   const denoms: number[] = count === 3 ? [...pick(ADD_COPRIME_TRIPLETS)] : [...pick(ADD_COPRIME_QUADS)];
   const L = lcmArr(denoms);
   const ks = denoms.map((d) => L / d);
-  const nums = denoms.map((d) => Math.floor(Math.random() * (d - 1)) + 1);
+  let nums = denoms.map((d) => Math.floor(Math.random() * (d - 1)) + 1);
+  for (let i = 0; i < 100 && (new Set(nums).size < 2 || hasEquivFracs(nums, denoms)); i++) {
+    nums = denoms.map((d) => Math.floor(Math.random() * (d - 1)) + 1);
+  }
   const rn = nums.reduce((acc, n, i) => acc + n * ks[i]!, 0);
   const rd = L;
   const s = frSimplify(rn, rd);
@@ -505,10 +529,16 @@ function makeAddNegN(count: 2 | 3 | 4): FractionExercise {
   const denoms: number[] = count === 3 ? [...pick(ADD_COPRIME_TRIPLETS)] : [...pick(ADD_COPRIME_QUADS)];
   const L = lcmArr(denoms);
   const ks = denoms.map((d) => L / d);
-  const nums = denoms.map((d, i) => {
+  let nums = denoms.map((d, i) => {
     const n = Math.floor(Math.random() * (d - 1)) + 1;
     return i === 0 ? -n : n;
   });
+  for (let i = 0; i < 100 && (new Set(nums.map(Math.abs)).size < 2 || hasEquivFracs(nums, denoms)); i++) {
+    nums = denoms.map((d, j) => {
+      const n = Math.floor(Math.random() * (d - 1)) + 1;
+      return j === 0 ? -n : n;
+    });
+  }
   const rn = nums.reduce((acc, n, i) => acc + n * ks[i]!, 0);
   const rd = L;
   const s = frSimplify(Math.abs(rn), rd);
@@ -557,11 +587,18 @@ function makeSubNeg(): FractionExercise {
 
 function makeSubFirstQ(count: 2 | 3 | 4): FractionExercise {
   if (count === 2) return makeSub('same');
-  const d = pick([6, 7, 8, 9, 10, 11, 12]);
-  const maxSub = Math.max(1, Math.floor(d / (count + 1)));
-  const subs = Array.from({ length: count - 1 }, () => Math.floor(Math.random() * maxSub) + 1);
+  const d = count === 4 ? pick([10, 11, 12]) : pick([8, 9, 10, 11, 12]);
+  const maxSub = Math.max(2, Math.floor(d / (count + 1)));
+  let subs: number[];
+  let a: number;
+  let iter = 0;
+  do {
+    subs = Array.from({ length: count - 1 }, () => Math.floor(Math.random() * maxSub) + 1);
+    const subSum = subs.reduce((x, y) => x + y, 0);
+    a = subSum + Math.floor(Math.random() * maxSub) + 1;
+    iter++;
+  } while (iter < 100 && new Set([a, ...subs]).size < count);
   const subSum = subs.reduce((a, b) => a + b, 0);
-  const a = subSum + Math.floor(Math.random() * maxSub) + 1;
   const rn = a - subSum;
   const s = frSimplify(rn, d);
   const subFracs = subs.map((n) => fH(n, d)).join(' − ');
@@ -579,7 +616,7 @@ function makeSubMultipleN(count: 2 | 3 | 4): FractionExercise {
   const D = denoms[denoms.length - 1]!;
   const ks = denoms.map((d) => D / d);
   let nums = denoms.map((d) => Math.floor(Math.random() * (d - 1)) + 1);
-  for (let i = 0; i < 500 && nums.reduce((acc, n, j) => acc + n * ks[j]! * (j === 0 ? 1 : -1), 0) <= 0; i++) {
+  for (let i = 0; i < 500 && (hasEquivFracs(nums, denoms) || nums.reduce((acc, n, j) => acc + n * ks[j]! * (j === 0 ? 1 : -1), 0) <= 0); i++) {
     nums = denoms.map((d) => Math.floor(Math.random() * (d - 1)) + 1);
   }
   const expandedNums = nums.map((n, i) => n * ks[i]!);
@@ -607,7 +644,7 @@ function makeSubCoprimeN(count: 2 | 3 | 4): FractionExercise {
   const L = 60;
   const ks = denoms.map((d) => L / d);
   let nums = denoms.map((d) => Math.floor(Math.random() * (d - 1)) + 1);
-  for (let i = 0; i < 500 && nums[0]! * ks[0]! - nums[1]! * ks[1]! - nums[2]! * ks[2]! <= 0; i++) {
+  for (let i = 0; i < 500 && (hasEquivFracs(nums, denoms) || nums[0]! * ks[0]! - nums[1]! * ks[1]! - nums[2]! * ks[2]! <= 0); i++) {
     nums = denoms.map((d) => Math.floor(Math.random() * (d - 1)) + 1);
   }
   const expandedNums = nums.map((n, i) => n * ks[i]!);
@@ -683,6 +720,56 @@ function makeMulNeg(): FractionExercise {
   return ex({ op: 'mul', label: 'Multiplication', expr: `${fH(na, b)} × ${fH(c, d)}`, ans: { n: rn, d: rd }, steps });
 }
 
+function makeMulSimpleN(count: 2 | 3): FractionExercise {
+  if (count === 2) return makeMulSimple();
+  const pairs: [number, number][] = [[2, 3], [1, 4], [3, 5], [2, 7], [4, 5], [3, 7], [5, 8], [2, 9], [3, 8], [4, 9]];
+  let f: [number, number][];
+  do {
+    f = [pick(pairs), pick(pairs), pick(pairs)];
+  } while (
+    f[0]![0] * f[1]![1] === f[1]![0] * f[0]![1] ||
+    f[1]![0] * f[2]![1] === f[2]![0] * f[1]![1] ||
+    f[0]![0] * f[2]![1] === f[2]![0] * f[0]![1]
+  );
+  const [a, b] = f[0]!;
+  const [c, d] = f[1]!;
+  const [e, g] = f[2]!;
+  const rn = a * c * e, rd = b * d * g;
+  const s = frSimplify(rn, rd);
+  const steps = `<div>On multiplie numérateur par numérateur, dénominateur par dénominateur.</div>
+    <div style="margin-top:6px;">${fH(a, b)} × ${fH(c, d)} × ${fH(e, g)} = ${fH(`${a}×${c}×${e}`, `${b}×${d}×${g}`, 'var(--c6)')} = ${fH(rn, rd, 'var(--c6)')}${!frIsSimplified(rn, rd) ? ` = ${fH(s.n, s.d, 'var(--correct)')} (simplifié)` : ''}</div>`;
+  return ex({ op: 'mul', label: 'Multiplication', expr: `${fH(a, b)} × ${fH(c, d)} × ${fH(e, g)}`, ans: { n: rn, d: rd }, steps });
+}
+
+function makeMulNegN(count: 2 | 3): FractionExercise {
+  if (count === 2) return makeMulNeg();
+  const pairs: [number, number][] = [[2, 3], [1, 4], [3, 5], [2, 7], [4, 5], [3, 7], [5, 8], [2, 9]];
+  let f: [number, number][];
+  do {
+    f = [pick(pairs), pick(pairs), pick(pairs)];
+  } while (
+    f[0]![0] * f[1]![1] === f[1]![0] * f[0]![1] ||
+    f[1]![0] * f[2]![1] === f[2]![0] * f[1]![1] ||
+    f[0]![0] * f[2]![1] === f[2]![0] * f[0]![1]
+  );
+  const [a, b] = f[0]!;
+  const [c, d] = f[1]!;
+  const [e, g] = f[2]!;
+  const na = -a;
+  const rn = na * c * e, rd = b * d * g;
+  const s = frSimplify(Math.abs(rn), rd);
+  const steps = `<div>On multiplie numérateur par numérateur, dénominateur par dénominateur.</div>
+    <div style="margin-top:6px;">Un négatif × des positifs = un négatif.</div>
+    <div style="margin-top:6px;">${fH(na, b)} × ${fH(c, d)} × ${fH(e, g)} = ${fH(`${na}×${c}×${e}`, `${b}×${d}×${g}`, 'var(--c6)')} = ${fH(rn, rd, 'var(--c6)')}${!frIsSimplified(Math.abs(rn), rd) ? ` = ${fH(-s.n, s.d, 'var(--correct)')} (simplifié)` : ''}</div>`;
+  return ex({ op: 'mul', label: 'Multiplication', expr: `${fH(na, b)} × ${fH(c, d)} × ${fH(e, g)}`, ans: { n: rn, d: rd }, steps });
+}
+
+export function makeMulAtPos(pos: 0 | 1 | 2 | 3, count: 2 | 3): FractionExercise {
+  if (pos === 0 || pos === 1) return makeMulSimpleN(count);
+  if (pos === 2) return makeMulNegN(count);
+  return count === 3 ? makeMulSimpleN(3) : makeMulBig();
+}
+
 function makeDivNeg(): FractionExercise {
   const cases = [
     { a: -9, b: 4, c: 3, d: 8 },
@@ -728,8 +815,8 @@ export function generateFractionsSeries(): FractionExercise[] {
 
 export function makeAddFirstQ(count: 2 | 3 | 4): FractionExercise {
   if (count === 2) return makeAdd('same');
-  const d = pick([5, 6, 7, 8, 9, 10, 11, 12]);
-  const nums: number[] = Array.from({ length: count }, () => Math.floor(Math.random() * (d - 1)) + 1);
+  const d = pick([6, 7, 8, 9, 10, 11, 12]);
+  const nums = pickDistinct(count, d - 1);
   const rn = nums.reduce((a, b) => a + b, 0);
   const s = frSimplify(rn, d);
   const fracs = nums.map((n) => fH(n, d)).join(' + ');
