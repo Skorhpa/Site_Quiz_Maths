@@ -8,6 +8,7 @@ import {
   generateDivSeries,
   generateFractionsComplexSeries,
   generateProblemsSeries,
+  makeAddFirstQ,
   fH,
   frEqual,
 } from '@/lib/generators/fractions';
@@ -172,7 +173,7 @@ function MDCQuestion({ index, exercise, answer, accent, onSubmit }: {
 
 function QuizView({
   modeLabel, exercises, answers, accent, accentSecondary, seriesKey,
-  onSubmit, onResetErrors, onNewSeries, onBack,
+  addQ0, onSubmit, onResetErrors, onNewSeries, onBack,
 }: {
   modeLabel: string;
   exercises: FracHubExercise[];
@@ -180,6 +181,7 @@ function QuizView({
   accent: string;
   accentSecondary?: string;
   seriesKey: number;
+  addQ0?: { count: 2 | 3 | 4; onChange: (n: 2 | 3 | 4) => void };
   onSubmit: (i: number, correct: boolean) => void;
   onResetErrors: () => void;
   onNewSeries: () => void;
@@ -251,6 +253,7 @@ function QuizView({
         {exercises.map((ex, i) => {
           const ans = answers[i]!;
           const key = `${seriesKey}-${ans.resetKey}-${i}`;
+          const locked = ans.status !== 'pending';
           if ((ex as MDCExercise).exKind === 'mdc') {
             return (
               <MDCQuestion
@@ -275,13 +278,41 @@ function QuizView({
             );
           }
           return (
-            <FractionQuestion
-              key={key}
-              index={i}
-              exercise={ex as FractionExercise}
-              answer={ans}
-              onSubmit={(correct) => onSubmit(i, correct ?? false)}
-            />
+            <div key={key}>
+              {i === 0 && addQ0 && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8, flexWrap: 'wrap' }}>
+                  <span style={{ fontSize: 13, color: 'var(--muted)' }}>Nombre de fractions :</span>
+                  {([2, 3, 4] as const).map((n) => (
+                    <button
+                      key={n}
+                      type="button"
+                      disabled={locked}
+                      onClick={() => addQ0.onChange(n)}
+                      style={{
+                        padding: '4px 14px',
+                        borderRadius: 8,
+                        fontSize: 13,
+                        fontWeight: 700,
+                        fontFamily: "'DM Mono', monospace",
+                        border: `1px solid ${addQ0.count === n ? accent : 'var(--border)'}`,
+                        background: addQ0.count === n ? `${accent}22` : 'var(--surface)',
+                        color: addQ0.count === n ? accent : 'var(--muted)',
+                        cursor: locked ? 'not-allowed' : 'pointer',
+                        opacity: locked ? 0.6 : 1,
+                      }}
+                    >
+                      {n}
+                    </button>
+                  ))}
+                </div>
+              )}
+              <FractionQuestion
+                index={i}
+                exercise={ex as FractionExercise}
+                answer={ans}
+                onSubmit={(correct) => onSubmit(i, correct ?? false)}
+              />
+            </div>
           );
         })}
       </div>
@@ -419,6 +450,7 @@ export function FractionsHub({ accent, accentSecondary }: { accent: string; acce
   const [exercises, setExercises] = useState<FracHubExercise[]>([]);
   const [answers, setAnswers] = useState<AnswerState[]>([]);
   const [seriesKey, setSeriesKey] = useState(0);
+  const [q0AddCount, setQ0AddCount] = useState<2 | 3 | 4>(2);
 
   const loadExercises = (m: HubMode, csm: CalcSubMode | null) => {
     let exs: FracHubExercise[] = [];
@@ -433,10 +465,19 @@ export function FractionsHub({ accent, accentSecondary }: { accent: string; acce
       else if (csm === 'div') exs = generateDivSeries();
       else if (csm === 'complex') exs = generateFractionsComplexSeries();
     }
+    if (csm === 'add') setQ0AddCount(2);
     setExercises(exs);
     setAnswers(buildAnswers(exs.length));
     setSeriesKey((k) => k + 1);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const changeQ0AddCount = (count: 2 | 3 | 4) => {
+    if (answers[0]?.status !== 'pending') return;
+    setQ0AddCount(count);
+    const newEx = makeAddFirstQ(count);
+    setExercises((prev) => [newEx, ...prev.slice(1)]);
+    setAnswers((prev) => [{ value: '', status: 'pending', resetKey: (prev[0]?.resetKey ?? 0) + 1 }, ...prev.slice(1)]);
   };
 
   const selectMode = (m: HubMode) => {
@@ -516,6 +557,7 @@ export function FractionsHub({ accent, accentSecondary }: { accent: string; acce
       accent={accent}
       accentSecondary={accentSecondary}
       seriesKey={seriesKey}
+      addQ0={calcSubMode === 'add' ? { count: q0AddCount, onChange: changeQ0AddCount } : undefined}
       onSubmit={submit}
       onResetErrors={resetErrors}
       onNewSeries={newSeries}

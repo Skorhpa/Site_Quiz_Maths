@@ -469,6 +469,20 @@ export function generateFractionsSeries(): FractionExercise[] {
   ];
 }
 
+export function makeAddFirstQ(count: 2 | 3 | 4): FractionExercise {
+  if (count === 2) return makeAdd('same');
+  const d = pick([5, 6, 7, 8, 9, 10, 11, 12]);
+  const nums: number[] = Array.from({ length: count }, () => Math.floor(Math.random() * (d - 1)) + 1);
+  const rn = nums.reduce((a, b) => a + b, 0);
+  const s = frSimplify(rn, d);
+  const fracs = nums.map((n) => fH(n, d)).join(' + ');
+  const numSum = nums.join('+');
+  const simplified = !frIsSimplified(rn, d) ? ` = ${fH(s.n, s.d, 'var(--correct)')} (simplifié)` : '';
+  const steps = `<div>Les fractions ont le même dénominateur, on additionne les numérateurs.</div>
+    <div style="margin-top:6px;">${fracs} = ${fH(numSum, d, 'var(--c6)')} = ${fH(rn, d, 'var(--c6)')}${simplified}</div>`;
+  return ex({ op: 'add', label: 'Addition', expr: fracs, ans: { n: rn, d }, steps });
+}
+
 export function generateAddSeries(): FractionExercise[] {
   return [makeAdd('same'), makeAdd('multiple'), makeAdd('coprime'), makeAdd('coprime'), makeAddNeg()];
 }
