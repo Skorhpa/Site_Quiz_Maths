@@ -413,6 +413,24 @@ const MULTIPLE_QUADS: [number, number, number, number][] = [
   [2, 4, 5, 20],
 ];
 
+// Sub-specific sets: guaranteed max(first_expanded) > min(sum_rest_expanded)
+// [2,3,6] excluded: max_first=3, min_rest=3 → never strictly positive
+const SUB_MULTIPLE_TRIPLETS: [number, number, number][] = [
+  [3, 4, 12], [4, 6, 12], [2, 5, 10], [3, 5, 15], [2, 7, 14],
+];
+
+// Only quads where max_first > min_rest
+const SUB_MULTIPLE_QUADS: [number, number, number, number][] = [
+  [3, 4, 6, 12],   // max_first=8, min_rest=6
+  [4, 6, 8, 24],   // max_first=18, min_rest=8
+  [3, 6, 9, 18],   // max_first=12, min_rest=6
+  [4, 5, 10, 20],  // max_first=15, min_rest=7
+];
+
+// For sub coprime count=3: only [3,4,5] is feasible (max_first=40 > min_rest=27)
+// [2,3,5] and [2,3,7] are impossible or near-impossible for positive sub
+const SUB_COPRIME_TRIPLET: [number, number, number] = [3, 4, 5];
+
 function makeAddMultipleN(count: 2 | 3 | 4): FractionExercise {
   if (count === 2) return makeAdd('multiple');
   const denoms: number[] = count === 3 ? [...pick(MULTIPLE_TRIPLETS)] : [...pick(MULTIPLE_QUADS)];
@@ -557,13 +575,13 @@ function makeSubFirstQ(count: 2 | 3 | 4): FractionExercise {
 
 function makeSubMultipleN(count: 2 | 3 | 4): FractionExercise {
   if (count === 2) return makeSub('multiple');
-  const denoms: number[] = count === 3 ? [...pick(MULTIPLE_TRIPLETS)] : [...pick(MULTIPLE_QUADS)];
+  const denoms: number[] = count === 3 ? [...pick(SUB_MULTIPLE_TRIPLETS)] : [...pick(SUB_MULTIPLE_QUADS)];
   const D = denoms[denoms.length - 1]!;
   const ks = denoms.map((d) => D / d);
-  let nums: number[];
-  do {
+  let nums = denoms.map((d) => Math.floor(Math.random() * (d - 1)) + 1);
+  for (let i = 0; i < 500 && nums.reduce((acc, n, j) => acc + n * ks[j]! * (j === 0 ? 1 : -1), 0) <= 0; i++) {
     nums = denoms.map((d) => Math.floor(Math.random() * (d - 1)) + 1);
-  } while (nums.reduce((acc, n, i) => acc + n * ks[i]! * (i === 0 ? 1 : -1), 0) <= 0);
+  }
   const expandedNums = nums.map((n, i) => n * ks[i]!);
   const rn = expandedNums[0]! - expandedNums.slice(1).reduce((a, b) => a + b, 0);
   const rd = D;
@@ -582,31 +600,26 @@ function makeSubMultipleN(count: 2 | 3 | 4): FractionExercise {
 
 function makeSubCoprimeN(count: 2 | 3 | 4): FractionExercise {
   if (count === 2) return makeSub('coprime');
-  const denoms: number[] = count === 3 ? [...pick(ADD_COPRIME_TRIPLETS)] : [...pick(ADD_COPRIME_QUADS)];
-  const D = denoms[denoms.length - 1]!;
-  const L = lcmArr(denoms);
+  // count=4: no feasible coprime quad exists → use multiple-style
+  if (count === 4) return makeSubMultipleN(4);
+  // count=3: only [3,4,5] is structurally feasible (max_first=40 > min_rest=27)
+  const denoms = [...SUB_COPRIME_TRIPLET];
+  const L = 60;
   const ks = denoms.map((d) => L / d);
-  let nums: number[];
-  do {
+  let nums = denoms.map((d) => Math.floor(Math.random() * (d - 1)) + 1);
+  for (let i = 0; i < 500 && nums[0]! * ks[0]! - nums[1]! * ks[1]! - nums[2]! * ks[2]! <= 0; i++) {
     nums = denoms.map((d) => Math.floor(Math.random() * (d - 1)) + 1);
-  } while (nums.reduce((acc, n, i) => acc + n * ks[i]! * (i === 0 ? 1 : -1), 0) <= 0);
+  }
   const expandedNums = nums.map((n, i) => n * ks[i]!);
-  const rn = expandedNums[0]! - expandedNums.slice(1).reduce((a, b) => a + b, 0);
+  const rn = expandedNums[0]! - expandedNums[1]! - expandedNums[2]!;
   const rd = L;
   const s = frSimplify(rn, rd);
   const expr = nums.map((n, i) => fH(n, denoms[i]!)).join(' − ');
-  const expandParts = nums.map((n, i) =>
-    ks[i]! === 1
-      ? `${fH(n, denoms[i]!)} (déjà au dénominateur ${L})`
-      : showExpand(n, denoms[i]!, ks[i]!, 'var(--c6)')
-  );
+  const expandParts = nums.map((n, i) => showExpand(n, denoms[i]!, ks[i]!, 'var(--c6)'));
   const expandedFracs = expandedNums.map((n) => fH(n, L)).join(' − ');
-  const sumStr = `${expandedNums[0]}−${expandedNums.slice(1).join('−')}`;
+  const sumStr = `${expandedNums[0]}−${expandedNums[1]}−${expandedNums[2]}`;
   const simplified = !frIsSimplified(rn, rd) ? ` = ${fH(s.n, s.d, 'var(--correct)')} (simplifié)` : '';
-  const line1 = count === 3
-    ? `Aucun de ces dénominateurs n'est dans la table d'un autre. Le dénominateur commun est ${denoms[0]}×${denoms[1]}×${denoms[2]} = <strong>${L}</strong>.`
-    : `Les dénominateurs ${denoms.slice(0, -1).join(', ')} sont tous premiers avec ${D} (le plus grand). Le plus petit dénominateur commun est <strong>${L}</strong>.`;
-  const steps = `<div>${line1}</div>
+  const steps = `<div>Aucun de ces dénominateurs n'est dans la table d'un autre. Le dénominateur commun est 3×4×5 = <strong>60</strong>.</div>
     <div style="margin-top:6px;">${expandParts.join(' &nbsp;; ')}</div>
     <div style="margin-top:6px;">${expandedFracs} = ${fH(sumStr, L, 'var(--c6)')} = ${fH(rn, rd, 'var(--c6)')}${simplified}</div>`;
   return ex({ op: 'sub', label: 'Soustraction', expr, ans: { n: rn, d: rd }, steps });
@@ -618,10 +631,10 @@ function makeSubNegN(count: 2 | 3 | 4): FractionExercise {
   const D = denoms[denoms.length - 1]!;
   const L = lcmArr(denoms);
   const ks = denoms.map((d) => L / d);
-  let nums: number[];
-  do {
+  let nums = denoms.map((d) => Math.floor(Math.random() * (d - 1)) + 1);
+  for (let i = 0; i < 500 && nums.reduce((acc, n, j) => acc + n * ks[j]! * (j === 0 ? 1 : -1), 0) >= 0; i++) {
     nums = denoms.map((d) => Math.floor(Math.random() * (d - 1)) + 1);
-  } while (nums.reduce((acc, n, i) => acc + n * ks[i]! * (i === 0 ? 1 : -1), 0) >= 0);
+  }
   const expandedNums = nums.map((n, i) => n * ks[i]!);
   const rn = expandedNums[0]! - expandedNums.slice(1).reduce((a, b) => a + b, 0);
   const rd = L;
