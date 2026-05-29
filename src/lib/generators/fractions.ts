@@ -382,37 +382,57 @@ function makeDiv(subtype: 'fracbyfrac' | 'fracbyint'): FractionExercise {
   return ex({ op: 'div', label: 'Division', expr: `${fH(a, b)} ÷ ${k}`, ans: { n: rn, d: rd }, steps });
 }
 
+// Pairwise coprime → LCD = d1×d2×d3
 const ADD_COPRIME_TRIPLETS: [number, number, number][] = [
-  [2, 3, 4],
-  [3, 4, 6],
-  [2, 4, 5],
   [2, 3, 5],
+  [2, 3, 7],
+  [3, 4, 5],
 ];
 
+// d1, d2, d3 each coprime with D (last element) → LCD < product
 const ADD_COPRIME_QUADS: [number, number, number, number][] = [
-  [2, 3, 4, 6],
+  [2, 3, 4, 5],
+  [2, 3, 4, 7],
+];
+
+// All different; last element = lcm of the others
+const MULTIPLE_TRIPLETS: [number, number, number][] = [
+  [2, 3, 6],
+  [3, 4, 12],
+  [4, 6, 12],
+  [2, 5, 10],
+  [3, 5, 15],
+  [2, 7, 14],
+];
+
+const MULTIPLE_QUADS: [number, number, number, number][] = [
   [2, 3, 4, 12],
   [3, 4, 6, 12],
+  [2, 4, 6, 12],
+  [2, 3, 9, 18],
+  [2, 4, 5, 20],
 ];
 
 function makeAddMultipleN(count: 2 | 3 | 4): FractionExercise {
   if (count === 2) return makeAdd('multiple');
-  const pairs: [number, number][] = [[3, 9], [4, 12], [5, 15], [2, 8], [3, 6], [5, 10], [2, 6], [4, 8]];
-  const [d1, d2] = pick(pairs);
-  const k = d2 / d1;
-  const a = Math.floor(Math.random() * (d1 - 1)) + 1;
-  const extras = Array.from({ length: count - 1 }, () => Math.floor(Math.random() * (d2 - 1)) + 1);
-  const an = a * k + extras.reduce((s, v) => s + v, 0);
-  const ad = d2;
-  const s = frSimplify(an, ad);
-  const expr = `${fH(a, d1)} + ${extras.map((n) => fH(n, d2)).join(' + ')}`;
-  const expandedFracs = [fH(a * k, d2), ...extras.map((n) => fH(n, d2))].join(' + ');
-  const sumStr = `${a * k}+${extras.join('+')}`;
-  const simplified = !frIsSimplified(an, ad) ? ` = ${fH(s.n, s.d, 'var(--correct)')} (simplifié)` : '';
-  const steps = `<div><strong>${d2}</strong> est dans la table de <strong>${d1}</strong> (${d1}×${k}=${d2}).</div>
-    <div style="margin-top:6px;">${showExpand(a, d1, k, 'var(--c6)')}</div>
-    <div style="margin-top:6px;">${expandedFracs} = ${fH(sumStr, d2, 'var(--c6)')} = ${fH(an, ad, 'var(--c6)')}${simplified}</div>`;
-  return ex({ op: 'add', label: 'Addition', expr, ans: { n: an, d: ad }, steps });
+  const denoms: number[] = count === 3 ? [...pick(MULTIPLE_TRIPLETS)] : [...pick(MULTIPLE_QUADS)];
+  const D = denoms[denoms.length - 1]!;  // equals lcm of the others by construction
+  const ks = denoms.map((d) => D / d);
+  const nums = denoms.map((d) => Math.floor(Math.random() * (d - 1)) + 1);
+  const rn = nums.reduce((acc, n, i) => acc + n * ks[i]!, 0);
+  const rd = D;
+  const s = frSimplify(rn, rd);
+  const expr = nums.map((n, i) => fH(n, denoms[i]!)).join(' + ');
+  // Only fractions whose denom ≠ D need expanding (last element has k=1, skip it)
+  const expandParts = denoms.slice(0, -1).map((d, i) => showExpand(nums[i]!, d, ks[i]!, 'var(--c6)'));
+  const expandedFracs = nums.map((n, i) => fH(n * ks[i]!, D)).join(' + ');
+  const sumStr = nums.map((n, i) => n * ks[i]!).join('+');
+  const simplified = !frIsSimplified(rn, rd) ? ` = ${fH(s.n, s.d, 'var(--correct)')} (simplifié)` : '';
+  const tableDesc = denoms.slice(0, -1).map((d, i) => `de ${d} (×${ks[i]})`).join(', ');
+  const steps = `<div><strong>${D}</strong> est dans la table ${tableDesc}. Le dénominateur commun est <strong>${D}</strong>.</div>
+    <div style="margin-top:6px;">${expandParts.join(' &nbsp;; ')}</div>
+    <div style="margin-top:6px;">${expandedFracs} = ${fH(sumStr, D, 'var(--c6)')} = ${fH(rn, rd, 'var(--c6)')}${simplified}</div>`;
+  return ex({ op: 'add', label: 'Addition', expr, ans: { n: rn, d: rd }, steps });
 }
 
 function makeAddCoprimeN(count: 2 | 3 | 4): FractionExercise {
@@ -434,10 +454,11 @@ function makeAddCoprimeN(count: 2 | 3 | 4): FractionExercise {
   const expandedFracs = expandedNums.map((n) => fH(n, L)).join(' + ');
   const sumStr = expandedNums.join('+');
   const simplified = !frIsSimplified(rn, rd) ? ` = ${fH(s.n, s.d, 'var(--correct)')} (simplifié)` : '';
-  const denomStr = count === 3
-    ? `${denoms[0]}, ${denoms[1]} et ${denoms[2]}`
-    : denoms.join(', ');
-  const steps = `<div>On cherche le PPCM de ${denomStr} : c'est <strong>${L}</strong>.</div>
+  const D = denoms[denoms.length - 1]!;
+  const line1 = count === 3
+    ? `Aucun de ces dénominateurs n'est dans la table d'un autre. Le dénominateur commun est ${denoms[0]}×${denoms[1]}×${denoms[2]} = <strong>${L}</strong>.`
+    : `Les dénominateurs ${denoms.slice(0, -1).join(', ')} sont tous premiers avec ${D} (le plus grand). Le plus petit dénominateur commun est <strong>${L}</strong>.`;
+  const steps = `<div>${line1}</div>
     <div style="margin-top:6px;">${expandParts.join(' &nbsp;; ')}</div>
     <div style="margin-top:6px;">${expandedFracs} = ${fH(sumStr, L, 'var(--c6)')} = ${fH(rn, rd, 'var(--c6)')}${simplified}</div>`;
   return ex({ op: 'add', label: 'Addition', expr, ans: { n: rn, d: rd }, steps });
@@ -485,10 +506,11 @@ function makeAddNegN(count: 2 | 3 | 4): FractionExercise {
   const simplified = !frIsSimplified(Math.abs(rn), rd)
     ? ` = ${fH(rn < 0 ? -s.n : s.n, s.d, 'var(--correct)')} (simplifié)`
     : '';
-  const denomStr = count === 3
-    ? `${denoms[0]}, ${denoms[1]} et ${denoms[2]}`
-    : denoms.join(', ');
-  const steps = `<div>On cherche le PPCM de ${denomStr} : c'est <strong>${L}</strong>.</div>
+  const D = denoms[denoms.length - 1]!;
+  const line1 = count === 3
+    ? `Aucun de ces dénominateurs n'est dans la table d'un autre. Le dénominateur commun est ${denoms[0]}×${denoms[1]}×${denoms[2]} = <strong>${L}</strong>.`
+    : `Les dénominateurs ${denoms.slice(0, -1).join(', ')} sont tous premiers avec ${D} (le plus grand). Le plus petit dénominateur commun est <strong>${L}</strong>.`;
+  const steps = `<div>${line1}</div>
     <div style="margin-top:6px;">${expandParts.join(' &nbsp;; ')}</div>
     <div style="margin-top:6px;">${expandedFracs} = ${fH(sumStr, L, 'var(--c6)')} = ${fH(rn, rd, 'var(--c6)')}${simplified}</div>
     <div style="margin-top:4px;color:var(--muted);font-size:12px;">Rappel : ajouter un nombre négatif revient à soustraire sa valeur absolue.</div>`;
