@@ -537,6 +537,124 @@ function makeSubNeg(): FractionExercise {
   return ex({ op: 'sub', label: 'Soustraction', expr: `${fH(a, d1)} − ${fH(b, d2)}`, ans: { n: rn, d: rd }, steps });
 }
 
+function makeSubFirstQ(count: 2 | 3 | 4): FractionExercise {
+  if (count === 2) return makeSub('same');
+  const d = pick([6, 7, 8, 9, 10, 11, 12]);
+  const maxSub = Math.max(1, Math.floor(d / (count + 1)));
+  const subs = Array.from({ length: count - 1 }, () => Math.floor(Math.random() * maxSub) + 1);
+  const subSum = subs.reduce((a, b) => a + b, 0);
+  const a = subSum + Math.floor(Math.random() * maxSub) + 1;
+  const rn = a - subSum;
+  const s = frSimplify(rn, d);
+  const subFracs = subs.map((n) => fH(n, d)).join(' − ');
+  const expr = `${fH(a, d)} − ${subFracs}`;
+  const subNumsStr = subs.join('−');
+  const simplified = !frIsSimplified(rn, d) ? ` = ${fH(s.n, s.d, 'var(--correct)')} (simplifié)` : '';
+  const steps = `<div>Les fractions ont le même dénominateur, on soustrait les numérateurs.</div>
+    <div style="margin-top:6px;">${expr} = ${fH(`${a}−${subNumsStr}`, d, 'var(--c6)')} = ${fH(rn, d, 'var(--c6)')}${simplified}</div>`;
+  return ex({ op: 'sub', label: 'Soustraction', expr, ans: { n: rn, d }, steps });
+}
+
+function makeSubMultipleN(count: 2 | 3 | 4): FractionExercise {
+  if (count === 2) return makeSub('multiple');
+  const denoms: number[] = count === 3 ? [...pick(MULTIPLE_TRIPLETS)] : [...pick(MULTIPLE_QUADS)];
+  const D = denoms[denoms.length - 1]!;
+  const ks = denoms.map((d) => D / d);
+  let nums: number[];
+  do {
+    nums = denoms.map((d) => Math.floor(Math.random() * (d - 1)) + 1);
+  } while (nums.reduce((acc, n, i) => acc + n * ks[i]! * (i === 0 ? 1 : -1), 0) <= 0);
+  const expandedNums = nums.map((n, i) => n * ks[i]!);
+  const rn = expandedNums[0]! - expandedNums.slice(1).reduce((a, b) => a + b, 0);
+  const rd = D;
+  const s = frSimplify(rn, rd);
+  const expr = nums.map((n, i) => fH(n, denoms[i]!)).join(' − ');
+  const expandParts = denoms.slice(0, -1).map((d, i) => showExpand(nums[i]!, d, ks[i]!, 'var(--c6)'));
+  const expandedFracs = expandedNums.map((n) => fH(n, D)).join(' − ');
+  const sumStr = `${expandedNums[0]}−${expandedNums.slice(1).join('−')}`;
+  const simplified = !frIsSimplified(rn, rd) ? ` = ${fH(s.n, s.d, 'var(--correct)')} (simplifié)` : '';
+  const tableDesc = denoms.slice(0, -1).map((d, i) => `de ${d} (×${ks[i]})`).join(', ');
+  const steps = `<div><strong>${D}</strong> est dans la table ${tableDesc}. Le dénominateur commun est <strong>${D}</strong>.</div>
+    <div style="margin-top:6px;">${expandParts.join(' &nbsp;; ')}</div>
+    <div style="margin-top:6px;">${expandedFracs} = ${fH(sumStr, D, 'var(--c6)')} = ${fH(rn, rd, 'var(--c6)')}${simplified}</div>`;
+  return ex({ op: 'sub', label: 'Soustraction', expr, ans: { n: rn, d: rd }, steps });
+}
+
+function makeSubCoprimeN(count: 2 | 3 | 4): FractionExercise {
+  if (count === 2) return makeSub('coprime');
+  const denoms: number[] = count === 3 ? [...pick(ADD_COPRIME_TRIPLETS)] : [...pick(ADD_COPRIME_QUADS)];
+  const D = denoms[denoms.length - 1]!;
+  const L = lcmArr(denoms);
+  const ks = denoms.map((d) => L / d);
+  let nums: number[];
+  do {
+    nums = denoms.map((d) => Math.floor(Math.random() * (d - 1)) + 1);
+  } while (nums.reduce((acc, n, i) => acc + n * ks[i]! * (i === 0 ? 1 : -1), 0) <= 0);
+  const expandedNums = nums.map((n, i) => n * ks[i]!);
+  const rn = expandedNums[0]! - expandedNums.slice(1).reduce((a, b) => a + b, 0);
+  const rd = L;
+  const s = frSimplify(rn, rd);
+  const expr = nums.map((n, i) => fH(n, denoms[i]!)).join(' − ');
+  const expandParts = nums.map((n, i) =>
+    ks[i]! === 1
+      ? `${fH(n, denoms[i]!)} (déjà au dénominateur ${L})`
+      : showExpand(n, denoms[i]!, ks[i]!, 'var(--c6)')
+  );
+  const expandedFracs = expandedNums.map((n) => fH(n, L)).join(' − ');
+  const sumStr = `${expandedNums[0]}−${expandedNums.slice(1).join('−')}`;
+  const simplified = !frIsSimplified(rn, rd) ? ` = ${fH(s.n, s.d, 'var(--correct)')} (simplifié)` : '';
+  const line1 = count === 3
+    ? `Aucun de ces dénominateurs n'est dans la table d'un autre. Le dénominateur commun est ${denoms[0]}×${denoms[1]}×${denoms[2]} = <strong>${L}</strong>.`
+    : `Les dénominateurs ${denoms.slice(0, -1).join(', ')} sont tous premiers avec ${D} (le plus grand). Le plus petit dénominateur commun est <strong>${L}</strong>.`;
+  const steps = `<div>${line1}</div>
+    <div style="margin-top:6px;">${expandParts.join(' &nbsp;; ')}</div>
+    <div style="margin-top:6px;">${expandedFracs} = ${fH(sumStr, L, 'var(--c6)')} = ${fH(rn, rd, 'var(--c6)')}${simplified}</div>`;
+  return ex({ op: 'sub', label: 'Soustraction', expr, ans: { n: rn, d: rd }, steps });
+}
+
+function makeSubNegN(count: 2 | 3 | 4): FractionExercise {
+  if (count === 2) return makeSubNeg();
+  const denoms: number[] = count === 3 ? [...pick(ADD_COPRIME_TRIPLETS)] : [...pick(ADD_COPRIME_QUADS)];
+  const D = denoms[denoms.length - 1]!;
+  const L = lcmArr(denoms);
+  const ks = denoms.map((d) => L / d);
+  let nums: number[];
+  do {
+    nums = denoms.map((d) => Math.floor(Math.random() * (d - 1)) + 1);
+  } while (nums.reduce((acc, n, i) => acc + n * ks[i]! * (i === 0 ? 1 : -1), 0) >= 0);
+  const expandedNums = nums.map((n, i) => n * ks[i]!);
+  const rn = expandedNums[0]! - expandedNums.slice(1).reduce((a, b) => a + b, 0);
+  const rd = L;
+  const s = frSimplify(Math.abs(rn), rd);
+  const expr = nums.map((n, i) => fH(n, denoms[i]!)).join(' − ');
+  const expandParts = nums.map((n, i) =>
+    ks[i]! === 1
+      ? `${fH(n, denoms[i]!)} (déjà au dénominateur ${L})`
+      : showExpand(n, denoms[i]!, ks[i]!, 'var(--c6)')
+  );
+  const expandedFracs = expandedNums.map((n) => fH(n, L)).join(' − ');
+  const sumStr = `${expandedNums[0]}−${expandedNums.slice(1).join('−')}`;
+  const simplified = !frIsSimplified(Math.abs(rn), rd)
+    ? ` = ${fH(-s.n, s.d, 'var(--correct)')} (simplifié)`
+    : '';
+  const line1 = count === 3
+    ? `Aucun de ces dénominateurs n'est dans la table d'un autre. Le dénominateur commun est ${denoms[0]}×${denoms[1]}×${denoms[2]} = <strong>${L}</strong>.`
+    : `Les dénominateurs ${denoms.slice(0, -1).join(', ')} sont tous premiers avec ${D} (le plus grand). Le plus petit dénominateur commun est <strong>${L}</strong>.`;
+  const restSum = expandedNums.slice(1).reduce((a, b) => a + b, 0);
+  const steps = `<div>${line1}</div>
+    <div style="margin-top:6px;">${expandParts.join(' &nbsp;; ')}</div>
+    <div style="margin-top:6px;">${expandedFracs} = ${fH(sumStr, L, 'var(--c6)')} = ${fH(rn, rd, 'var(--c6)')}${simplified}</div>
+    <div style="margin-top:4px;color:var(--muted);font-size:12px;">Le résultat est négatif car ${expandedNums[0]} &lt; ${restSum}.</div>`;
+  return ex({ op: 'sub', label: 'Soustraction', expr, ans: { n: rn, d: rd }, steps });
+}
+
+export function makeSubAtPos(pos: 0 | 1 | 2 | 3 | 4, count: 2 | 3 | 4): FractionExercise {
+  if (pos === 0) return makeSubFirstQ(count);
+  if (pos === 1) return makeSubMultipleN(count);
+  if (pos === 2 || pos === 3) return makeSubCoprimeN(count);
+  return makeSubNegN(count);
+}
+
 function makeMulNeg(): FractionExercise {
   const pairs: [number, number][] = [[2, 3], [1, 4], [3, 5], [2, 7], [4, 5], [3, 7], [5, 8], [2, 9]];
   const [a, b] = pick(pairs);
