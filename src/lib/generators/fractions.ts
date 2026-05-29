@@ -400,54 +400,48 @@ function makeDiv(subtype: 'fracbyfrac' | 'fracbyint'): FractionExercise {
   return ex({ op: 'div', label: 'Division', expr: `${fH(a, b)} ÷ ${k}`, ans: { n: rn, d: rd }, steps });
 }
 
-// Pairwise coprime → LCD = d1×d2×d3
+// Pairwise coprime → LCD = d1×d2×d3 (11 triplets for variety)
 const ADD_COPRIME_TRIPLETS: [number, number, number][] = [
-  [2, 3, 5],
-  [2, 3, 7],
-  [3, 4, 5],
+  [2, 3, 5], [2, 3, 7], [2, 3, 11], [2, 3, 13],
+  [2, 5, 7], [2, 5, 9], [2, 7, 9],
+  [3, 4, 5], [3, 4, 7], [3, 5, 7], [3, 5, 8],
 ];
 
-// d1, d2, d3 each coprime with D (last element) → LCD < product
+// d1,d2,d3 each coprime with D (last element)
 const ADD_COPRIME_QUADS: [number, number, number, number][] = [
-  [2, 3, 4, 5],
-  [2, 3, 4, 7],
+  [2, 3, 4, 5], [2, 3, 4, 7], [2, 4, 5, 7],
 ];
 
-// All different; last element = lcm of the others
+// All different; last = lcm of the others (10 triplets)
 const MULTIPLE_TRIPLETS: [number, number, number][] = [
-  [2, 3, 6],
-  [3, 4, 12],
-  [4, 6, 12],
-  [2, 5, 10],
-  [3, 5, 15],
-  [2, 7, 14],
+  [2, 3, 6], [2, 5, 10], [2, 7, 14], [2, 9, 18],
+  [3, 4, 12], [3, 5, 15], [3, 7, 21],
+  [4, 5, 20], [4, 6, 12], [6, 8, 24],
 ];
 
+// All different; last = lcm of the others (8 quads)
 const MULTIPLE_QUADS: [number, number, number, number][] = [
-  [2, 3, 4, 12],
-  [3, 4, 6, 12],
-  [2, 4, 6, 12],
-  [2, 3, 9, 18],
-  [2, 4, 5, 20],
+  [2, 3, 4, 12], [3, 4, 6, 12], [2, 4, 6, 12],
+  [2, 3, 9, 18], [2, 4, 5, 20], [4, 6, 8, 24],
+  [3, 6, 9, 18], [2, 3, 5, 30],
 ];
 
-// Sub-specific sets: guaranteed max(first_expanded) > min(sum_rest_expanded)
-// [2,3,6] excluded: max_first=3, min_rest=3 → never strictly positive
+// Sub-specific: max(first_expanded) > min(sum_rest_expanded) (9 triplets)
 const SUB_MULTIPLE_TRIPLETS: [number, number, number][] = [
   [3, 4, 12], [4, 6, 12], [2, 5, 10], [3, 5, 15], [2, 7, 14],
+  [2, 9, 18], [3, 7, 21], [4, 5, 20], [3, 8, 24],
 ];
 
-// Only quads where max_first > min_rest
+// Sub quads: max_first > min_rest (6 quads)
 const SUB_MULTIPLE_QUADS: [number, number, number, number][] = [
-  [3, 4, 6, 12],   // max_first=8, min_rest=6
-  [4, 6, 8, 24],   // max_first=18, min_rest=8
-  [3, 6, 9, 18],   // max_first=12, min_rest=6
-  [4, 5, 10, 20],  // max_first=15, min_rest=7
+  [3, 4, 6, 12], [4, 6, 8, 24], [3, 6, 9, 18],
+  [4, 5, 10, 20], [4, 6, 9, 36], [3, 4, 8, 24],
 ];
 
-// For sub coprime count=3: only [3,4,5] is feasible (max_first=40 > min_rest=27)
-// [2,3,5] and [2,3,7] are impossible or near-impossible for positive sub
-const SUB_COPRIME_TRIPLET: [number, number, number] = [3, 4, 5];
+// Sub coprime triplets: pairwise coprime AND max_first > min_rest (5 triplets)
+const SUB_COPRIME_TRIPLETS: [number, number, number][] = [
+  [3, 4, 5], [3, 4, 7], [3, 5, 7], [3, 5, 8], [4, 5, 7],
+];
 
 function makeAddMultipleN(count: 2 | 3 | 4): FractionExercise {
   if (count === 2) return makeAdd('multiple');
@@ -639,9 +633,9 @@ function makeSubCoprimeN(count: 2 | 3 | 4): FractionExercise {
   if (count === 2) return makeSub('coprime');
   // count=4: no feasible coprime quad exists → use multiple-style
   if (count === 4) return makeSubMultipleN(4);
-  // count=3: only [3,4,5] is structurally feasible (max_first=40 > min_rest=27)
-  const denoms = [...SUB_COPRIME_TRIPLET];
-  const L = 60;
+  // count=3: use SUB_COPRIME_TRIPLETS (all feasible: max_first > min_rest)
+  const denoms = [...pick(SUB_COPRIME_TRIPLETS)];
+  const L = lcmArr(denoms);
   const ks = denoms.map((d) => L / d);
   let nums = denoms.map((d) => Math.floor(Math.random() * (d - 1)) + 1);
   for (let i = 0; i < 500 && (hasEquivFracs(nums, denoms) || nums[0]! * ks[0]! - nums[1]! * ks[1]! - nums[2]! * ks[2]! <= 0); i++) {
@@ -656,7 +650,7 @@ function makeSubCoprimeN(count: 2 | 3 | 4): FractionExercise {
   const expandedFracs = expandedNums.map((n) => fH(n, L)).join(' − ');
   const sumStr = `${expandedNums[0]}−${expandedNums[1]}−${expandedNums[2]}`;
   const simplified = !frIsSimplified(rn, rd) ? ` = ${fH(s.n, s.d, 'var(--correct)')} (simplifié)` : '';
-  const steps = `<div>Aucun de ces dénominateurs n'est dans la table d'un autre. Le dénominateur commun est 3×4×5 = <strong>60</strong>.</div>
+  const steps = `<div>Aucun de ces dénominateurs n'est dans la table d'un autre. Le dénominateur commun est ${denoms[0]}×${denoms[1]}×${denoms[2]} = <strong>${L}</strong>.</div>
     <div style="margin-top:6px;">${expandParts.join(' &nbsp;; ')}</div>
     <div style="margin-top:6px;">${expandedFracs} = ${fH(sumStr, L, 'var(--c6)')} = ${fH(rn, rd, 'var(--c6)')}${simplified}</div>`;
   return ex({ op: 'sub', label: 'Soustraction', expr, ans: { n: rn, d: rd }, steps });
@@ -722,7 +716,10 @@ function makeMulNeg(): FractionExercise {
 
 function makeMulSimpleN(count: 2 | 3): FractionExercise {
   if (count === 2) return makeMulSimple();
-  const pairs: [number, number][] = [[2, 3], [1, 4], [3, 5], [2, 7], [4, 5], [3, 7], [5, 8], [2, 9], [3, 8], [4, 9]];
+  const pairs: [number, number][] = [
+    [2, 3], [1, 4], [3, 5], [2, 7], [4, 5], [3, 7], [5, 8], [2, 9], [3, 8], [4, 9],
+    [1, 5], [1, 6], [1, 7], [5, 6], [5, 7], [7, 8], [5, 9], [7, 9], [4, 11], [5, 11],
+  ];
   let f: [number, number][];
   do {
     f = [pick(pairs), pick(pairs), pick(pairs)];
@@ -743,7 +740,10 @@ function makeMulSimpleN(count: 2 | 3): FractionExercise {
 
 function makeMulNegN(count: 2 | 3): FractionExercise {
   if (count === 2) return makeMulNeg();
-  const pairs: [number, number][] = [[2, 3], [1, 4], [3, 5], [2, 7], [4, 5], [3, 7], [5, 8], [2, 9]];
+  const pairs: [number, number][] = [
+    [2, 3], [1, 4], [3, 5], [2, 7], [4, 5], [3, 7], [5, 8], [2, 9],
+    [1, 5], [1, 6], [5, 6], [5, 7], [7, 8], [5, 9], [4, 11], [3, 11],
+  ];
   let f: [number, number][];
   do {
     f = [pick(pairs), pick(pairs), pick(pairs)];
