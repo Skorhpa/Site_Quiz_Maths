@@ -1,4 +1,4 @@
-import type { EquationExercise } from '@/types';
+import type { EquationDragDropExercise, EquationExercise } from '@/types';
 
 const ri = (a: number, b: number) => Math.floor(Math.random() * (b - a + 1)) + a;
 const rnz = (a: number, b: number) => {
@@ -121,11 +121,185 @@ function makeT4(): EquationExercise {
   });
 }
 
-export function generateEquationsSeries(): EquationExercise[] {
-  const qs: EquationExercise[] = [];
-  for (let i = 0; i < 5; i++) qs.push(makeT1());
-  for (let i = 0; i < 5; i++) qs.push(makeT2());
-  for (let i = 0; i < 5; i++) qs.push(makeT3());
-  for (let i = 0; i < 5; i++) qs.push(makeT4());
+// ── Drag-drop configs ─────────────────────────────────────────────────────────
+
+const shuf = <T>(arr: T[]): T[] => {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j]!, a[i]!];
+  }
+  return a;
+};
+
+function makeDd(eqCategory: 't1' | 't2' | 't3' | 't4', label: string, text: string, steps: string[]): EquationDragDropExercise {
+  return { type: 'default', eqType: 'dd', eqCategory, label, text, steps, shuffled: shuf([...steps]) };
+}
+
+const T1_DD: { text: string; steps: string[] }[] = [
+  {
+    text: 'x + 5 = 12',
+    steps: [
+      'Équation de départ : x + 5 = 12',
+      'Soustrait 5 des deux membres : x + 5 − 5 = 12 − 5',
+      'Simplifie le membre gauche : x = 12 − 5',
+      'Calcule : x = 7',
+      'Vérification (remplace x par 7) : 7 + 5 = 12 ✓',
+    ],
+  },
+  {
+    text: 'x − 3 = 9',
+    steps: [
+      'Équation de départ : x − 3 = 9',
+      'Ajoute 3 aux deux membres : x − 3 + 3 = 9 + 3',
+      'Simplifie le membre gauche : x = 9 + 3',
+      'Calcule : x = 12',
+      'Vérification (remplace x par 12) : 12 − 3 = 9 ✓',
+    ],
+  },
+  {
+    text: 'x + 8 = 3',
+    steps: [
+      'Équation de départ : x + 8 = 3',
+      'Soustrait 8 des deux membres : x + 8 − 8 = 3 − 8',
+      'Simplifie le membre gauche : x = 3 − 8',
+      'Calcule : x = −5',
+      'Vérification (remplace x par −5) : −5 + 8 = 3 ✓',
+    ],
+  },
+];
+
+const T2_DD: { text: string; steps: string[] }[] = [
+  {
+    text: '3x = 21',
+    steps: [
+      'Équation de départ : 3x = 21',
+      'Divise les deux membres par 3 : 3x ÷ 3 = 21 ÷ 3',
+      'Simplifie le membre gauche : x = 21 ÷ 3',
+      'Calcule : x = 7',
+      'Vérification (remplace x par 7) : 3 × 7 = 21 ✓',
+    ],
+  },
+  {
+    text: '−4x = −20',
+    steps: [
+      'Équation de départ : −4x = −20',
+      'Divise les deux membres par −4 : −4x ÷ (−4) = −20 ÷ (−4)',
+      'Simplifie le membre gauche : x = −20 ÷ (−4)',
+      'Calcule : x = 5',
+      'Vérification (remplace x par 5) : −4 × 5 = −20 ✓',
+    ],
+  },
+  {
+    text: '2x = −14',
+    steps: [
+      'Équation de départ : 2x = −14',
+      'Divise les deux membres par 2 : 2x ÷ 2 = −14 ÷ 2',
+      'Simplifie le membre gauche : x = −14 ÷ 2',
+      'Calcule : x = −7',
+      'Vérification (remplace x par −7) : 2 × (−7) = −14 ✓',
+    ],
+  },
+];
+
+const T3_DD: { text: string; steps: string[] }[] = [
+  {
+    text: '2x + 3 = 11',
+    steps: [
+      'Équation de départ : 2x + 3 = 11',
+      'Soustrait 3 des deux membres : 2x + 3 − 3 = 11 − 3',
+      'Simplifie le membre gauche : 2x = 11 − 3',
+      'Calcule : 2x = 8',
+      'Divise les deux membres par 2 : 2x ÷ 2 = 8 ÷ 2',
+      'Simplifie le membre gauche : x = 8 ÷ 2',
+      'Calcule : x = 4',
+      'Vérification (remplace x par 4) : 2 × 4 + 3 = 8 + 3 = 11 ✓',
+    ],
+  },
+  {
+    text: '3x − 6 = 9',
+    steps: [
+      'Équation de départ : 3x − 6 = 9',
+      'Ajoute 6 aux deux membres : 3x − 6 + 6 = 9 + 6',
+      'Simplifie le membre gauche : 3x = 9 + 6',
+      'Calcule : 3x = 15',
+      'Divise les deux membres par 3 : 3x ÷ 3 = 15 ÷ 3',
+      'Simplifie le membre gauche : x = 15 ÷ 3',
+      'Calcule : x = 5',
+      'Vérification (remplace x par 5) : 3 × 5 − 6 = 15 − 6 = 9 ✓',
+    ],
+  },
+  {
+    text: '−2x + 10 = 4',
+    steps: [
+      'Équation de départ : −2x + 10 = 4',
+      'Soustrait 10 des deux membres : −2x + 10 − 10 = 4 − 10',
+      'Simplifie le membre gauche : −2x = 4 − 10',
+      'Calcule : −2x = −6',
+      'Divise les deux membres par −2 : −2x ÷ (−2) = −6 ÷ (−2)',
+      'Simplifie le membre gauche : x = −6 ÷ (−2)',
+      'Calcule : x = 3',
+      'Vérification (remplace x par 3) : −2 × 3 + 10 = −6 + 10 = 4 ✓',
+    ],
+  },
+];
+
+const T4_DD: { text: string; steps: string[] }[] = [
+  {
+    text: '3x + 2 = x + 8',
+    steps: [
+      'Équation de départ : 3x + 2 = x + 8',
+      'Soustrait x des deux membres : 3x + 2 − x = x + 8 − x',
+      'Simplifie les deux membres : 2x + 2 = 8',
+      'Soustrait 2 des deux membres : 2x + 2 − 2 = 8 − 2',
+      'Simplifie le membre gauche : 2x = 6',
+      'Divise les deux membres par 2 : 2x ÷ 2 = 6 ÷ 2',
+      'Calcule : x = 3',
+      'Vérification (remplace x par 3) : 3×3 + 2 = 11  et  1×3 + 8 = 11 ✓',
+    ],
+  },
+  {
+    text: '4x − 1 = 2x + 9',
+    steps: [
+      'Équation de départ : 4x − 1 = 2x + 9',
+      'Soustrait 2x des deux membres : 4x − 1 − 2x = 2x + 9 − 2x',
+      'Simplifie les deux membres : 2x − 1 = 9',
+      'Ajoute 1 aux deux membres : 2x − 1 + 1 = 9 + 1',
+      'Simplifie le membre gauche : 2x = 10',
+      'Divise les deux membres par 2 : 2x ÷ 2 = 10 ÷ 2',
+      'Calcule : x = 5',
+      'Vérification (remplace x par 5) : 4×5 − 1 = 19  et  2×5 + 9 = 19 ✓',
+    ],
+  },
+  {
+    text: '5x + 3 = 3x + 11',
+    steps: [
+      'Équation de départ : 5x + 3 = 3x + 11',
+      'Soustrait 3x des deux membres : 5x + 3 − 3x = 3x + 11 − 3x',
+      'Simplifie les deux membres : 2x + 3 = 11',
+      'Soustrait 3 des deux membres : 2x + 3 − 3 = 11 − 3',
+      'Simplifie le membre gauche : 2x = 8',
+      'Divise les deux membres par 2 : 2x ÷ 2 = 8 ÷ 2',
+      'Calcule : x = 4',
+      'Vérification (remplace x par 4) : 5×4 + 3 = 23  et  3×4 + 11 = 23 ✓',
+    ],
+  },
+];
+
+function makeDDFromPool(pool: { text: string; steps: string[] }[], cat: 't1' | 't2' | 't3' | 't4', label: string): EquationDragDropExercise {
+  const cfg = pool[ri(0, pool.length - 1)]!;
+  return makeDd(cat, label, cfg.text, cfg.steps);
+}
+
+export function generateEquationsSeries(): (EquationExercise | EquationDragDropExercise)[] {
+  const qs: (EquationExercise | EquationDragDropExercise)[] = [];
+  qs.push(makeDDFromPool(T1_DD, 't1', 'x + a = b'));
+  for (let i = 0; i < 3; i++) qs.push(makeT1());
+  qs.push(makeDDFromPool(T2_DD, 't2', 'ax = d'));
+  for (let i = 0; i < 3; i++) qs.push(makeT2());
+  qs.push(makeDDFromPool(T3_DD, 't3', 'ax + c = d'));
+  for (let i = 0; i < 3; i++) qs.push(makeT3());
+  qs.push(makeDDFromPool(T4_DD, 't4', 'ax + c = dx + b'));
+  for (let i = 0; i < 3; i++) qs.push(makeT4());
   return qs;
 }

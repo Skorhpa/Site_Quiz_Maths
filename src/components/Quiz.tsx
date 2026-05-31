@@ -2,6 +2,7 @@ import { Component, useEffect, useMemo, useRef, useState, type ReactNode } from 
 import type {
   ArithExercise,
   PropExercise,
+  EquationDragDropExercise,
   EquationExercise,
   Exercise,
   FractionExercise,
@@ -478,7 +479,7 @@ export default function Quiz({ quiz }: QuizProps) {
             <EquationQuestion
               key={`${seriesKey}-${answers[i]!.resetKey}-${i}`}
               index={i}
-              exercise={ex as EquationExercise}
+              exercise={ex as EquationExercise | EquationDragDropExercise}
               answer={answers[i]!}
               onChange={(value) => updateAnswer(i, { value })}
               onSubmit={(correct) => submit(i, correct)}

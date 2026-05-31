@@ -272,6 +272,15 @@ export type ReciproqueExercise = ReciproqueTableExercise | ReciproqueDemoExercis
 
 export type EqType = 't1' | 't2' | 't3' | 't4';
 
+export interface EquationDragDropExercise extends BaseExercise {
+  eqType: 'dd';
+  eqCategory: EqType;
+  label: string;
+  text: string;
+  steps: string[];
+  shuffled: string[];
+}
+
 export interface EquationExercise extends BaseExercise {
   eqType: EqType;
   label: string;
@@ -426,6 +435,7 @@ export type Exercise =
   | FractionsCompExercise
   | MDCExercise
   | EquationExercise
+  | EquationDragDropExercise
   | ReciproqueExercise
   | PuissancesExercise
   | PropExercise
