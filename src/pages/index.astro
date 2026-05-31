@@ -2,44 +2,31 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { LEVELS } from '@/data/levels';
 
-const availableLevels = LEVELS.filter((l) => l.available);
-
-// While only one level is available, skip the level picker entirely.
-// The picker auto-reactivates once a second level flips `available: true`.
-if (availableLevels.length === 1) {
-  return Astro.redirect(`/${availableLevels[0]!.id}`);
-}
+// Only show the four collège levels in the picker
+const collegeLevels = LEVELS.filter((l) => ['6eme', '5eme', '4eme', '3eme'].includes(l.id));
 ---
 <BaseLayout title="SiteMath — Choisis ton niveau">
   <main class="home-shell">
-    <div class="home-eyebrow">Mathématiques</div>
+    <div class="home-eyebrow">Maths · Collège Montesquieu d'Évry</div>
     <h1 class="home-title">Choisis ton niveau</h1>
-    <p class="home-sub">Du collège au lycée — exercices, quiz et entraînement</p>
+    <p class="home-sub">Clique sur ta classe pour accéder aux exercices</p>
 
-    <div class="quiz-cards">
-      {LEVELS.map((level) => (
-        level.available ? (
-          <a href={`/${level.id}`} class="quiz-card" style={`--card-accent: var(--text);`}>
-            <div class="qc-icon">{level.shortLabel}</div>
-            <div class="qc-label">Niveau</div>
+    <div class="quiz-cards" style="max-width:640px;margin:0 auto;">
+      {collegeLevels.map((level) => (
+        <a href={`/${level.id}`} class="quiz-card" style={`--card-accent: var(--text);`}>
+          <div class="qc-icon" style="font-size:1.6rem;font-weight:800;">{level.shortLabel}</div>
+          <div>
             <div class="qc-title">{level.label}</div>
             <div class="qc-desc">{level.description}</div>
-            <div class="qc-tags">
-              <span class="qc-tag">Disponible</span>
-            </div>
-            <div class="qc-arrow">→</div>
-          </a>
-        ) : (
-          <div class="quiz-card locked">
-            <div class="qc-icon">{level.shortLabel}</div>
-            <div class="qc-label">Niveau</div>
-            <div class="qc-title">{level.label}</div>
-            <div class="qc-desc">{level.description}</div>
-            <div class="qc-tags">
-              <span class="qc-tag">Bientôt</span>
-            </div>
           </div>
-        )
+          <div class="qc-tags" style="margin-left:auto;">
+            {level.topicsModule
+              ? <span class="qc-tag" style="color:#4ADE80;border-color:#4ADE8040;">Disponible</span>
+              : <span class="qc-tag">Bientôt</span>
+            }
+          </div>
+          <div class="qc-arrow">→</div>
+        </a>
       ))}
     </div>
   </main>
