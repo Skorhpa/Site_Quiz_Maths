@@ -61,12 +61,16 @@ export function SquareQuestion({ index, exercise, answer, onSubmit }: Props) {
 
   const questionText = (() => {
     if (exercise.sqType === 'square') return `Calcule ${exercise.n}²`;
+    if (exercise.sqType === 'square_neg_outer') return `Calcule -${exercise.n}²`;
+    if (exercise.sqType === 'square_neg_paren') return `Calcule (-${exercise.n})²`;
     if (exercise.sqType === 'sqrt') return `Calcule √${exercise.n}`;
     return `Calcule √${exercise.n} (arrondi au dixième)`;
   })();
 
   const placeholder = (() => {
     if (exercise.sqType === 'square') return `${exercise.n}² = …`;
+    if (exercise.sqType === 'square_neg_outer') return `-${exercise.n}² = …`;
+    if (exercise.sqType === 'square_neg_paren') return `(-${exercise.n})² = …`;
     if (exercise.sqType === 'sqrt') return `√${exercise.n} = …`;
     return `√${exercise.n} ≈ …`;
   })();

@@ -400,7 +400,7 @@ export interface ThalesRecipDragDropExercise extends BaseExercise {
 
 export type ThalesReciproqueExercise = ThalesReciproqueProofExercise | ThalesRecipDragDropExercise;
 
-export type SquareSubtype = 'square' | 'sqrt' | 'sqrt_approx';
+export type SquareSubtype = 'square' | 'sqrt' | 'sqrt_approx' | 'square_neg_outer' | 'square_neg_paren';
 
 export interface SquareExercise extends BaseExercise {
   sqType: SquareSubtype;
@@ -448,7 +448,7 @@ export interface EntiersSigneExercise extends BaseExercise {
   steps: string;
 }
 
-export type RendererKind = 'number' | 'rounding' | 'literal' | 'produit' | 'arith' | 'programme' | 'pythagore' | 'thales' | 'fractions' | 'fractions-comp' | 'equation' | 'reciproque' | 'puissances' | 'prop' | 'thales-reciproque' | 'entiers-hub' | 'fractions-hub' | 'arith-hub' | 'pyth-hub';
+export type RendererKind = 'number' | 'rounding' | 'literal' | 'produit' | 'arith' | 'programme' | 'pythagore' | 'thales' | 'fractions' | 'fractions-comp' | 'equation' | 'reciproque' | 'puissances' | 'prop' | 'thales-reciproque' | 'entiers-hub' | 'fractions-hub' | 'arith-hub' | 'pyth-hub' | 'thales-hub';
 
 export type IntegerOp = 'add' | 'sub' | 'mul';
 

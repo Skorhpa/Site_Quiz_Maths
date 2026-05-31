@@ -371,12 +371,10 @@ function makeCompleter(): PythagoreCompleterExercise {
 
 export function generatePythagoreSeries(): PythagoreExercise[] {
   return [
-    makeHyp(true),
-    makeHypDecimal(true),
-    makeLeg(true),
-    makeLegDecimal(false),
-    makeHypDecimal(false),
-    makeLeg(false),
+    makeHyp(true),         // figure + hypoténuse exacte
+    makeLeg(true),         // figure + côté angle droit exact
+    makeHypDecimal(false), // sans figure + hypoténuse décimale
+    makeLegDecimal(false), // sans figure + côté angle droit décimal
     makeDragDrop(),
     makeCompleter(),
   ];

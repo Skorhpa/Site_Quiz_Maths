@@ -20,7 +20,28 @@ function shuffled<T>(arr: T[]): T[] {
 export function generateSquareSeries(): SquareExercise[] {
   const singles = shuffled([2, 3, 4, 5, 6, 7, 8, 9]).slice(0, 3);
   const twoDigit = shuffled([10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 25]).slice(0, 2);
-  return [...singles, ...twoDigit].map(makeSquare);
+  const all = [...singles, ...twoDigit];
+  return [
+    makeSquare(all[0]!),
+    makeSquare(all[1]!),
+    makeSquareNegOuter(all[2]!),
+    makeSquare(all[3]!),
+    makeSquareNegParen(all[4]!),
+  ];
+}
+
+function makeSquareNegOuter(n: number): SquareExercise {
+  const ans = -(n * n);
+  const steps = `<div style="margin-bottom:6px;color:var(--muted);">Le signe − est <strong>en dehors</strong> des parenthèses : on calcule d&apos;abord le carré, puis on applique le signe −.</div>
+<div style="font-family:'DM Mono',monospace;">-${n}² = -(${n}²) = -(${n} × ${n}) = <strong style="color:var(--correct);">${ans}</strong></div>`;
+  return { type: 'default', sqType: 'square_neg_outer', n, ans, label: 'Carré', color: COLOR, steps };
+}
+
+function makeSquareNegParen(n: number): SquareExercise {
+  const ans = n * n;
+  const steps = `<div style="margin-bottom:6px;color:var(--muted);">Le signe − est <strong>entre parenthèses</strong> : on multiplie (−${n}) × (−${n}). Deux facteurs négatifs donnent un résultat positif.</div>
+<div style="font-family:'DM Mono',monospace;">(-${n})² = (-${n}) × (-${n}) = <strong style="color:var(--correct);">${ans}</strong></div>`;
+  return { type: 'default', sqType: 'square_neg_paren', n, ans, label: 'Carré', color: COLOR, steps };
 }
 
 function makeSquare(n: number): SquareExercise {
@@ -52,11 +73,15 @@ function makeSqrtExact(sq: number): SquareExercise {
 function makeSqrtApprox(n: number): SquareExercise {
   const exact = Math.sqrt(n);
   const ans = Math.round(exact * 10) / 10;
-  const f = Math.floor(exact);
-  const steps = `<div style="color:var(--muted);margin-bottom:6px;">On encadre entre deux carrés parfaits :</div>
-<div style="font-family:'DM Mono',monospace;">${f}² = ${f * f} &lt; ${n} &lt; ${f + 1}² = ${(f + 1) * (f + 1)}</div>
-<div style="font-family:'DM Mono',monospace;margin-top:4px;">${f} &lt; √${n} &lt; ${f + 1}</div>
-<div style="color:var(--muted);margin-top:6px;">Valeur exacte : ${exact.toFixed(4)}…</div>
-<div style="font-family:'DM Mono',monospace;margin-top:4px;"><strong style="color:var(--correct);">√${n} ≈ ${ans.toFixed(1)}</strong> (au dixième)</div>`;
+  const exactStr = exact.toFixed(4);
+  const hundredths = parseInt(exactStr.split('.')[1]![1]!, 10);
+  const roundDir = hundredths >= 5 ? 'arrondit à la valeur supérieure' : 'garde le chiffre des dixièmes';
+  const steps = `<div style="color:var(--muted);margin-bottom:6px;">On tape √${n} à la calculatrice :</div>
+<div style="font-family:'DM Mono',monospace;">√${n} ≈ ${exactStr}…</div>
+<div style="color:var(--muted);margin-top:6px;">Le chiffre des <strong>centièmes</strong> est <strong>${hundredths}</strong>${hundredths >= 5 ? ' ≥ 5' : ' < 5'}, donc on ${roundDir}.</div>
+<div style="font-family:'DM Mono',monospace;margin-top:4px;"><strong style="color:var(--correct);">√${n} ≈ ${ans.toFixed(1)}</strong> (au dixième)</div>
+<div style="margin-top:10px;border-top:1px solid var(--border);padding-top:8px;font-size:12px;">
+  <a href="/4eme/arrondis" style="color:#F472B6;font-weight:600;text-decoration:none;">→ Revoir la série Arrondis d&apos;un nombre</a>
+</div>`;
   return { type: 'default', sqType: 'sqrt_approx', n, ans, label: 'Racine carrée ≈', color: COLOR, steps };
 }
