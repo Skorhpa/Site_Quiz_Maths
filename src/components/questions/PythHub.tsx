@@ -118,13 +118,12 @@ function RecallThéorème() {
         <span>{open ? '▼' : '▶'}</span> Rappel du théorème + vidéos
       </button>
       <div className={`steps-box${open ? ' open' : ''}`} style={{ padding: '0 16px', fontSize: 13, lineHeight: 1.9 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '2rem', flexWrap: 'wrap', marginBottom: 10 }}>
-          <div style={{ flex: 1, minWidth: 220 }}>
-            <p style={{ fontSize: 12, color: 'var(--muted)', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '.06em' }}>Dans un triangle ABC rectangle en C</p>
-            <p style={{ color: 'var(--muted)', marginBottom: 8 }}>d'hypoténuse [AB], d'après le théorème de Pythagore :</p>
-            <div className="formula" style={{ fontSize: '1.3rem' }}>AB² = AC² + BC²</div>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 24, flexWrap: 'wrap', margin: '8px 0 10px' }}>
+          <div style={{ textAlign: 'center' }}>
+            <p style={{ color: 'var(--muted)', marginBottom: 6 }}>Triangle ABC rectangle en C, d'hypoténuse [AB] :</p>
+            <div className="formula" style={{ fontSize: '1.2rem' }}>AB² = AC² + BC²</div>
           </div>
-          <svg width="120" height="100" viewBox="0 0 130 110" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ flexShrink: 0 }}>
+          <svg width="90" height="76" viewBox="0 0 130 110" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ flexShrink: 0 }}>
             <polygon points="10,90 10,10 110,90" fill="rgba(96,165,250,0.07)" stroke="#60A5FA" strokeWidth="1.5"/>
             <rect x="10" y="76" width="14" height="14" fill="none" stroke="#60A5FA" strokeWidth="1.2"/>
             <text x="1" y="8" fill="#A78BFA" fontFamily="DM Mono,monospace" fontSize="12">A</text>
@@ -132,9 +131,9 @@ function RecallThéorème() {
             <text x="114" y="103" fill="#A78BFA" fontFamily="DM Mono,monospace" fontSize="12">B</text>
           </svg>
         </div>
-        <div>
-          <VideoLink url="https://www.youtube.com/watch?v=M9sceJ8gzNc" label="Vidéo 1" />
-          <VideoLink url="https://www.youtube.com/watch?v=M9sceJ8gzNc&feature=youtu.be" label="Vidéo 2" />
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 6 }}>
+          <VideoLink url="https://www.youtube.com/watch?v=M9sceJ8gzNc" label="Calculer l'hypoténuse" />
+          <VideoLink url="https://www.youtube.com/watch?v=M9sceJ8gzNc&feature=youtu.be" label="Calculer un côté de l'angle droit" />
         </div>
       </div>
     </div>
@@ -161,8 +160,8 @@ function RecallRéciproque() {
           <strong>Contraposée :</strong> Si AB² ≠ AC² + BC², alors le triangle ABC n'est pas rectangle.
         </div>
         <div>
-          <VideoLink url="https://youtu.be/puXyHcU5Awg" label="Vidéo 1" />
-          <VideoLink url="https://youtu.be/8vexpFayTbI" label="Vidéo 2" />
+          <VideoLink url="https://youtu.be/puXyHcU5Awg" label="Démontrer qu'un triangle est rectangle" />
+          <VideoLink url="https://youtu.be/8vexpFayTbI" label="Démontrer qu'un triangle n'est pas rectangle" />
         </div>
       </div>
     </div>
@@ -197,7 +196,7 @@ function ModeCard({ label, icon, desc, accent, onClick }: { label: string; icon:
 const MAIN_MODES: { id: HubMode; label: string; icon: string; desc: string; accent: string }[] = [
   { id: 'carre',    label: 'Calculer un carré',          icon: 'n²',  desc: '5 exercices · chiffres et nombres à deux chiffres',         accent: ACCENT },
   { id: 'racine',   label: 'Calculer une racine carrée',  icon: '√',   desc: '5 exercices · 4 carrés parfaits + 1 arrondi au dixième',    accent: ACCENT },
-  { id: 'theoreme', label: 'Le théorème',                 icon: '📐',  desc: '8 exercices · figures, calculs, glisser-déposer',           accent: ACCENT },
+  { id: 'theoreme', label: 'Le théorème',                 icon: '📐',  desc: '6 exercices · figures, calculs, glisser-déposer',           accent: ACCENT },
   { id: 'reciproque', label: 'La réciproque et la contraposée', icon: '△', desc: '4 exercices · démonstrations et tableau', accent: '#A78BFA' },
 ];
 

@@ -10,11 +10,10 @@ import { produitQuiz } from './produit';
 import { arithHubQuiz } from './arith-hub';
 import { progQuiz } from './prog';
 import { pythHubQuiz } from './pyth-hub';
-import { thalesQuiz } from './thales';
+import { thalesHubQuiz } from './thales-hub';
 import { fractionsHubQuiz } from './fractions-hub';
 import { fractionsComplexQuiz } from './fractions-complex';
 import { eqQuiz } from './eq';
-import { recipThalesQuiz } from './recip-thales';
 
 
 // Order matches the original Site.html homepage card sequence.
@@ -23,7 +22,7 @@ export const topics: Topic[] = [
   entiersComplexQuiz,
   pythHubQuiz,
   eqQuiz,
-  thalesQuiz,
+  thalesHubQuiz,
   arrondisQuiz,
   fractionsHubQuiz,
   fractionsComplexQuiz,
@@ -32,7 +31,6 @@ export const topics: Topic[] = [
   progQuiz,
   produitQuiz,
   arithHubQuiz,
-  recipThalesQuiz,
   scientifiqueQuiz,
   proportionnaliteQuiz,
   // ── À venir ────────────────────────────────────────────────────────────
