@@ -119,21 +119,22 @@ function RecallThéorème() {
       </button>
       <div className={`steps-box${open ? ' open' : ''}`} style={{ padding: '0 16px', fontSize: 13, lineHeight: 1.9 }}>
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 24, flexWrap: 'wrap', margin: '8px 0 10px' }}>
-          <div style={{ textAlign: 'center' }}>
-            <p style={{ color: 'var(--muted)', marginBottom: 6 }}>Triangle ABC rectangle en C, d'hypoténuse [AB] :</p>
-            <div className="formula" style={{ fontSize: '1.2rem' }}>AB² = AC² + BC²</div>
-          </div>
-          <svg width="90" height="76" viewBox="0 0 130 110" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ flexShrink: 0 }}>
+          <svg width="130" height="110" viewBox="0 0 130 110" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ flexShrink: 0 }}>
             <polygon points="10,90 10,10 110,90" fill="rgba(96,165,250,0.07)" stroke="#60A5FA" strokeWidth="1.5"/>
             <rect x="10" y="76" width="14" height="14" fill="none" stroke="#60A5FA" strokeWidth="1.2"/>
             <text x="1" y="8" fill="#A78BFA" fontFamily="DM Mono,monospace" fontSize="12">A</text>
             <text x="0" y="103" fill="#A78BFA" fontFamily="DM Mono,monospace" fontSize="12">C</text>
             <text x="114" y="103" fill="#A78BFA" fontFamily="DM Mono,monospace" fontSize="12">B</text>
           </svg>
+          <div style={{ textAlign: 'center' }}>
+            <p style={{ color: 'var(--muted)', marginBottom: 4 }}>Triangle ABC rectangle en C, d'hypoténuse [AB].</p>
+            <p style={{ color: 'var(--muted)', marginBottom: 6 }}>On a, d'après le théorème de Pythagore :</p>
+            <div className="formula" style={{ fontSize: '1.2rem' }}>AB² = AC² + BC²</div>
+          </div>
         </div>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 6 }}>
           <VideoLink url="https://www.youtube.com/watch?v=M9sceJ8gzNc" label="Calculer l'hypoténuse" />
-          <VideoLink url="https://www.youtube.com/watch?v=M9sceJ8gzNc&feature=youtu.be" label="Calculer un côté de l'angle droit" />
+          <VideoLink url="https://www.youtube.com/watch?v=9CIh6GGVu_w&t=199s" label="Calculer un côté de l'angle droit" />
         </div>
       </div>
     </div>

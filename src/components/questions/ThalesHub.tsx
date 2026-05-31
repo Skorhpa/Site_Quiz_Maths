@@ -23,6 +23,20 @@ function endTitle(pct: number): string {
   return 'Continue !';
 }
 
+function Frac({ n, d, color = ACCENT, fontSize = 13 }: { n: string; d: string; color?: string; fontSize?: number }) {
+  return (
+    <span style={{
+      display: 'inline-flex', flexDirection: 'column', alignItems: 'center',
+      verticalAlign: 'middle', fontFamily: "'DM Mono', monospace",
+      fontSize, fontWeight: 700, color, lineHeight: 1.2, margin: '0 3px',
+    }}>
+      <span>{n}</span>
+      <span style={{ width: '100%', borderTop: `1.5px solid ${color}`, display: 'block', margin: '2px 0' }} />
+      <span>{d}</span>
+    </span>
+  );
+}
+
 function VideoLink({ url, label }: { url: string; label: string }) {
   return (
     <a
@@ -62,11 +76,16 @@ function RecallThéorème() {
             <text x="94" y="76" fill="#FB923C" fontFamily="DM Mono,monospace" fontSize="12" fontWeight="bold" textAnchor="middle" dominantBaseline="middle">N</text>
           </svg>
           <div style={{ textAlign: 'center' }}>
-            <div style={{ color: 'var(--muted)', marginBottom: 6 }}>
-              Si M ∈ [AB], N ∈ [AC] et (MN) ∥ (BC) :
+            <div style={{ color: 'var(--muted)', marginBottom: 4 }}>
+              Si M ∈ [AB], N ∈ [AC] et (MN) ∥ (BC),
             </div>
-            <div style={{ fontFamily: "'DM Mono', monospace", fontWeight: 700, color: ACCENT, fontSize: 14 }}>
-              AM/AB = AN/AC = MN/BC
+            <div style={{ color: 'var(--muted)', marginBottom: 8 }}>
+              on a, d'après le théorème de Thalès :
+            </div>
+            <div style={{ fontSize: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+              <Frac n="AM" d="AB" /> <span style={{ color: 'var(--muted)' }}>=</span>
+              <Frac n="AN" d="AC" /> <span style={{ color: 'var(--muted)' }}>=</span>
+              <Frac n="MN" d="BC" />
             </div>
           </div>
         </div>
@@ -87,14 +106,29 @@ function RecallRéciproque() {
         <span>{open ? '▼' : '▶'}</span> Rappel : réciproque et contraposée
       </button>
       <div className={`steps-box${open ? ' open' : ''}`} style={{ padding: '0 16px', fontSize: 13, lineHeight: 2 }}>
-        <div style={{ marginBottom: 8 }}>
-          <strong>Réciproque :</strong> Si M ∈ [SA], N ∈ [SB] et SM/SA = SN/SB, alors (MN) ∥ (AB).
-        </div>
-        <div style={{ marginBottom: 8 }}>
-          <strong>Contraposée :</strong> Si SM/SA ≠ SN/SB, alors (MN) et (AB) ne sont pas parallèles.
-        </div>
-        <div style={{ fontSize: 12, color: 'var(--muted)', borderTop: '1px solid var(--border)', paddingTop: 8, marginBottom: 6 }}>
-          On peut aussi comparer SM/SA avec MN/AB, ou SN/SB avec MN/AB.
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start', gap: 20, flexWrap: 'wrap', margin: '8px 0 10px' }}>
+          <svg width="120" height="132" viewBox="0 0 130 148" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ flexShrink: 0 }}>
+            <polygon points="65,8 10,140 120,140" fill="rgba(251,146,60,0.07)" stroke="#FB923C" strokeWidth="1.5"/>
+            <line x1="32" y1="84" x2="98" y2="84" stroke="#60A5FA" strokeWidth="1.5"/>
+            <text x="65" y="28" fill="#F0EDE8" fontFamily="DM Mono,monospace" fontSize="13" fontWeight="bold" textAnchor="middle" dominantBaseline="middle">S</text>
+            <text x="6" y="132" fill="#A0A8B8" fontFamily="DM Mono,monospace" fontSize="13" fontWeight="bold" textAnchor="middle" dominantBaseline="middle">A</text>
+            <text x="122" y="132" fill="#A0A8B8" fontFamily="DM Mono,monospace" fontSize="13" fontWeight="bold" textAnchor="middle" dominantBaseline="middle">B</text>
+            <text x="24" y="76" fill="#60A5FA" fontFamily="DM Mono,monospace" fontSize="12" fontWeight="bold" textAnchor="middle" dominantBaseline="middle">M</text>
+            <text x="106" y="76" fill="#60A5FA" fontFamily="DM Mono,monospace" fontSize="12" fontWeight="bold" textAnchor="middle" dominantBaseline="middle">N</text>
+          </svg>
+          <div style={{ lineHeight: 2.2 }}>
+            <div style={{ marginBottom: 4 }}>
+              <strong>Réciproque :</strong> Si M ∈ [SA], N ∈ [SB] et{' '}
+              <Frac n="SM" d="SA" /> = <Frac n="SN" d="SB" />, alors (MN) ∥ (AB).
+            </div>
+            <div style={{ marginBottom: 8 }}>
+              <strong>Contraposée :</strong> Si{' '}
+              <Frac n="SM" d="SA" /> ≠ <Frac n="SN" d="SB" />, alors (MN) ∦ (AB).
+            </div>
+            <div style={{ fontSize: 12, color: 'var(--muted)', borderTop: '1px solid var(--border)', paddingTop: 8 }}>
+              On peut aussi comparer <Frac n="SM" d="SA" color="var(--muted)" fontSize={11} /> avec <Frac n="MN" d="AB" color="#60A5FA" fontSize={11} />.
+            </div>
+          </div>
         </div>
         <div>
           <VideoLink url="https://www.youtube.com/watch?v=OaladmqeJ40" label="Réciproque de Thalès" />
