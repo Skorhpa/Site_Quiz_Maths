@@ -123,7 +123,7 @@ function RecallRéciproque() {
             </div>
             <div style={{ marginBottom: 8 }}>
               <strong>Contraposée :</strong> Si{' '}
-              <Frac n="SM" d="SA" /> ≠ <Frac n="SN" d="SB" />, alors (MN) ∦ (AB).
+              <Frac n="SM" d="SA" /> ≠ <Frac n="SN" d="SB" />, alors (MN) et (AB) ne sont pas parallèles.
             </div>
             <div style={{ fontSize: 12, color: 'var(--muted)', borderTop: '1px solid var(--border)', paddingTop: 8 }}>
               On peut aussi comparer <Frac n="SM" d="SA" color="var(--muted)" fontSize={11} /> avec <Frac n="MN" d="AB" color="#60A5FA" fontSize={11} />.
@@ -163,7 +163,7 @@ function ModeCard({ label, icon, desc, onClick }: { label: string; icon: string;
 
 const MAIN_MODES: { id: HubMode; label: string; icon: string; desc: string }[] = [
   { id: 'theoreme',  label: 'Le théorème de Thalès',     icon: '∥',  desc: '7 exercices · calculs de longueurs et glisser-déposer' },
-  { id: 'reciproque', label: 'Réciproque et contraposée', icon: '⟺', desc: '5 exercices · démonstrations de parallélisme' },
+  { id: 'reciproque', label: 'Réciproque et contraposée', icon: '⟺', desc: '3 exercices · glisser-déposer + 2 démonstrations' },
 ];
 
 function QuizView({
