@@ -181,15 +181,17 @@ function makeRecipDragDrop(): ThalesRecipDragDropExercise {
   };
 }
 
+// All 4 proof types, picked from at random to keep the series short (3 ex.) while varying content
+const PROOF_FACTORIES: ((s: LetterSet) => ThalesReciproqueProofExercise)[] = [
+  (s) => makeEx(s, true,  'direct'),
+  (s) => makeEx(s, true,  'complement'),
+  (s) => makeEx(s, false, 'direct', true),
+  (s) => makeEx(s, false, 'complement'),
+];
+
 export function generateThalesReciproqueSeries(): ThalesReciproqueExercise[] {
-  // Shuffle letter sets, pick 4
-  const sets = [...LETTER_SETS].sort(() => Math.random() - 0.5).slice(0, 4);
-  const proofExs: ThalesReciproqueProofExercise[] = [
-    makeEx(sets[0]!, true, 'direct'),
-    makeEx(sets[1]!, true, 'complement'),
-    makeEx(sets[2]!, false, 'direct', true),
-    makeEx(sets[3]!, false, 'complement'),
-  ];
-  // Shuffle order so parallel/non-parallel exercises are mixed
+  const sets  = [...LETTER_SETS].sort(() => Math.random() - 0.5).slice(0, 2);
+  const types = [...PROOF_FACTORIES].sort(() => Math.random() - 0.5).slice(0, 2);
+  const proofExs = types.map((fn, i) => fn(sets[i]!));
   return [makeRecipDragDrop(), ...proofExs.sort(() => Math.random() - 0.5)];
 }
