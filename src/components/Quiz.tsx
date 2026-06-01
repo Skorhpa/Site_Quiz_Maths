@@ -38,6 +38,7 @@ import { PropQuestion } from './questions/PropQuestion';
 import { ThalesReciproqueQuestion } from './questions/ThalesReciproqueQuestion';
 import { EntiersHub } from './questions/EntiersHub';
 import { FractionsHub } from './questions/FractionsHub';
+import { FractionsHub5eme } from './questions/FractionsHub5eme';
 import { ArithHub } from './questions/ArithHub';
 import { PythHub } from './questions/PythHub';
 import { ThalesHub } from './questions/ThalesHub';
@@ -255,6 +256,8 @@ export default function Quiz({ quiz }: QuizProps) {
         <EntiersHub accent={quiz.accent} accentSecondary={quiz.accentSecondary} />
       ) : quiz.renderer === 'fractions-hub' ? (
         <FractionsHub accent={quiz.accent} accentSecondary={quiz.accentSecondary} />
+      ) : quiz.renderer === 'fractions-hub-5eme' ? (
+        <FractionsHub5eme accent={quiz.accent} accentSecondary={quiz.accentSecondary} />
       ) : quiz.renderer === 'arith-hub' ? (
         <ArithHub accent={quiz.accent} accentSecondary={quiz.accentSecondary} />
       ) : quiz.renderer === 'pyth-hub' ? (

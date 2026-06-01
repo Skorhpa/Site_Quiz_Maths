@@ -20,31 +20,31 @@ import { FractionsCompQuestion } from './FractionsCompQuestion';
 
 type HubMode = 'mdc' | 'calculs' | 'comp' | 'simpl' | 'problemes';
 type CalcSubMode = 'add' | 'sub' | 'mul' | 'div' | 'complex';
-type FracHubExercise = MDCExercise | FractionExercise | FractionsCompExercise;
+export type FracHubExercise = MDCExercise | FractionExercise | FractionsCompExercise;
 
-interface AnswerState {
+export interface AnswerState {
   value: string;
   status: 'pending' | 'correct' | 'wrong' | 'revealed';
   resetKey: number;
 }
 
-const emptyAnswer = (): AnswerState => ({ value: '', status: 'pending', resetKey: 0 });
-const buildAnswers = (n: number): AnswerState[] => Array.from({ length: n }, emptyAnswer);
+export const emptyAnswer = (): AnswerState => ({ value: '', status: 'pending', resetKey: 0 });
+export const buildAnswers = (n: number): AnswerState[] => Array.from({ length: n }, emptyAnswer);
 
-function endTitle(pct: number): string {
+export function endTitle(pct: number): string {
   if (pct === 100) return 'Parfait ! 🎉';
   if (pct >= 70) return 'Très bien !';
   if (pct >= 50) return 'Pas mal !';
   return 'Continue !';
 }
 
-const CARD_CLASS: Record<AnswerState['status'], string> = {
+export const CARD_CLASS: Record<AnswerState['status'], string> = {
   pending: '', correct: 'correct-card', wrong: 'wrong-card', revealed: 'wrong-card',
 };
 
 // ── MDCQuestion ──────────────────────────────────────────────────────────────
 
-function MDCQuestion({ index, exercise, answer, accent, onSubmit }: {
+export function MDCQuestion({ index, exercise, answer, accent, onSubmit }: {
   index: number;
   exercise: MDCExercise;
   answer: AnswerState;
@@ -173,7 +173,7 @@ function MDCQuestion({ index, exercise, answer, accent, onSubmit }: {
 
 // ── QuizView ─────────────────────────────────────────────────────────────────
 
-function QuizView({
+export function QuizView({
   modeLabel, exercises, answers, accent, accentSecondary, seriesKey,
   switcher, onSubmit, onResetErrors, onNewSeries, onBack,
 }: {
@@ -341,7 +341,7 @@ function QuizView({
 
 // ── Mode selectors ────────────────────────────────────────────────────────────
 
-function ModeCard({ label, icon, desc, accent, onClick, disabled = false }: {
+export function ModeCard({ label, icon, desc, accent, onClick, disabled = false }: {
   label: string;
   icon: string;
   desc: string;

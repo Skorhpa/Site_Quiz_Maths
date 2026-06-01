@@ -2,7 +2,14 @@ import type { LevelDefinition } from '@/types';
 
 export const LEVELS: LevelDefinition[] = [
   { id: '6eme', label: 'Sixième', shortLabel: '6ᵉ', description: 'Première année du collège', available: true },
-  { id: '5eme', label: 'Cinquième', shortLabel: '5ᵉ', description: 'Deuxième année du collège', available: true },
+  {
+    id: '5eme',
+    label: 'Cinquième',
+    shortLabel: '5ᵉ',
+    description: 'Deuxième année du collège',
+    available: true,
+    topicsModule: () => import('./quizzes/5eme/index'),
+  },
   {
     id: '4eme',
     label: 'Quatrième',
