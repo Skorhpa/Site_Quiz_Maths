@@ -145,7 +145,7 @@ function CompleteEquivQuestion({ index, exercise, answer, accent, onSubmit }: {
   return (
     <div className={`qcard ${CARD_CLASS[answer.status]}`} style={{ borderLeft: `3px solid ${accent}` }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: '1rem' }}>
-        <span style={tag('Complète l'égalité', accent)}>Complète l'égalité</span>
+        <span style={tag("Complète l'égalité", accent)}>{"Complète l'égalité"}</span>
         <span className="qnum">Q{String(index+1).padStart(2,'0')}</span>
       </div>
       <div style={{ fontSize: 14, color: 'var(--muted)', marginBottom: 12 }}>Complète :</div>
