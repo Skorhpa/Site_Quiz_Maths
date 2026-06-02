@@ -222,7 +222,7 @@ function RangementQuestion({ index, exercise, answer, accent, onSubmit }: {
     const errs: number[] = [];
     partB.forEach((v, j) => { if (parseInt(v, 10) !== exercise.convertedNums[exercise.orderedIndices[j]!]) errs.push(j); });
     if (errs.length === 0) { setStepFb(''); setStep(3); }
-    else setStepFb('✗ L'ordre ou les valeurs sont incorrects.');
+    else setStepFb("✗ L'ordre ou les valeurs sont incorrects.");
   };
 
   const submitPartC = () => {
@@ -233,7 +233,7 @@ function RangementQuestion({ index, exercise, answer, accent, onSubmit }: {
       if (Number.isNaN(nn) || Number.isNaN(nd) || nd <= 0 || !frEqual(nn, nd, f.n, f.d)) errs.push(j);
     });
     if (errs.length === 0) { setStepFb(''); onSubmit(true); }
-    else setStepFb('✗ L'ordre ou les fractions ne correspondent pas.');
+    else setStepFb("✗ L'ordre ou les fractions ne correspondent pas.");
   };
 
   const setC = (i: number, j: 0|1, v: string) =>
