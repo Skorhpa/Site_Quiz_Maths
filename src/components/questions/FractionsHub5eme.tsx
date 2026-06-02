@@ -559,7 +559,7 @@ const MAIN_MODES: { id: HubMode; label: string; icon: string; desc: string }[] =
   { id: 'mdc',       label: 'Mise au même dénominateur', icon: '=',  desc: '4 exercices · même dénominateur, fractions égales, compléter une égalité' },
   { id: 'calculs',   label: 'Calculs',                   icon: '÷',  desc: '4 modes · additions, soustractions, multiplications et calculs complexes' },
   { id: 'comp',      label: 'Comparaisons & rangement',  icon: '<',  desc: '5 exercices · comparer deux fractions + rangement par étapes' },
-  { id: 'simpl',     label: 'Simplification',            icon: '↓',  desc: '6 exercices · simplification par PGCD et facteurs premiers' },
+  { id: 'simpl',     label: 'Simplification',            icon: '↓',  desc: '6 exercices · simplifier une fraction par son plus grand diviseur commun' },
   { id: 'problemes', label: 'Problèmes',                 icon: '📚', desc: '2 exercices · problèmes de répartition en contexte' },
 ];
 

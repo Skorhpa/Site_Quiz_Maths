@@ -146,7 +146,7 @@ const MULENTIER_FRAC_BANK: MulEntierExercise[] = [
     stepsMethod1: `<div><strong>Méthode 1</strong> — on multiplie d'abord :</div>
       <div style="margin-top:6px;">${fH(3,14)} × 21 = ${fH('3×21',14,'var(--c6)')} = ${fH(63,14,'var(--c6)')} = ${fH(9,2,'var(--correct)')} (simplifié par 7)</div>`,
     stepsMethod2: `<div><strong>Méthode 2</strong> — on simplifie avant de calculer :</div>
-      <div style="margin-top:6px;">PGCD(14, 21) = 7 &nbsp;→&nbsp; 21÷7 = 3, 14÷7 = 2</div>
+      <div style="margin-top:6px;">14 et 21 sont tous les deux divisibles par 7. On divise : 21÷7 = 3, 14÷7 = 2</div>
       <div style="margin-top:6px;">${fH(3,14)} × 21 = ${fH(3,2,'var(--c6)')} × 3 = ${fH('3×3',2,'var(--c6)')} = ${fH(9,2,'var(--correct)')}</div>`,
   },
   {
@@ -156,7 +156,7 @@ const MULENTIER_FRAC_BANK: MulEntierExercise[] = [
     stepsMethod1: `<div><strong>Méthode 1</strong> — on multiplie d'abord :</div>
       <div style="margin-top:6px;">18 × ${fH(5,27)} = ${fH('18×5',27,'var(--c6)')} = ${fH(90,27,'var(--c6)')} = ${fH(10,3,'var(--correct)')} (simplifié par 9)</div>`,
     stepsMethod2: `<div><strong>Méthode 2</strong> — on simplifie avant de calculer :</div>
-      <div style="margin-top:6px;">PGCD(27, 18) = 9 &nbsp;→&nbsp; 18÷9 = 2, 27÷9 = 3</div>
+      <div style="margin-top:6px;">18 et 27 sont tous les deux divisibles par 9. On divise : 18÷9 = 2, 27÷9 = 3</div>
       <div style="margin-top:6px;">18 × ${fH(5,27)} = 2 × ${fH(5,3,'var(--c6)')} = ${fH('2×5',3,'var(--c6)')} = ${fH(10,3,'var(--correct)')}</div>`,
   },
   {
@@ -166,7 +166,7 @@ const MULENTIER_FRAC_BANK: MulEntierExercise[] = [
     stepsMethod1: `<div><strong>Méthode 1</strong> — on multiplie d'abord :</div>
       <div style="margin-top:6px;">${fH(4,15)} × 25 = ${fH('4×25',15,'var(--c6)')} = ${fH(100,15,'var(--c6)')} = ${fH(20,3,'var(--correct)')} (simplifié par 5)</div>`,
     stepsMethod2: `<div><strong>Méthode 2</strong> — on simplifie avant de calculer :</div>
-      <div style="margin-top:6px;">PGCD(15, 25) = 5 &nbsp;→&nbsp; 25÷5 = 5, 15÷5 = 3</div>
+      <div style="margin-top:6px;">15 et 25 sont tous les deux divisibles par 5. On divise : 25÷5 = 5, 15÷5 = 3</div>
       <div style="margin-top:6px;">${fH(4,15)} × 25 = ${fH(4,3,'var(--c6)')} × 5 = ${fH('4×5',3,'var(--c6)')} = ${fH(20,3,'var(--correct)')}</div>`,
   },
   {
@@ -176,7 +176,7 @@ const MULENTIER_FRAC_BANK: MulEntierExercise[] = [
     stepsMethod1: `<div><strong>Méthode 1</strong> — on multiplie d'abord :</div>
       <div style="margin-top:6px;">14 × ${fH(3,28)} = ${fH('14×3',28,'var(--c6)')} = ${fH(42,28,'var(--c6)')} = ${fH(3,2,'var(--correct)')} (simplifié par 14)</div>`,
     stepsMethod2: `<div><strong>Méthode 2</strong> — on simplifie avant de calculer :</div>
-      <div style="margin-top:6px;">PGCD(28, 14) = 14 &nbsp;→&nbsp; 14÷14 = 1, 28÷14 = 2</div>
+      <div style="margin-top:6px;">28 est divisible par 14 (28 = 14×2). On divise : 14÷14 = 1, 28÷14 = 2</div>
       <div style="margin-top:6px;">14 × ${fH(3,28)} = 1 × ${fH(3,2,'var(--c6)')} = ${fH(3,2,'var(--correct)')}</div>`,
   },
 ];
@@ -189,7 +189,7 @@ const MULENTIER_INT_BANK: MulEntierExercise[] = [
     stepsMethod1: `<div><strong>Méthode 1</strong> — on multiplie d'abord :</div>
       <div style="margin-top:6px;">${fH(3,4)} × 24 = ${fH('3×24',4,'var(--c6)')} = ${fH(72,4,'var(--c6)')} = <strong style="color:var(--correct);">18</strong></div>`,
     stepsMethod2: `<div><strong>Méthode 2</strong> — on simplifie avant de calculer :</div>
-      <div style="margin-top:6px;">PGCD(4, 24) = 4 &nbsp;→&nbsp; 24÷4 = 6</div>
+      <div style="margin-top:6px;">24 est divisible par 4 (24 = 4×6). On divise : 24÷4 = 6</div>
       <div style="margin-top:6px;">${fH(3,4)} × 24 = 3 × 6 = <strong style="color:var(--correct);">18</strong></div>`,
   },
   {
@@ -199,7 +199,7 @@ const MULENTIER_INT_BANK: MulEntierExercise[] = [
     stepsMethod1: `<div><strong>Méthode 1</strong> — on multiplie d'abord :</div>
       <div style="margin-top:6px;">35 × ${fH(2,7)} = ${fH('35×2',7,'var(--c6)')} = ${fH(70,7,'var(--c6)')} = <strong style="color:var(--correct);">10</strong></div>`,
     stepsMethod2: `<div><strong>Méthode 2</strong> — on simplifie avant de calculer :</div>
-      <div style="margin-top:6px;">PGCD(7, 35) = 7 &nbsp;→&nbsp; 35÷7 = 5</div>
+      <div style="margin-top:6px;">35 est divisible par 7 (35 = 7×5). On divise : 35÷7 = 5</div>
       <div style="margin-top:6px;">35 × ${fH(2,7)} = 5 × 2 = <strong style="color:var(--correct);">10</strong></div>`,
   },
   {
@@ -209,7 +209,7 @@ const MULENTIER_INT_BANK: MulEntierExercise[] = [
     stepsMethod1: `<div><strong>Méthode 1</strong> — on multiplie d'abord :</div>
       <div style="margin-top:6px;">${fH(5,6)} × 42 = ${fH('5×42',6,'var(--c6)')} = ${fH(210,6,'var(--c6)')} = <strong style="color:var(--correct);">35</strong></div>`,
     stepsMethod2: `<div><strong>Méthode 2</strong> — on simplifie avant de calculer :</div>
-      <div style="margin-top:6px;">PGCD(6, 42) = 6 &nbsp;→&nbsp; 42÷6 = 7</div>
+      <div style="margin-top:6px;">42 est divisible par 6 (42 = 6×7). On divise : 42÷6 = 7</div>
       <div style="margin-top:6px;">${fH(5,6)} × 42 = 5 × 7 = <strong style="color:var(--correct);">35</strong></div>`,
   },
   {
@@ -219,7 +219,7 @@ const MULENTIER_INT_BANK: MulEntierExercise[] = [
     stepsMethod1: `<div><strong>Méthode 1</strong> — on multiplie d'abord :</div>
       <div style="margin-top:6px;">22 × ${fH(3,11)} = ${fH('22×3',11,'var(--c6)')} = ${fH(66,11,'var(--c6)')} = <strong style="color:var(--correct);">6</strong></div>`,
     stepsMethod2: `<div><strong>Méthode 2</strong> — on simplifie avant de calculer :</div>
-      <div style="margin-top:6px;">PGCD(11, 22) = 11 &nbsp;→&nbsp; 22÷11 = 2</div>
+      <div style="margin-top:6px;">22 est divisible par 11 (22 = 11×2). On divise : 22÷11 = 2</div>
       <div style="margin-top:6px;">22 × ${fH(3,11)} = 2 × 3 = <strong style="color:var(--correct);">6</strong></div>`,
   },
 ];
@@ -233,7 +233,7 @@ const MULENTIER_WORD_BANK: MulEntierExercise[] = [
     stepsMethod1: `<div><strong>Méthode 1</strong> — on multiplie d'abord :</div>
       <div style="margin-top:6px;">${fH(3,4)} × 32 = ${fH('3×32',4,'var(--c6)')} = ${fH(96,4,'var(--c6)')} = <strong style="color:var(--correct);">24</strong></div>`,
     stepsMethod2: `<div><strong>Méthode 2</strong> — on simplifie avant de calculer :</div>
-      <div style="margin-top:6px;">PGCD(4, 32) = 4 &nbsp;→&nbsp; 32÷4 = 8</div>
+      <div style="margin-top:6px;">32 est divisible par 4 (32 = 4×8). On divise : 32÷4 = 8</div>
       <div style="margin-top:6px;">${fH(3,4)} × 32 = 3 × 8 = <strong style="color:var(--correct);">24</strong></div>`,
   },
   {
@@ -244,7 +244,7 @@ const MULENTIER_WORD_BANK: MulEntierExercise[] = [
     stepsMethod1: `<div><strong>Méthode 1</strong> — on multiplie d'abord :</div>
       <div style="margin-top:6px;">${fH(2,3)} × 27 = ${fH('2×27',3,'var(--c6)')} = ${fH(54,3,'var(--c6)')} = <strong style="color:var(--correct);">18</strong></div>`,
     stepsMethod2: `<div><strong>Méthode 2</strong> — on simplifie avant de calculer :</div>
-      <div style="margin-top:6px;">PGCD(3, 27) = 3 &nbsp;→&nbsp; 27÷3 = 9</div>
+      <div style="margin-top:6px;">27 est divisible par 3 (27 = 3×9). On divise : 27÷3 = 9</div>
       <div style="margin-top:6px;">${fH(2,3)} × 27 = 2 × 9 = <strong style="color:var(--correct);">18</strong></div>`,
   },
   {
@@ -255,7 +255,7 @@ const MULENTIER_WORD_BANK: MulEntierExercise[] = [
     stepsMethod1: `<div><strong>Méthode 1</strong> — on divise par 2 :</div>
       <div style="margin-top:6px;">${fH(1,2)} × 38 = ${fH('1×38',2,'var(--c6)')} = ${fH(38,2,'var(--c6)')} = <strong style="color:var(--correct);">19</strong></div>`,
     stepsMethod2: `<div><strong>Méthode 2</strong> — on simplifie avant de calculer :</div>
-      <div style="margin-top:6px;">PGCD(2, 38) = 2 &nbsp;→&nbsp; 38÷2 = 19</div>
+      <div style="margin-top:6px;">38 est divisible par 2. On divise : 38÷2 = 19</div>
       <div style="margin-top:6px;">${fH(1,2)} × 38 = 1 × 19 = <strong style="color:var(--correct);">19</strong></div>`,
   },
   {
@@ -266,7 +266,7 @@ const MULENTIER_WORD_BANK: MulEntierExercise[] = [
     stepsMethod1: `<div><strong>Méthode 1</strong> — on multiplie d'abord :</div>
       <div style="margin-top:6px;">${fH(3,5)} × 45 = ${fH('3×45',5,'var(--c6)')} = ${fH(135,5,'var(--c6)')} = <strong style="color:var(--correct);">27</strong></div>`,
     stepsMethod2: `<div><strong>Méthode 2</strong> — on simplifie avant de calculer :</div>
-      <div style="margin-top:6px;">PGCD(5, 45) = 5 &nbsp;→&nbsp; 45÷5 = 9</div>
+      <div style="margin-top:6px;">45 est divisible par 5 (45 = 5×9). On divise : 45÷5 = 9</div>
       <div style="margin-top:6px;">${fH(3,5)} × 45 = 3 × 9 = <strong style="color:var(--correct);">27</strong></div>`,
   },
 ];
