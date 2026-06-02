@@ -567,7 +567,7 @@ const CALCULS_SUBMODES: { id: CalcSubMode; label: string; icon: string; desc: st
   { id: 'add',     label: 'Addition',         icon: '+',  desc: '5 exercices · même dénominateur ×2, multiples ×2, entier + fraction' },
   { id: 'sub',     label: 'Soustraction',     icon: '−',  desc: '5 exercices · même dénominateur ×2, multiples ×2, entier − fraction' },
   { id: 'mul',     label: 'Multiplication',   icon: '×',  desc: '6 exercices · entier × fraction, deux méthodes de correction' },
-  { id: 'complex', label: 'Calculs complexes', icon: '()', desc: '4 calculs · ≥ 3 fractions, certains avec parenthèses' },
+  { id: 'complex', label: 'Calculs complexes', icon: '()', desc: "Calculs avec mélange d'opérations" },
 ];
 
 function MainModeSelector({ onSelect, accent }: { onSelect: (m: HubMode) => void; accent: string }) {
