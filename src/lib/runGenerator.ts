@@ -22,6 +22,7 @@ import { generatePuissancesSeries } from './generators/puissances';
 import { generatePropSeries } from './generators/prop';
 import { generateEntierComplexSeries } from './generators/entiers-complex';
 import { generateThalesReciproqueSeries } from './generators/thales-reciproque';
+import { generateProbaSeries } from './generators/proba';
 
 const randInt = (a: number, b: number) => Math.floor(Math.random() * (b - a + 1)) + a;
 const randNZ = (a: number, b: number) => {
@@ -267,6 +268,8 @@ export function runGenerator(specs: GeneratorSpec[]): Exercise[] {
       list.push(...generateEntierComplexSeries());
     } else if (spec.kind === 'thales-reciproque') {
       list.push(...generateThalesReciproqueSeries());
+    } else if (spec.kind === 'proba') {
+      list.push(...generateProbaSeries(spec.count));
     }
   }
   return list;
