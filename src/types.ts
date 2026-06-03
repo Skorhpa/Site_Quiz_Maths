@@ -440,7 +440,41 @@ export type Exercise =
   | PuissancesExercise
   | PropExercise
   | ThalesReciproqueExercise
-  | SquareExercise;
+  | SquareExercise
+  | ProbaVocabExercise
+  | ProbaGroupExercise;
+
+export interface ProbaSubQuestion {
+  eventLabel: string;
+  eventDesc?: string;
+  question: string;
+  /** Fraction answer — ignored when isYesNo is true. */
+  ans: { n: number; d: number };
+  isComplement: boolean;
+  steps: string;
+  /** When true, renders Oui/Non buttons instead of a fraction input. */
+  isYesNo?: true;
+  /** Expected answer for yes/no questions. */
+  ansYesNo?: boolean;
+}
+
+export interface ProbaCountQuestion {
+  question: string;
+  ans: number;
+  steps: string;
+}
+
+export interface ProbaVocabExercise extends BaseExercise {
+  exKind: 'proba-vocab';
+}
+
+export interface ProbaGroupExercise extends BaseExercise {
+  exKind: 'proba-group';
+  groupTitle: string;
+  context: string;
+  countQuestion?: ProbaCountQuestion;
+  subquestions: [ProbaSubQuestion, ProbaSubQuestion, ProbaSubQuestion];
+}
 
 export interface EntiersTrouExercise extends BaseExercise {
   exKind: 'trou';
@@ -458,7 +492,7 @@ export interface EntiersSigneExercise extends BaseExercise {
   steps: string;
 }
 
-export type RendererKind = 'number' | 'rounding' | 'literal' | 'produit' | 'arith' | 'programme' | 'pythagore' | 'thales' | 'fractions' | 'fractions-comp' | 'equation' | 'reciproque' | 'puissances' | 'prop' | 'thales-reciproque' | 'entiers-hub' | 'fractions-hub' | 'fractions-hub-5eme' | 'arith-hub' | 'pyth-hub' | 'thales-hub';
+export type RendererKind = 'number' | 'rounding' | 'literal' | 'produit' | 'arith' | 'programme' | 'pythagore' | 'thales' | 'fractions' | 'fractions-comp' | 'equation' | 'reciproque' | 'puissances' | 'prop' | 'thales-reciproque' | 'entiers-hub' | 'fractions-hub' | 'fractions-hub-5eme' | 'arith-hub' | 'pyth-hub' | 'thales-hub' | 'proba';
 
 export type IntegerOp = 'add' | 'sub' | 'mul';
 
@@ -556,6 +590,12 @@ export interface EntierComplexSeriesSpec {
   kind: 'entiers-complex';
 }
 
+/** Shuffles the proba bank and picks `count` exercises (vocab card always first). */
+export interface ProbaSeriesSpec {
+  kind: 'proba';
+  count: number;
+}
+
 export type GeneratorSpec =
   | IntegerSeriesSpec
   | RoundingSeriesSpec
@@ -574,7 +614,8 @@ export type GeneratorSpec =
   | PuissancesSeriesSpec
   | PropSeriesSpec
   | EntierComplexSeriesSpec
-  | ThalesReciproqueSeriesSpec;
+  | ThalesReciproqueSeriesSpec
+  | ProbaSeriesSpec;
 
 export interface TopicCardBase {
   id: string;

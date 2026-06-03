@@ -14,6 +14,7 @@ import { thalesHubQuiz } from './thales-hub';
 import { fractionsHubQuiz } from './fractions-hub';
 import { fractionsComplexQuiz } from './fractions-complex';
 import { eqQuiz } from './eq';
+import { probabilitesQuiz } from './probabilites';
 
 
 // Order matches the original Site.html homepage card sequence.
@@ -33,27 +34,7 @@ export const topics: Topic[] = [
   arithHubQuiz,
   scientifiqueQuiz,
   proportionnaliteQuiz,
-  // ── À venir ────────────────────────────────────────────────────────────
-  {
-    id: 'probabilites',
-    title: 'Probabilités',
-    category: 'Calcul',
-    accent: '#F472B6',
-    icon: '🎲',
-    description: 'Calculer des probabilités simples et utiliser des arbres de probabilités.',
-    tags: ['À venir'],
-    available: false,
-  },
-  {
-    id: 'trigonometrie',
-    title: 'Trigonométrie',
-    category: 'Géométrie',
-    accent: '#38BDF8',
-    icon: 'sin',
-    description: 'Utiliser sinus, cosinus et tangente dans un triangle rectangle.',
-    tags: ['À venir'],
-    available: false,
-  },
+  probabilitesQuiz,
 ];
 
 export function getTopic(id: string): Topic | undefined {

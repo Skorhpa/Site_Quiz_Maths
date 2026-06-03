@@ -11,6 +11,8 @@ import type {
   NumberExercise,
   ProduitExercise,
   ProgrammeExercise,
+  ProbaVocabExercise,
+  ProbaGroupExercise,
   PuissancesExercise,
   PythagoreExercise,
   QuizDefinition,
@@ -42,6 +44,7 @@ import { FractionsHub5eme } from './questions/FractionsHub5eme';
 import { ArithHub } from './questions/ArithHub';
 import { PythHub } from './questions/PythHub';
 import { ThalesHub } from './questions/ThalesHub';
+import { ProbaQuestion } from './questions/ProbaQuestion';
 
 // Isolates a render crash in one exercise so the quiz controls still work.
 class ExerciseErrorBoundary extends Component<
@@ -541,6 +544,21 @@ export default function Quiz({ quiz }: QuizProps) {
               index={i}
               exercise={ex as ThalesReciproqueExercise}
               answer={answers[i]!}
+              onSubmit={(correct) => submit(i, correct)}
+            />
+          ))}
+        </div>
+      )}
+
+      {quiz.renderer === 'proba' && (
+        <div className="er-grid">
+          {exercises.map((ex, i) => (
+            <ProbaQuestion
+              key={`${seriesKey}-${answers[i]!.resetKey}-${i}`}
+              index={i}
+              exercise={ex as ProbaVocabExercise | ProbaGroupExercise}
+              answer={answers[i]!}
+              accent={quiz.accent}
               onSubmit={(correct) => submit(i, correct)}
             />
           ))}
