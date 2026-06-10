@@ -104,8 +104,6 @@ function AutoQCMCard({ exercise, answer, accent, onSubmit }: {
     onSubmit(ok);
   };
 
-  const LABELS = ['A', 'B', 'C', 'D'] as const;
-
   return (
     <div className={`qcard${answer.status === 'correct' ? ' correct-card' : answer.status === 'wrong' || answer.status === 'revealed' ? ' wrong-card' : ''}`}
       style={{ gridColumn: '1 / -1', borderLeft: `3px solid ${accent}` }}>
@@ -130,7 +128,6 @@ function AutoQCMCard({ exercise, answer, accent, onSubmit }: {
             <button key={i} disabled={isDone}
               onClick={() => handleChoice(i)}
               style={{ textAlign: 'left', padding: '8px 14px', borderRadius: 8, border, background: bg, color, fontSize: 14, cursor: isDone ? 'default' : 'pointer' }}>
-              <strong>{LABELS[i]}.</strong>{' '}
               <span dangerouslySetInnerHTML={{ __html: choiceHtml }} />
             </button>
           );
@@ -138,7 +135,7 @@ function AutoQCMCard({ exercise, answer, accent, onSubmit }: {
       </div>
       {isDone && (
         <div style={{ marginTop: '0.8rem', fontSize: 13, color: answer.status === 'correct' ? 'var(--correct)' : 'var(--wrong)', fontFamily: "'DM Mono', monospace" }}>
-          {answer.status === 'correct' ? '✓ Correct !' : `✗ Incorrect. La bonne réponse est ${LABELS[exercise.correctIndex]}.`}
+          {answer.status === 'correct' ? '✓ Correct !' : '✗ Incorrect — la bonne réponse est surlignée en vert.'}
         </div>
       )}
       <div style={{ marginTop: 8 }}>
