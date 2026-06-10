@@ -442,7 +442,9 @@ export type Exercise =
   | ThalesReciproqueExercise
   | SquareExercise
   | ProbaVocabExercise
-  | ProbaGroupExercise;
+  | ProbaGroupExercise
+  | AutoQCMExercise
+  | AutoCalcExercise;
 
 export interface ProbaSubQuestion {
   eventLabel: string;
@@ -492,7 +494,34 @@ export interface EntiersSigneExercise extends BaseExercise {
   steps: string;
 }
 
-export type RendererKind = 'number' | 'rounding' | 'literal' | 'produit' | 'arith' | 'programme' | 'pythagore' | 'thales' | 'fractions' | 'fractions-comp' | 'equation' | 'reciproque' | 'puissances' | 'prop' | 'thales-reciproque' | 'entiers-hub' | 'fractions-hub' | 'fractions-hub-5eme' | 'arith-hub' | 'pyth-hub' | 'thales-hub' | 'proba';
+export type RendererKind = 'number' | 'rounding' | 'literal' | 'produit' | 'arith' | 'programme' | 'pythagore' | 'thales' | 'fractions' | 'fractions-comp' | 'equation' | 'reciproque' | 'puissances' | 'prop' | 'thales-reciproque' | 'entiers-hub' | 'fractions-hub' | 'fractions-hub-5eme' | 'arith-hub' | 'pyth-hub' | 'thales-hub' | 'proba' | 'automatismes';
+
+export interface AutoPart {
+  label: string;
+  answer: string;
+  altAnswers?: string[];
+  isYesNo?: true;
+  ansYesNo?: boolean;
+  stepsHtml: string;
+}
+
+export interface AutoQCMExercise extends BaseExercise {
+  exKind: 'auto-qcm';
+  qnum: number;
+  category: string;
+  questionHtml: string;
+  choices: [string, string, string, string];
+  correctIndex: 0 | 1 | 2 | 3;
+  stepsHtml: string;
+}
+
+export interface AutoCalcExercise extends BaseExercise {
+  exKind: 'auto-calc';
+  qnum: number;
+  category: string;
+  questionHtml: string;
+  parts: AutoPart[];
+}
 
 export type IntegerOp = 'add' | 'sub' | 'mul';
 
@@ -659,6 +688,8 @@ export interface QuizDefinition<E extends Exercise = Exercise> extends TopicCard
   notice?: string;
   /** Optional banner rendered between the header and the scoreboard (e.g. Pythagore's formula card). */
   formulaBanner?: { html: string; bannerStyle?: Record<string, string | number> };
+  /** When set, shows series-selector buttons that switch the active exercise set. */
+  seriesTabs?: { label: string; exercises: Exercise[] }[];
 }
 
 export type Topic = TopicStub | QuizDefinition;
