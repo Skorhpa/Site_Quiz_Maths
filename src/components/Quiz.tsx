@@ -1,6 +1,8 @@
 import { Component, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import type {
   ArithExercise,
+  AutoCalcExercise,
+  AutoQCMExercise,
   PropExercise,
   EquationDragDropExercise,
   EquationExercise,
@@ -45,6 +47,7 @@ import { ArithHub } from './questions/ArithHub';
 import { PythHub } from './questions/PythHub';
 import { ThalesHub } from './questions/ThalesHub';
 import { ProbaQuestion } from './questions/ProbaQuestion';
+import { AutomatismesQuestion } from './questions/AutomatismesQuestion';
 
 // Isolates a render crash in one exercise so the quiz controls still work.
 class ExerciseErrorBoundary extends Component<
@@ -142,8 +145,10 @@ function splitTitle(title: string, sub?: string): { main: string; tail: string |
 }
 
 export default function Quiz({ quiz }: QuizProps) {
-  const [exercises, setExercises] = useState<Exercise[]>(() => quiz.exercises);
-  const [answers, setAnswers] = useState<AnswerState[]>(() => buildAnswers(quiz.exercises.length));
+  const initialExercises = quiz.seriesTabs ? quiz.seriesTabs[0]!.exercises : quiz.exercises;
+  const [exercises, setExercises] = useState<Exercise[]>(() => initialExercises);
+  const [answers, setAnswers] = useState<AnswerState[]>(() => buildAnswers(initialExercises.length));
+  const [activeSerieIdx, setActiveSerieIdx] = useState(0);
   // Bumped on Recommencer / Nouvelle série so renderer instances remount and clear
   // any internal state (text inputs, radio picks, hint-open, feedback messages).
   const [seriesKey, setSeriesKey] = useState(0);
@@ -210,6 +215,16 @@ export default function Quiz({ quiz }: QuizProps) {
     scrollToTop();
   };
 
+  const selectSerie = (idx: number) => {
+    if (!quiz.seriesTabs) return;
+    const serie = quiz.seriesTabs[idx]!;
+    setActiveSerieIdx(idx);
+    setExercises([...serie.exercises]);
+    setAnswers(buildAnswers(serie.exercises.length));
+    setSeriesKey((k) => k + 1);
+    scrollToTop();
+  };
+
   const hasGenerator = !!quiz.generator && quiz.generator.length > 0;
 
   const newSeries = () => {
@@ -254,6 +269,22 @@ export default function Quiz({ quiz }: QuizProps) {
         {quiz.subtitle && <p className="er-sub">{quiz.subtitle}</p>}
         {quiz.notice && <p className="er-sub" dangerouslySetInnerHTML={{ __html: quiz.notice }} />}
       </div>
+
+      {quiz.seriesTabs && (
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', margin: '1rem 0 0.5rem', alignItems: 'center' }}>
+          <span style={{ fontSize: 13, color: 'var(--muted)', marginRight: 2 }}>Choisir :</span>
+          {quiz.seriesTabs.map((s, i) => (
+            <button key={i} onClick={() => selectSerie(i)} style={{
+              padding: '5px 16px', borderRadius: 20, fontSize: 14, cursor: 'pointer',
+              border: `1px solid ${activeSerieIdx === i ? quiz.accent : 'var(--border2)'}`,
+              background: activeSerieIdx === i ? quiz.accent : 'var(--surface)',
+              color: activeSerieIdx === i ? 'white' : 'var(--text)',
+              fontWeight: activeSerieIdx === i ? 700 : 400,
+              transition: 'all 0.15s',
+            }}>{s.label}</button>
+          ))}
+        </div>
+      )}
 
       {quiz.renderer === 'entiers-hub' ? (
         <EntiersHub accent={quiz.accent} accentSecondary={quiz.accentSecondary} />
@@ -557,6 +588,21 @@ export default function Quiz({ quiz }: QuizProps) {
               key={`${seriesKey}-${answers[i]!.resetKey}-${i}`}
               index={i}
               exercise={ex as ProbaVocabExercise | ProbaGroupExercise}
+              answer={answers[i]!}
+              accent={quiz.accent}
+              onSubmit={(correct) => submit(i, correct)}
+            />
+          ))}
+        </div>
+      )}
+
+      {quiz.renderer === 'automatismes' && (
+        <div className="er-grid">
+          {exercises.map((ex, i) => (
+            <AutomatismesQuestion
+              key={`${seriesKey}-${answers[i]!.resetKey}-${i}`}
+              index={i}
+              exercise={ex as AutoQCMExercise | AutoCalcExercise}
               answer={answers[i]!}
               accent={quiz.accent}
               onSubmit={(correct) => submit(i, correct)}
