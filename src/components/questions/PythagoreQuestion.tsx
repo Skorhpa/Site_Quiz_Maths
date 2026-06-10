@@ -352,6 +352,7 @@ function PythagoreCompleter({
     if (disabled) return;
     const required = ['t1', 't2', 't3', 'thm', 'f1', 'f2', 'f3', 'n1', 'n2', 'n3', 'n4', 'n5', 'n6', 'n7', 'n8', 'ans'];
     if (cfg.find === 'hyp') required.push('n9');
+    else required.push('gh1', 'gl1', 'gh2', 'gl2');
     const anyEmpty = required.some((id) => get(id).trim() === '');
     if (anyEmpty) {
       setFeedback({ text: '✗ Certains champs ne sont pas remplis.', cls: 'feedback ko' });
@@ -434,8 +435,8 @@ function PythagoreCompleter({
               </>
             ) : (
               <>
-                Donc <span style={{ fontFamily: "'DM Mono', monospace" }}>{cfg.givenHyp}² = {inp('n1', 48)}² + {cfg.givenLeg}²</span><br />
-                Donc <span style={{ fontFamily: "'DM Mono', monospace" }}>{inp('n2', 48)}² = {cfg.givenHyp}² − {cfg.givenLeg}²</span><br />
+                Donc <span style={{ fontFamily: "'DM Mono', monospace" }}>{inp('gh1', 48)}² = {inp('n1', 48)}² + {inp('gl1', 48)}²</span><br />
+                Donc <span style={{ fontFamily: "'DM Mono', monospace" }}>{inp('n2', 48)}² = {inp('gh2', 48)}² − {inp('gl2', 48)}²</span><br />
                 Donc <span style={{ fontFamily: "'DM Mono', monospace" }}>{inp('n3', 48)}² = {inp('n4', 55)} − {inp('n5', 55)}</span><br />
                 Donc <span style={{ fontFamily: "'DM Mono', monospace" }}>{inp('n6', 48)}² = {inp('n7', 55)}</span><br />
                 Donc <span style={{ fontFamily: "'DM Mono', monospace" }}>{inp('n8', 48)} {eqSym} {inp('ans', 65)} cm</span>
