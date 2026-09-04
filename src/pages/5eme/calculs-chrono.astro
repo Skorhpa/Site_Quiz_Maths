@@ -1,0 +1,11 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ContreMontre5eme from '@/components/ContreMontre5eme';
+---
+<BaseLayout title="Contre la montre — Calculs">
+  <div class="topbar">
+    <a class="home-btn" href="/5eme/calculs-hub">← Calculs</a>
+    <div class="breadcrumb">/ <span>Contre la montre</span></div>
+  </div>
+  <ContreMontre5eme client:load />
+</BaseLayout>
