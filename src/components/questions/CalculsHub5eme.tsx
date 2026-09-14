@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { AutoQCMExercise, AutoCalcExercise } from '@/types';
 import { AutomatismesQuestion } from './AutomatismesQuestion';
+import { ReperageHub5eme } from '../ReperageHub5eme';
 
-type MainMode = 'priorites' | null;
+type MainMode = 'priorites' | 'reperage' | null;
 type SubMode = 'sans-parentheses' | 'avec-parentheses' | null;
 
 interface AnswerState {
@@ -724,7 +725,14 @@ export function CalculsHub5eme({
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: 14, maxWidth: 560, margin: '0 auto' }}>
         <ModeCard
-          label="Priorités opératoires"
+          label="Priorités opératoires : repérage"
+          icon="🔍"
+          desc="5 expressions · clique sur l'opération à effectuer en premier"
+          accent={accent}
+          onClick={() => setMainMode('reperage')}
+        />
+        <ModeCard
+          label="Priorités opératoires : calcul"
           icon="⊕"
           desc="2 sous-thèmes · ordre des opérations, sans et avec parenthèses"
           accent={accent}
@@ -741,6 +749,11 @@ export function CalculsHub5eme({
     );
   }
 
+  // Repérage
+  if (mainMode === 'reperage') {
+    return <ReperageHub5eme accent={accent} onBack={() => setMainMode(null)} />;
+  }
+
   // Niveau 1 — sélecteur de sous-mode
   if (!subMode) {
     return (
@@ -754,7 +767,7 @@ export function CalculsHub5eme({
           >
             ← Retour
           </button>
-          <span style={{ fontSize: 14, color: 'var(--muted)' }}>Priorités opératoires</span>
+          <span style={{ fontSize: 14, color: 'var(--muted)' }}>Priorités opératoires : calcul</span>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14, maxWidth: 560, margin: '0 auto' }}>
           <ModeCard
