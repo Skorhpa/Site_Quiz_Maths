@@ -73,8 +73,7 @@ function RecallMultiples({ accent }: { accent: string }) {
       </button>
       <div className={`steps-box${open ? ' open' : ''}`} style={{ padding: '0 16px', fontSize: 13, lineHeight: 1.9 }}>
         <p style={{ marginTop: 12, marginBottom: 4 }}>
-          Les <strong>multiples</strong> d'un entier <em>n</em> sont les résultats de{' '}
-          <em>n</em> × 1, <em>n</em> × 2, <em>n</em> × 3, ...
+          Les <strong>multiples</strong> d'un nombre sont dans la table de ce nombre.
         </p>
         <p style={{ marginTop: 0, marginBottom: 8 }}>
           <strong>Exemple :</strong> les multiples de 6 sont 6, 12, 18, 24, 30, ...
