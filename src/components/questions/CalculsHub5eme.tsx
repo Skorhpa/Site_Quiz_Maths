@@ -725,7 +725,7 @@ export function CalculsHub5eme({
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: 14, maxWidth: 560, margin: '0 auto' }}>
         <ModeCard
-          label="Priorités opératoires : repérage"
+          label="Priorités opératoires : règles"
           icon="🔍"
           desc="5 expressions · clique sur l'opération à effectuer en premier"
           accent={accent}

@@ -289,7 +289,7 @@ export function ReperageHub5eme({
         </div>
         <div className="end-banner" style={{ border: `1px solid ${accent}` }}>
           <h2 style={{ color: accent }}>Bravo ! 🎉</h2>
-          <p>Tu as terminé les {EXERCISES.length} exercices de repérage !</p>
+          <p>Tu as terminé les {EXERCISES.length} exercices de règles !</p>
           <div className="btn-group">
             <button className="btn-secondary" onClick={onBack}>← Retour</button>
             <button className="btn-primary" style={{ background: accent }} onClick={restart}>
