@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { AutoQCMExercise, AutoCalcExercise } from '@/types';
 import { AutomatismesQuestion } from './AutomatismesQuestion';
+import { ReperageHub5eme } from '../ReperageHub5eme';
+import { DivEuclidienne5eme } from '../DivEuclidienne5eme';
 
-type MainMode = 'priorites' | null;
+type MainMode = 'priorites' | 'reperage' | 'division' | null;
 type SubMode = 'sans-parentheses' | 'avec-parentheses' | null;
 
 interface AnswerState {
@@ -724,11 +726,25 @@ export function CalculsHub5eme({
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: 14, maxWidth: 560, margin: '0 auto' }}>
         <ModeCard
-          label="Priorités opératoires"
+          label="Priorités opératoires : règles"
+          icon="🔍"
+          desc="5 expressions · clique sur l'opération à effectuer en premier"
+          accent={accent}
+          onClick={() => setMainMode('reperage')}
+        />
+        <ModeCard
+          label="Priorités opératoires : calcul"
           icon="⊕"
           desc="2 sous-thèmes · ordre des opérations, sans et avec parenthèses"
           accent={accent}
           onClick={() => setMainMode('priorites')}
+        />
+        <ModeCard
+          label="Division euclidienne"
+          icon="÷"
+          desc="2 exercices · division posée étape par étape, avec révélation progressive"
+          accent={accent}
+          onClick={() => setMainMode('division')}
         />
         <ModeCard
           label="Top Chrono"
@@ -739,6 +755,16 @@ export function CalculsHub5eme({
         />
       </div>
     );
+  }
+
+  // Repérage
+  if (mainMode === 'reperage') {
+    return <ReperageHub5eme accent={accent} onBack={() => setMainMode(null)} />;
+  }
+
+  // Division euclidienne
+  if (mainMode === 'division') {
+    return <DivEuclidienne5eme accent={accent} onBack={() => setMainMode(null)} />;
   }
 
   // Niveau 1 — sélecteur de sous-mode
@@ -754,7 +780,7 @@ export function CalculsHub5eme({
           >
             ← Retour
           </button>
-          <span style={{ fontSize: 14, color: 'var(--muted)' }}>Priorités opératoires</span>
+          <span style={{ fontSize: 14, color: 'var(--muted)' }}>Priorités opératoires : calcul</span>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14, maxWidth: 560, margin: '0 auto' }}>
           <ModeCard
