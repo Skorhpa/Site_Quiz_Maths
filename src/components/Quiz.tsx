@@ -297,6 +297,8 @@ export default function Quiz({ quiz }: QuizProps) {
         <CalculsHub5eme accent={quiz.accent} accentSecondary={quiz.accentSecondary} />
       ) : quiz.renderer === 'arith-hub' ? (
         <ArithHub accent={quiz.accent} accentSecondary={quiz.accentSecondary} />
+      ) : quiz.renderer === 'arith-hub-5eme' ? (
+        <ArithHub accent={quiz.accent} accentSecondary={quiz.accentSecondary} allowedModes={['diviseurs', 'multiples']} />
       ) : quiz.renderer === 'pyth-hub' ? (
         <PythHub />
       ) : quiz.renderer === 'thales-hub' ? (

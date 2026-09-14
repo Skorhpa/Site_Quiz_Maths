@@ -127,15 +127,17 @@ function getModeLabel(m: HubMode): string {
 // ── MainModeSelector ──────────────────────────────────────────────────────────
 
 function MainModeSelector({
+  modes,
   onSelect,
   accent,
 }: {
+  modes: typeof MAIN_MODES;
   onSelect: (m: HubMode) => void;
   accent: string;
 }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 14, maxWidth: 560, margin: '0 auto' }}>
-      {MAIN_MODES.map((m) => (
+      {modes.map((m) => (
         <ModeCard
           key={m.id}
           label={m.label}
@@ -296,9 +298,11 @@ function QuizView({
 export function ArithHub({
   accent,
   accentSecondary,
+  allowedModes,
 }: {
   accent: string;
   accentSecondary?: string;
+  allowedModes?: readonly HubMode[];
 }) {
   const [mode, setMode] = useState<HubMode | null>(null);
   const [exercises, setExercises] = useState<ArithExercise[]>([]);
@@ -352,7 +356,10 @@ export function ArithHub({
   };
 
   if (mode === null) {
-    return <MainModeSelector onSelect={selectMode} accent={accent} />;
+    const visibleModes = allowedModes
+      ? MAIN_MODES.filter((m) => allowedModes.includes(m.id))
+      : MAIN_MODES;
+    return <MainModeSelector modes={visibleModes} onSelect={selectMode} accent={accent} />;
   }
 
   return (
