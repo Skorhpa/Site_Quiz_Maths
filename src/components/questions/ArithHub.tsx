@@ -10,6 +10,83 @@ import { ArithQuestion } from './ArithQuestion';
 
 type HubMode = 'diviseurs' | 'multiples' | 'primes' | 'problemes';
 
+// ── VideoLink ─────────────────────────────────────────────────────────────────
+
+function VideoLink({ url, label }: { url: string; label: string }) {
+  return (
+    <a
+      href={url}
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{
+        display: 'inline-flex', alignItems: 'center', gap: 8,
+        padding: '6px 14px', borderRadius: 8,
+        background: 'rgba(255,0,0,0.08)', border: '1px solid rgba(255,0,0,0.25)',
+        color: '#f87171', fontSize: 13, textDecoration: 'none',
+        fontWeight: 600, marginTop: 6, marginRight: 8,
+      }}
+    >
+      ▶ {label}
+    </a>
+  );
+}
+
+// ── Rappels ───────────────────────────────────────────────────────────────────
+
+function RecallDiviseurs({ accent }: { accent: string }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div style={{ marginBottom: 16, border: '1px solid var(--border)', borderRadius: 10, overflow: 'hidden' }}>
+      <button type="button" className="hint-toggle" onClick={() => setOpen((v) => !v)}
+        style={{ color: accent, width: '100%', padding: '10px 16px', textAlign: 'left' }}>
+        <span>{open ? '▼' : '▶'}</span> Rappel — diviseurs et critères de divisibilité
+      </button>
+      <div className={`steps-box${open ? ' open' : ''}`} style={{ padding: '0 16px', fontSize: 13, lineHeight: 1.9 }}>
+        <p style={{ marginTop: 12, marginBottom: 4, fontWeight: 700 }}>Critères de divisibilité</p>
+        <p style={{ marginTop: 0, marginBottom: 4 }}>Un nombre entier est divisible :</p>
+        <ul style={{ margin: '0 0 8px 18px', padding: 0 }}>
+          <li>Par <strong>2</strong>, si son chiffre des unités est <strong>pair</strong>,</li>
+          <li>Par <strong>5</strong>, si son chiffre des unités est <strong>0 ou 5</strong>,</li>
+          <li>Par <strong>10</strong>, si son chiffre des unités est <strong>0</strong>,</li>
+          <li>Par <strong>3</strong>, si la <strong>somme de ses chiffres</strong> est divisible par 3,</li>
+          <li>Par <strong>9</strong>, si la <strong>somme de ses chiffres</strong> est divisible par 9.</li>
+        </ul>
+        <div style={{ marginBottom: 14 }}>
+          <VideoLink url="https://www.youtube.com/watch?v=XMyZs8j2hVw" label="Critères de divisibilité" />
+        </div>
+        <p style={{ marginTop: 4, marginBottom: 4, fontWeight: 700 }}>Trouver les diviseurs d'un nombre</p>
+        <div style={{ marginBottom: 14 }}>
+          <VideoLink url="https://www.youtube.com/watch?v=jteZZBzyai8" label="Comment trouver les diviseurs" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function RecallMultiples({ accent }: { accent: string }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div style={{ marginBottom: 16, border: '1px solid var(--border)', borderRadius: 10, overflow: 'hidden' }}>
+      <button type="button" className="hint-toggle" onClick={() => setOpen((v) => !v)}
+        style={{ color: accent, width: '100%', padding: '10px 16px', textAlign: 'left' }}>
+        <span>{open ? '▼' : '▶'}</span> Rappel — qu'est-ce qu'un multiple ?
+      </button>
+      <div className={`steps-box${open ? ' open' : ''}`} style={{ padding: '0 16px', fontSize: 13, lineHeight: 1.9 }}>
+        <p style={{ marginTop: 12, marginBottom: 4 }}>
+          Les <strong>multiples</strong> d'un entier <em>n</em> sont les résultats de{' '}
+          <em>n</em> × 1, <em>n</em> × 2, <em>n</em> × 3, ...
+        </p>
+        <p style={{ marginTop: 0, marginBottom: 8 }}>
+          <strong>Exemple :</strong> les multiples de 6 sont 6, 12, 18, 24, 30, ...
+        </p>
+        <div style={{ marginBottom: 14 }}>
+          <VideoLink url="https://www.youtube.com/watch?v=bFm_tHXTKhs" label="Multiples d'un entier" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 interface AnswerState {
   value: string;
   status: 'pending' | 'correct' | 'wrong' | 'revealed';
@@ -160,6 +237,7 @@ function QuizView({
   accent,
   accentSecondary,
   seriesKey,
+  recall,
   onSubmit,
   onResetErrors,
   onNewSeries,
@@ -171,6 +249,7 @@ function QuizView({
   accent: string;
   accentSecondary?: string;
   seriesKey: number;
+  recall?: React.ReactNode;
   onSubmit: (i: number, correct: boolean) => void;
   onResetErrors: () => void;
   onNewSeries: () => void;
@@ -218,6 +297,8 @@ function QuizView({
         </button>
         <span style={{ fontSize: 14, color: 'var(--muted)' }}>{modeLabel}</span>
       </div>
+
+      {recall}
 
       <div className="scoreboard">
         <div className="score-item">
@@ -362,6 +443,11 @@ export function ArithHub({
     return <MainModeSelector modes={visibleModes} onSelect={selectMode} accent={accent} />;
   }
 
+  const recall =
+    mode === 'diviseurs' ? <RecallDiviseurs accent={accent} /> :
+    mode === 'multiples' ? <RecallMultiples accent={accent} /> :
+    undefined;
+
   return (
     <QuizView
       modeLabel={getModeLabel(mode)}
@@ -370,6 +456,7 @@ export function ArithHub({
       accent={accent}
       accentSecondary={accentSecondary}
       seriesKey={seriesKey}
+      recall={recall}
       onSubmit={submit}
       onResetErrors={resetErrors}
       onNewSeries={newSeries}
