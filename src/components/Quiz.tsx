@@ -49,6 +49,7 @@ import { ThalesHub } from './questions/ThalesHub';
 import { ProbaQuestion } from './questions/ProbaQuestion';
 import { AutomatismesQuestion } from './questions/AutomatismesQuestion';
 import { CalculsHub5eme } from './questions/CalculsHub5eme';
+import { TablesHub5eme } from './TablesHub5eme';
 
 // Isolates a render crash in one exercise so the quiz controls still work.
 class ExerciseErrorBoundary extends Component<
@@ -295,6 +296,8 @@ export default function Quiz({ quiz }: QuizProps) {
         <FractionsHub5eme accent={quiz.accent} accentSecondary={quiz.accentSecondary} />
       ) : quiz.renderer === 'calculs-hub-5eme' ? (
         <CalculsHub5eme accent={quiz.accent} accentSecondary={quiz.accentSecondary} />
+      ) : quiz.renderer === 'tables-hub-5eme' ? (
+        <TablesHub5eme accent={quiz.accent} accentSecondary={quiz.accentSecondary} />
       ) : quiz.renderer === 'arith-hub' ? (
         <ArithHub accent={quiz.accent} accentSecondary={quiz.accentSecondary} />
       ) : quiz.renderer === 'arith-hub-5eme' ? (
