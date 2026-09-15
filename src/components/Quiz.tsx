@@ -50,6 +50,7 @@ import { ProbaQuestion } from './questions/ProbaQuestion';
 import { AutomatismesQuestion } from './questions/AutomatismesQuestion';
 import { CalculsHub5eme } from './questions/CalculsHub5eme';
 import { TablesHub5eme } from './TablesHub5eme';
+import { DecimauxHub } from './questions/DecimauxHub';
 
 // Isolates a render crash in one exercise so the quiz controls still work.
 class ExerciseErrorBoundary extends Component<
@@ -108,7 +109,7 @@ function checkAnswer(quiz: QuizDefinition, ex: Exercise, value: string): boolean
     const lex = ex as LiteralExercise;
     if (lex.isNum) {
       const studentNum = parseFloat(value.trim().replace(',', '.'));
-      const expectedNum = parseFloat(lex.ans);
+      const expectedNum = parseFloat(lex.ans.replace(',', '.'));
       return !Number.isNaN(studentNum) && Math.abs(studentNum - expectedNum) < 0.001;
     }
     if (lex.subtype === 'scientific') {
@@ -306,6 +307,8 @@ export default function Quiz({ quiz }: QuizProps) {
         <PythHub />
       ) : quiz.renderer === 'thales-hub' ? (
         <ThalesHub />
+      ) : quiz.renderer === 'decimaux-hub' ? (
+        <DecimauxHub accent={quiz.accent} accentSecondary={quiz.accentSecondary} />
       ) : (<>
 
       {quiz.formulaBanner && (

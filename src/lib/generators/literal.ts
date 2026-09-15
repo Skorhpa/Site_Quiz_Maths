@@ -8,6 +8,8 @@ const COLORS: Record<LiteralSubtype, string> = {
   substitute: '#fbbf24',
   complex: '#E879F9',
   scientific: '#6EE7C0',
+  decimal: '#34D399',
+  'decimal-clean': '#F472B6',
 };
 const LABELS: Record<LiteralSubtype, string> = {
   reduce: 'Réduire',
@@ -17,6 +19,8 @@ const LABELS: Record<LiteralSubtype, string> = {
   substitute: 'Substituer',
   complex: 'Calculs complexes',
   scientific: 'Notation scientifique',
+  decimal: 'Écriture décimale',
+  'decimal-clean': 'Zéros inutiles',
 };
 
 const randNZ = (a: number, b: number) => {
