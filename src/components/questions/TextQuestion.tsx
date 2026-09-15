@@ -25,6 +25,7 @@ function placeholderFor(subtype: LiteralExercise['subtype']): string {
   if (subtype === 'substitute') return 'Donne la valeur numérique…';
   if (subtype === 'factor') return "Écris l'expression factorisée…";
   if (subtype === 'scientific') return 'Ex : 3,45 × 10^8  ou  3,45 * 10^8';
+  if (subtype === 'decimal') return 'Écris le nombre décimal (avec une virgule)…';
   return "Écris l'expression réduite…";
 }
 
@@ -39,11 +40,12 @@ export function TextQuestion({ index, exercise, answer, onChange, onSubmit }: Te
     if (e.key === 'Enter') onSubmit();
   };
 
+  const ansHtml = exercise.ansDisplay ?? exercise.ans;
   const feedback = (() => {
-    if (answer.status === 'correct') return { text: '✓ Correct !', cls: 'feedback ok' };
-    if (answer.status === 'wrong') return { text: `✗ Réponse : ${exercise.ans}`, cls: 'feedback ko' };
-    if (answer.status === 'revealed') return { text: `Réponse : ${exercise.ans}`, cls: 'feedback ko' };
-    return { text: '', cls: 'feedback' };
+    if (answer.status === 'correct') return { html: '✓ Correct !', cls: 'feedback ok' };
+    if (answer.status === 'wrong') return { html: `✗ Réponse : ${ansHtml}`, cls: 'feedback ko' };
+    if (answer.status === 'revealed') return { html: `Réponse : ${ansHtml}`, cls: 'feedback ko' };
+    return { html: '', cls: 'feedback' };
   })();
 
   const tagStyle: React.CSSProperties = {
@@ -103,9 +105,11 @@ export function TextQuestion({ index, exercise, answer, onChange, onSubmit }: Te
         </button>
       </div>
 
-      <div className={feedback.cls} style={{ marginTop: 8, fontFamily: "'DM Mono', monospace", fontSize: 13, minHeight: 18 }}>
-        {feedback.text}
-      </div>
+      <div
+        className={feedback.cls}
+        style={{ marginTop: 8, fontFamily: "'DM Mono', monospace", fontSize: 13, minHeight: 18 }}
+        dangerouslySetInnerHTML={{ __html: feedback.html }}
+      />
 
       <div style={{ marginTop: 10 }}>
         <button
@@ -121,7 +125,7 @@ export function TextQuestion({ index, exercise, answer, onChange, onSubmit }: Te
           {!isComplex && (
             <div style={{ marginTop: 6, fontFamily: "'DM Mono', monospace" }}>
               <span style={{ color: 'var(--muted)' }}>Valeur = </span>
-              <strong style={{ color: 'var(--correct)' }}>{exercise.ans}</strong>
+              <strong style={{ color: 'var(--correct)' }} dangerouslySetInnerHTML={{ __html: ansHtml }} />
             </div>
           )}
         </div>

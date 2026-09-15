@@ -28,15 +28,17 @@ export interface RoundingExercise extends BaseExercise {
   color: string;
 }
 
-export type LiteralSubtype = 'reduce' | 'develop' | 'factor' | 'reduce_paren' | 'substitute' | 'complex' | 'scientific';
+export type LiteralSubtype = 'reduce' | 'develop' | 'factor' | 'reduce_paren' | 'substitute' | 'complex' | 'scientific' | 'decimal';
 
 export interface LiteralExercise extends BaseExercise {
   subtype: LiteralSubtype;
   label: string;
   /** HTML-allowed expression to display in the question card. */
   expr: string;
-  /** Expected answer string (or numeric string when `isNum` is true). */
+  /** Expected answer string (or numeric string when `isNum` is true). Compared against the student's plain-text input. */
   ans: string;
+  /** Optional HTML-allowed rendering of `ans` (e.g. stacked fractions) shown in the feedback line instead of the raw text. */
+  ansDisplay?: string;
   /** HTML-allowed step-by-step explanation rendered inside the hint box. */
   steps: string;
   /** When true, compare student input as a number (with tolerance) rather than as a normalized expression. */
@@ -311,6 +313,27 @@ export interface FractionsCompExercise extends BaseExercise {
   ansDStr?: string;
 }
 
+export interface DecimalFracTerm {
+  n: number;
+  d: number;
+}
+
+/** A decimal number decomposed into an optional integer part plus one or more decimal-fraction boxes (numerator/denominator each typed by the student). */
+export interface DecimalFracExercise extends BaseExercise {
+  label: string;
+  color: string;
+  /** The decimal number shown to the student, e.g. "22,08". */
+  expr: string;
+  /** Whether a leading integer input box is shown before the fraction terms. */
+  hasInteger: boolean;
+  /** Expected integer value (ignored when `hasInteger` is false). */
+  integerAns: number;
+  /** Expected numerator/denominator for each fraction box, in order. */
+  terms: DecimalFracTerm[];
+  /** HTML-allowed step-by-step explanation. */
+  steps: string;
+}
+
 export interface MDCExercise extends BaseExercise {
   exKind: 'mdc';
   kind: 'multiple' | 'coprime' | 'common';
@@ -444,7 +467,8 @@ export type Exercise =
   | ProbaVocabExercise
   | ProbaGroupExercise
   | AutoQCMExercise
-  | AutoCalcExercise;
+  | AutoCalcExercise
+  | DecimalFracExercise;
 
 export interface ProbaSubQuestion {
   eventLabel: string;
@@ -494,7 +518,7 @@ export interface EntiersSigneExercise extends BaseExercise {
   steps: string;
 }
 
-export type RendererKind = 'number' | 'rounding' | 'literal' | 'produit' | 'arith' | 'programme' | 'pythagore' | 'thales' | 'fractions' | 'fractions-comp' | 'equation' | 'reciproque' | 'puissances' | 'prop' | 'thales-reciproque' | 'entiers-hub' | 'fractions-hub' | 'fractions-hub-5eme' | 'arith-hub' | 'arith-hub-5eme' | 'pyth-hub' | 'thales-hub' | 'proba' | 'automatismes' | 'calculs-hub-5eme' | 'tables-hub-5eme';
+export type RendererKind = 'number' | 'rounding' | 'literal' | 'produit' | 'arith' | 'programme' | 'pythagore' | 'thales' | 'fractions' | 'fractions-comp' | 'equation' | 'reciproque' | 'puissances' | 'prop' | 'thales-reciproque' | 'entiers-hub' | 'fractions-hub' | 'fractions-hub-5eme' | 'arith-hub' | 'arith-hub-5eme' | 'pyth-hub' | 'thales-hub' | 'proba' | 'automatismes' | 'calculs-hub-5eme' | 'tables-hub-5eme' | 'decimaux-hub';
 
 export interface AutoPart {
   label: string;
