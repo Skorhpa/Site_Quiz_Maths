@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { DecimalFracExercise, LiteralExercise } from '@/types';
-import { generateDecimauxSeries, generateDecimauxInverseSeries } from '@/lib/generators/decimaux';
+import { generateDecimauxSeries, generateDecimauxInverseSeries, generateEcritureSeries } from '@/lib/generators/decimaux';
 import { literalCheckAnswer } from '@/lib/generators/literal';
 import { TextQuestion } from './TextQuestion';
 import { DecimalFracQuestion } from './DecimalFracQuestion';
 import { ModeCard } from './FractionsHub';
 
-type HubMode = 'vers-decimal' | 'vers-fraction';
+type HubMode = 'vers-decimal' | 'vers-fraction' | 'ecriture';
 
 interface AnswerState {
   value: string;
@@ -47,6 +47,12 @@ const MODES: { id: HubMode; label: string; icon: string; desc: string }[] = [
     icon: 'n/d',
     desc: '18 questions · décomposition, partie entière + fraction, écriture fractionnaire',
   },
+  {
+    id: 'ecriture',
+    label: "Connaître l'écriture décimale",
+    icon: '0…9',
+    desc: '15 questions · zéros inutiles, chiffre des dixièmes, centièmes, unités, dizaines, centaines',
+  },
 ];
 
 export function DecimauxHub({ accent, accentSecondary }: { accent: string; accentSecondary?: string }) {
@@ -57,7 +63,10 @@ export function DecimauxHub({ accent, accentSecondary }: { accent: string; accen
   const endRef = useRef<HTMLDivElement>(null);
 
   const loadExercises = (m: HubMode) => {
-    const exs = m === 'vers-decimal' ? generateDecimauxSeries() : generateDecimauxInverseSeries();
+    const exs =
+      m === 'vers-decimal' ? generateDecimauxSeries()
+      : m === 'vers-fraction' ? generateDecimauxInverseSeries()
+      : generateEcritureSeries();
     setExercises(exs);
     setAnswers(buildAnswers(exs.length));
     setSeriesKey((k) => k + 1);
@@ -86,8 +95,8 @@ export function DecimauxHub({ accent, accentSecondary }: { accent: string; accen
       updateAnswer(i, { status: correctOverride ? 'correct' : 'wrong' });
       return;
     }
-    // Only the 'vers-decimal' mode (TextQuestion) submits without a precomputed result.
-    if (mode !== 'vers-decimal' || ans.value.trim() === '') return;
+    // Only the TextQuestion-based modes ('vers-decimal', 'ecriture') submit without a precomputed result.
+    if (mode === 'vers-fraction' || ans.value.trim() === '') return;
     const ok = checkLiteralAnswer(exercises[i] as LiteralExercise, ans.value);
     updateAnswer(i, { status: ok ? 'correct' : 'wrong' });
   };
@@ -173,7 +182,7 @@ export function DecimauxHub({ accent, accentSecondary }: { accent: string; accen
       </div>
 
       <div className="questions-list">
-        {mode === 'vers-decimal'
+        {mode !== 'vers-fraction'
           ? (exercises as LiteralExercise[]).map((ex, i) => (
               <TextQuestion
                 key={`${seriesKey}-${answers[i]!.resetKey}-${i}`}

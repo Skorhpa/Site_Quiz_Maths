@@ -26,6 +26,7 @@ function placeholderFor(subtype: LiteralExercise['subtype']): string {
   if (subtype === 'factor') return "Écris l'expression factorisée…";
   if (subtype === 'scientific') return 'Ex : 3,45 × 10^8  ou  3,45 * 10^8';
   if (subtype === 'decimal') return 'Écris le nombre décimal (avec une virgule)…';
+  if (subtype === 'decimal-clean') return 'Supprime le ou les zéros inutiles…';
   return "Écris l'expression réduite…";
 }
 

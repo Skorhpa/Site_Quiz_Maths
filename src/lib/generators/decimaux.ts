@@ -204,3 +204,90 @@ export function generateDecimauxInverseSeries(): DecimalFracExercise[] {
     makeTripleDecomposition(),
   ];
 }
+
+// ════════════════════════════════════════════════════════════════════════
+// Sous-quiz 3 : connaître l'écriture décimale
+// ════════════════════════════════════════════════════════════════════════
+
+const COLOR_CLEAN = '#F472B6';
+const COLOR_DIGIT = '#A78BFA';
+
+// ── Simplifie l'écriture décimale (exercice 1 : 30,50 → 30,5 · 007 → 7 · 5,0 → 5) ──
+// Toujours au moins un zéro inutile à supprimer (leading et/ou trailing).
+function makeCleanWriting(): LiteralExercise {
+  let leadingZeros = pick([0, 0, 1, 1, 2] as const);
+  let extraZeros = pick([0, 0, 1, 1, 2] as const);
+  if (leadingZeros === 0 && extraZeros === 0) {
+    if (Math.random() < 0.5) leadingZeros = pick([1, 2] as const);
+    else extraZeros = pick([1, 2] as const);
+  }
+
+  const baseInt = leadingZeros === 2 ? randInt(1, 9) : leadingZeros === 1 ? randInt(1, 90) : randInt(1, 900);
+  const displayInt = '0'.repeat(leadingZeros) + baseInt;
+
+  const sigLen = pick([0, 1, 2, 3] as const);
+  let sig = '';
+  for (let i = 0; i < sigLen; i++) {
+    sig += i === sigLen - 1 ? `${randInt(1, 9)}` : `${randInt(0, 9)}`;
+  }
+
+  const displayDec = sig + '0'.repeat(extraZeros);
+  const displayStr = displayDec.length > 0 ? `${displayInt},${displayDec}` : displayInt;
+  const cleanStr = sig.length > 0 ? `${baseInt},${sig}` : `${baseInt}`;
+
+  const removedLeading = leadingZeros > 0;
+  const removedTrailing = extraZeros > 0;
+  const steps = `<div style="color:var(--text);">${displayStr} : ${
+    [
+      removedLeading ? 'les zéros inutiles devant la partie entière' : '',
+      removedTrailing ? 'les zéros inutiles à la fin de la partie décimale' : '',
+    ].filter(Boolean).join(' et ')
+  } ne changent pas la valeur du nombre → <strong style="color:var(--correct);">${cleanStr}</strong></div>`;
+
+  return {
+    type: 'default',
+    subtype: 'decimal-clean',
+    label: 'Écriture simplifiée',
+    color: COLOR_CLEAN,
+    expr: displayStr,
+    ans: cleanStr,
+    steps,
+    isNum: false,
+  };
+}
+
+// ── Chiffre d'une position (exercices 4/5 : dans 84,735, le chiffre des dixièmes est 7…) ──
+function makeDigitSetFor(): LiteralExercise[] {
+  const integer = randInt(10, 899);
+  const decDigits = `${randInt(0, 9)}${randInt(0, 9)}${randInt(0, 9)}`;
+  const intDigits = `${integer}`.padStart(3, '0');
+  const numStr = `${integer},${decDigits}`;
+
+  const PLACES: { posName: string; digit: string }[] = [
+    { posName: 'dixièmes', digit: decDigits[0]! },
+    { posName: 'centièmes', digit: decDigits[1]! },
+    { posName: 'millièmes', digit: decDigits[2]! },
+    { posName: 'unités', digit: intDigits[2]! },
+    { posName: 'dizaines', digit: intDigits[1]! },
+    { posName: 'centaines', digit: intDigits[0]! },
+  ];
+
+  return PLACES.map(({ posName, digit }) => ({
+    type: 'default',
+    subtype: 'substitute',
+    label: 'Chiffre d’une position',
+    color: COLOR_DIGIT,
+    expr: `Quel est le chiffre des ${posName} dans <strong>${numStr}</strong> ?`,
+    ans: digit,
+    steps: `<div style="color:var(--text);">Dans ${numStr} : le chiffre des ${posName} est <strong style="color:var(--correct);">${digit}</strong>.</div>`,
+    isNum: true,
+  }));
+}
+
+export function generateEcritureSeries(): LiteralExercise[] {
+  return [
+    makeCleanWriting(), makeCleanWriting(), makeCleanWriting(),
+    ...makeDigitSetFor(),
+    ...makeDigitSetFor(),
+  ];
+}
