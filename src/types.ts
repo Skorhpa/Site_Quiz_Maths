@@ -518,7 +518,7 @@ export interface EntiersSigneExercise extends BaseExercise {
   steps: string;
 }
 
-export type RendererKind = 'number' | 'rounding' | 'literal' | 'produit' | 'arith' | 'programme' | 'pythagore' | 'thales' | 'fractions' | 'fractions-comp' | 'equation' | 'reciproque' | 'puissances' | 'prop' | 'thales-reciproque' | 'entiers-hub' | 'fractions-hub' | 'fractions-hub-5eme' | 'arith-hub' | 'arith-hub-5eme' | 'pyth-hub' | 'thales-hub' | 'proba' | 'automatismes' | 'calculs-hub-5eme' | 'tables-hub-5eme' | 'decimaux-hub' | 'relatifs-hub-5eme';
+export type RendererKind = 'number' | 'rounding' | 'literal' | 'produit' | 'arith' | 'programme' | 'pythagore' | 'thales' | 'fractions' | 'fractions-comp' | 'equation' | 'reciproque' | 'puissances' | 'prop' | 'thales-reciproque' | 'entiers-hub' | 'fractions-hub' | 'fractions-hub-5eme' | 'arith-hub' | 'arith-hub-5eme' | 'pyth-hub' | 'thales-hub' | 'proba' | 'automatismes' | 'calculs-hub-5eme' | 'tables-hub-5eme' | 'decimaux-hub' | 'relatifs-hub-5eme' | 'geometrie-hub-6eme';
 
 export interface AutoPart {
   label: string;
