@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ModeCard } from './FractionsHub';
 
-type HubMode = 'definitions' | 'reperage' | null;
+type HubMode = 'definitions' | 'reperage' | 'comparaison' | null;
 
 interface AnswerState {
   status: 'pending' | 'correct' | 'wrong' | 'revealed';
@@ -39,6 +39,10 @@ function checkNumericAnswer(raw: string, expected: number): boolean {
   return !Number.isNaN(v) && Math.abs(v - expected) < 0.005;
 }
 
+function fmtDecStr(intPart: number, fracDigits: readonly number[]): string {
+  return fracDigits.length > 0 ? `${intPart},${fracDigits.join('')}` : `${intPart}`;
+}
+
 function shuffle<T>(arr: readonly T[]): T[] {
   const out = [...arr];
   for (let i = out.length - 1; i > 0; i--) {
@@ -70,22 +74,29 @@ function AxisLine({ ticks, renderBelow, renderAbove }: {
   return (
     <div style={{ margin: '18px 0 6px' }}>
       {renderAbove && (
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <div style={{ display: 'flex' }}>
           {ticks.map((_, i) => (
-            <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: '1 1 0', minWidth: 0, minHeight: 30 }}>
+            <div key={i} style={{ display: 'flex', justifyContent: 'center', flex: '1 1 0', minWidth: 0, minHeight: 30 }}>
               {renderAbove(i)}
             </div>
           ))}
         </div>
       )}
-      <div style={{ position: 'relative', height: 2, background: 'var(--text)' }}>
-        <span style={{ position: 'absolute', right: -10, top: -7, fontSize: 14, color: 'var(--text)' }}>→</span>
+      <div style={{ position: 'relative', height: 18 }}>
+        <div style={{ position: 'absolute', left: 0, right: 12, top: '50%', height: 2, background: 'var(--text)', transform: 'translateY(-50%)' }} />
+        <span style={{ position: 'absolute', right: -3, top: '50%', transform: 'translateY(-50%)', fontSize: 17, lineHeight: 1, color: 'var(--text)' }}>→</span>
+        <div style={{ display: 'flex', height: '100%' }}>
+          {ticks.map((_, i) => (
+            <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: '1 1 0', minWidth: 0 }}>
+              <div style={{ width: 2, height: 14, background: 'var(--text)' }} />
+            </div>
+          ))}
+        </div>
       </div>
-      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+      <div style={{ display: 'flex' }}>
         {ticks.map((_, i) => (
-          <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: '1 1 0', minWidth: 0 }}>
-            <div style={{ width: 2, height: 10, background: 'var(--text)' }} />
-            <div style={{ marginTop: 4 }}>{renderBelow(i)}</div>
+          <div key={i} style={{ display: 'flex', justifyContent: 'center', flex: '1 1 0', minWidth: 0, marginTop: 4 }}>
+            {renderBelow(i)}
           </div>
         ))}
       </div>
@@ -177,6 +188,69 @@ function RecallDefinitions({ accent }: { accent: string }) {
         <div style={{ marginBottom: 12 }}>
           <VideoLink url="https://youtu.be/GAhNZgDw1XA" label="Définition" />
           <VideoLink url="https://youtu.be/a5HGl910IXE" label="Opposé d'un nombre" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const compCellStyle: React.CSSProperties = { padding: '8px 10px', borderBottom: '1px solid var(--border)', verticalAlign: 'top' };
+const compHeadStyle: React.CSSProperties = { ...compCellStyle, fontWeight: 700, color: 'var(--muted)', fontSize: 12, textTransform: 'uppercase', letterSpacing: 0.4 };
+
+function RecallComparaison({ accent }: { accent: string }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div style={{ marginBottom: 16, border: '1px solid var(--border)', borderRadius: 10, overflow: 'hidden' }}>
+      <button
+        type="button"
+        className="hint-toggle"
+        onClick={() => setOpen((v) => !v)}
+        style={{ color: accent, width: '100%', padding: '10px 16px', textAlign: 'left' }}
+      >
+        <span>{open ? '▼' : '▶'}</span> Rappel — comparer et ranger + vidéos
+      </button>
+      <div className={`steps-box${open ? ' open' : ''}`} style={{ padding: '0 16px', fontSize: 13, lineHeight: 1.9 }}>
+        <ul style={{ margin: '12px 0 8px 18px', padding: 0 }}>
+          <li>
+            <strong>&lt;</strong> se lit « … est <strong>inférieur</strong> à … »
+          </li>
+          <li>
+            <strong>&gt;</strong> se lit « … est <strong>supérieur</strong> à … »
+          </li>
+          <li>
+            Ordre <strong>croissant</strong> : du plus petit au plus grand.
+          </li>
+          <li>
+            Ordre <strong>décroissant</strong> : du plus grand au plus petit.
+          </li>
+        </ul>
+        <div style={{ overflowX: 'auto', margin: '4px 0 12px' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontFamily: "'DM Mono', monospace", fontSize: 12.5 }}>
+            <thead>
+              <tr>
+                <th style={compHeadStyle}>Cas</th>
+                <th style={compHeadStyle}>Le plus grand est…</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style={compCellStyle}>Deux nombres positifs</td>
+                <td style={compCellStyle}>celui qui a la plus grande distance à zéro (le plus loin de zéro).</td>
+              </tr>
+              <tr>
+                <td style={compCellStyle}>Un nombre positif et un nombre négatif</td>
+                <td style={compCellStyle}>toujours le nombre positif.</td>
+              </tr>
+              <tr>
+                <td style={{ ...compCellStyle, borderBottom: 'none' }}>Deux nombres négatifs</td>
+                <td style={{ ...compCellStyle, borderBottom: 'none' }}>celui qui a la plus petite distance à zéro (le plus proche de zéro). Penser aux températures.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div style={{ marginBottom: 12 }}>
+          <VideoLink url="https://youtu.be/DYbRr4B42h8" label="Comparer deux nombres" />
+          <VideoLink url="https://youtu.be/jC_oYObrWbQ" label="Ranger dans l'ordre croissant ou décroissant" />
         </div>
       </div>
     </div>
@@ -903,6 +977,513 @@ function AxisPlaceQuestion({ index, exercise, answer, accent, onSubmit }: {
   );
 }
 
+// ── Q1 (Comparaison) : compléter avec <, > ou = ─────────────────────────────────
+
+interface RelatifComparePair {
+  aStr: string;
+  bStr: string;
+  aDec: number;
+  bDec: number;
+  sign: '<' | '>' | '=';
+}
+
+interface RelatifCompareExercise {
+  pairs: RelatifComparePair[];
+}
+
+type ComparePairMode = 'normal' | 'equal' | 'opposite';
+
+/**
+ * Builds one row with the given signs forced (magnitudes stay random except for
+ * 'equal'/'opposite' modes, which reuse the same digits on both sides so the
+ * comparison is exact: same value+sign for 'equal', same value+opposite sign for 'opposite').
+ */
+function makeSignedComparePair(signA: 1 | -1, signB: 1 | -1, mode: ComparePairMode): RelatifComparePair {
+  const decChoices = [1, 2, 3] as const;
+  const isDecimal = Math.random() < 0.55;
+  const dA = isDecimal ? pick(decChoices) : 0;
+  const dB = mode === 'normal' ? (isDecimal ? pick(decChoices) : 0) : dA;
+
+  const intA = randInt(1, 90);
+  const fracA = Array.from({ length: dA }, () => randInt(0, 9));
+
+  let intB: number;
+  let fracB: number[];
+  if (mode === 'normal') {
+    do { intB = randInt(1, 90); } while (intB === intA && dA === dB);
+    fracB = Array.from({ length: dB }, () => randInt(0, 9));
+  } else {
+    // 'equal' and 'opposite': identical magnitude on both sides.
+    intB = intA;
+    fracB = [...fracA];
+  }
+
+  const aBody = fmtDecStr(intA, fracA);
+  const bBody = fmtDecStr(intB, fracB);
+  const aStr = signA > 0 ? aBody : `-${aBody}`;
+  const bStr = signB > 0 ? bBody : `-${bBody}`;
+  const aVal = signA * parseFloat(`${intA}.${fracA.join('') || '0'}`);
+  const bVal = signB * parseFloat(`${intB}.${fracB.join('') || '0'}`);
+  const sign: '<' | '>' | '=' = aVal < bVal ? '<' : aVal > bVal ? '>' : '=';
+  return { aStr, bStr, aDec: dA, bDec: dB, sign };
+}
+
+/**
+ * Fixed composition over the 8 rows (per teacher request): 1 positive/positive,
+ * 1 pair of equal numbers, 2 positive/negative (one of which is a number and its
+ * opposite), and the remaining 4 negative/negative.
+ */
+function generateRelatifCompareExercise(): RelatifCompareExercise {
+  const eqSign: 1 | -1 = Math.random() < 0.5 ? 1 : -1;
+  const oppSignA: 1 | -1 = Math.random() < 0.5 ? 1 : -1;
+  const genSignA: 1 | -1 = Math.random() < 0.5 ? 1 : -1;
+
+  const specs: { signA: 1 | -1; signB: 1 | -1; mode: ComparePairMode }[] = [
+    { signA: 1, signB: 1, mode: 'normal' },
+    { signA: eqSign, signB: eqSign, mode: 'equal' },
+    { signA: oppSignA, signB: oppSignA === 1 ? -1 : 1, mode: 'opposite' },
+    { signA: genSignA, signB: genSignA === 1 ? -1 : 1, mode: 'normal' },
+    { signA: -1, signB: -1, mode: 'normal' },
+    { signA: -1, signB: -1, mode: 'normal' },
+    { signA: -1, signB: -1, mode: 'normal' },
+    { signA: -1, signB: -1, mode: 'normal' },
+  ];
+
+  const pairs = specs.map((s) => {
+    let pair = makeSignedComparePair(s.signA, s.signB, s.mode);
+    let attempts = 0;
+    // Only 'normal' same-sign rows (pos/pos, neg/neg) can accidentally tie.
+    while (s.mode === 'normal' && s.signA === s.signB && pair.sign === '=' && attempts < 5) {
+      pair = makeSignedComparePair(s.signA, s.signB, s.mode);
+      attempts++;
+    }
+    return pair;
+  });
+
+  return { pairs: shuffle(pairs) };
+}
+
+function padDecimalStr(str: string, targetDec: number): string {
+  if (targetDec === 0) return str;
+  const neg = str.startsWith('-');
+  const body = neg ? str.slice(1) : str;
+  const parts = body.split(',');
+  const intPart = parts[0]!;
+  const frac = parts[1] ?? '';
+  const padded = `${intPart},${frac.padEnd(targetDec, '0')}`;
+  return neg ? `-${padded}` : padded;
+}
+
+/** The signless "distance à zéro" reading of a formatted number, e.g. "-8,46" → "8,46". */
+function distanceStr(str: string): string {
+  return str.startsWith('-') ? str.slice(1) : str;
+}
+
+/** Explains *which* rappel rule applies to a row (pos/pos, pos/neg, neg/neg or equal), citing the two distances to zero when relevant. */
+function relatifRuleExplanation(p: RelatifComparePair): React.ReactNode {
+  const aNeg = p.aStr.startsWith('-');
+  const bNeg = p.bStr.startsWith('-');
+  const distA = distanceStr(p.aStr);
+  const distB = distanceStr(p.bStr);
+
+  if (p.sign === '=') {
+    return <>Ces deux nombres sont <strong>égaux</strong>.</>;
+  }
+  if (!aNeg && !bNeg) {
+    return (
+      <>Deux nombres positifs : le plus grand est celui qui a la plus grande distance à zéro. Distance de {p.aStr} à zéro : {distA} ; distance de {p.bStr} à zéro : {distB}.</>
+    );
+  }
+  if (aNeg && bNeg) {
+    return (
+      <>Deux nombres négatifs : le plus grand est celui qui a la plus petite distance à zéro. Distance de {p.aStr} à zéro : {distA} ; distance de {p.bStr} à zéro : {distB}.</>
+    );
+  }
+  return <>Un nombre positif et un nombre négatif : le plus grand est toujours le nombre positif.</>;
+}
+
+const symBtnStyle = (active: boolean, disabled: boolean, accent: string): React.CSSProperties => ({
+  width: 34, height: 34, borderRadius: 6, fontFamily: "'DM Mono', monospace", fontSize: 15, fontWeight: 700,
+  border: `1px solid ${active ? accent : 'var(--border2)'}`,
+  background: active ? `${accent}22` : 'var(--bg)',
+  color: active ? accent : 'var(--text)',
+  cursor: disabled ? 'default' : 'pointer',
+});
+
+const CMP_ROW_LETTERS = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+
+function RelatifComparisonQuestion({ index, exercise, answer, accent, onSubmit }: {
+  index: number;
+  exercise: RelatifCompareExercise;
+  answer: AnswerState;
+  accent: string;
+  onSubmit: (ok: boolean) => void;
+}) {
+  const [rows, setRows] = useState<('<' | '>' | '=' | null)[]>(exercise.pairs.map(() => null));
+  const [hintOpen, setHintOpen] = useState(false);
+  const disabled = answer.status !== 'pending';
+
+  useEffect(() => {
+    if (answer.status === 'revealed') setHintOpen(true);
+  }, [answer.status]);
+
+  const select = (i: number, sym: '<' | '>' | '=') => {
+    if (disabled) return;
+    setRows((prev) => prev.map((r, idx) => (idx === i ? sym : r)));
+  };
+
+  const rowOk = (i: number) => rows[i] === exercise.pairs[i]!.sign;
+
+  const submit = () => {
+    if (disabled) return;
+    if (rows.some((r) => r === null)) return;
+    onSubmit(exercise.pairs.every((_, i) => rowOk(i)));
+  };
+
+  return (
+    <div className={`qcard ${disabled ? (answer.status === 'correct' ? 'correct-card' : 'wrong-card') : ''}`} style={{ borderLeft: `3px solid ${accent}` }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: '1rem' }}>
+        <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, padding: '3px 10px', borderRadius: 99, background: `${accent}22`, color: accent }}>
+          Comparer deux nombres relatifs
+        </span>
+        <span className="qnum">Q{String(index + 1).padStart(2, '0')}</span>
+      </div>
+      <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 10 }}>
+        Complète avec &lt;, &gt; ou =.
+      </p>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        {exercise.pairs.map((p, i) => {
+          const showFb = disabled;
+          const ok = showFb ? rowOk(i) : null;
+          return (
+            <div
+              key={i}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 10, padding: '7px 12px', borderRadius: 8,
+                background: showFb ? (ok ? 'rgba(74,222,128,0.08)' : 'rgba(248,113,113,0.08)') : 'var(--surface)',
+              }}
+            >
+              <span style={{ width: 16, color: 'var(--muted)', fontWeight: 700, fontSize: 13 }}>{CMP_ROW_LETTERS[i]}.</span>
+              <strong style={{ fontFamily: "'DM Mono', monospace", fontSize: 15, minWidth: 64 }}>{p.aStr}</strong>
+              <div style={{ display: 'flex', gap: 4 }}>
+                {(['<', '>', '='] as const).map((sym) => (
+                  <button
+                    key={sym}
+                    type="button"
+                    disabled={disabled}
+                    onClick={() => select(i, sym)}
+                    style={symBtnStyle(rows[i] === sym, disabled, accent)}
+                  >
+                    {sym}
+                  </button>
+                ))}
+              </div>
+              <strong style={{ fontFamily: "'DM Mono', monospace", fontSize: 15, minWidth: 64 }}>{p.bStr}</strong>
+            </div>
+          );
+        })}
+      </div>
+
+      <div style={{ display: 'flex', gap: 8, marginTop: 12, alignItems: 'center' }}>
+        {!disabled && (
+          <button className="btn-secondary" onClick={submit} style={{ padding: '8px 18px', fontSize: 13, borderRadius: 8 }}>
+            OK
+          </button>
+        )}
+        {disabled && (
+          <span className={answer.status === 'correct' ? 'feedback ok' : 'feedback ko'} style={{ fontFamily: "'DM Mono', monospace", fontSize: 13 }}>
+            {answer.status === 'correct' ? '✓ Correct !' : '✗ Une ou plusieurs réponses sont incorrectes.'}
+          </span>
+        )}
+      </div>
+
+      <div style={{ marginTop: 10 }}>
+        <button type="button" className="hint-toggle" onClick={() => setHintOpen((v) => !v)}>
+          <span>{hintOpen ? '▼' : '▶'}</span> Voir la correction
+        </button>
+        <div className={`steps-box${hintOpen ? ' open' : ''}`} style={{ fontSize: 13, lineHeight: 1.9 }}>
+          {exercise.pairs.map((p, i) => {
+            const maxDec = Math.max(p.aDec, p.bDec);
+            const aPad = padDecimalStr(p.aStr, maxDec);
+            const bPad = padDecimalStr(p.bStr, maxDec);
+            return (
+              <div key={i} style={{ marginBottom: 10 }}>
+                <div>
+                  <strong>{CMP_ROW_LETTERS[i]}.</strong> {p.aStr} <strong style={{ color: 'var(--correct)' }}>{p.sign}</strong> {p.bStr}
+                </div>
+                <div style={{ fontSize: 12, color: 'var(--muted)', marginLeft: 16 }}>
+                  {p.aDec !== p.bDec && (
+                    <>On rajoute les zéros inutiles pour comparer : {p.aStr} = {aPad} et {p.bStr} = {bPad}.<br /></>
+                  )}
+                  {relatifRuleExplanation(p)}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Q2 / Q3 (Comparaison) : ranger dans l'ordre croissant / décroissant ────────
+
+interface OrderPart {
+  label: string;
+  numbers: string[];
+  shuffled: string[];
+}
+
+interface OrderMultiExercise {
+  direction: 'croissant' | 'décroissant';
+  parts: OrderPart[];
+}
+
+function makeRelatifIntOrderSet(count: number): string[] {
+  const used = new Set<number>();
+  const items: { str: string; val: number }[] = [];
+  while (items.length < count) {
+    const mag = randInt(1, 90);
+    const sign = Math.random() < 0.5 ? 1 : -1;
+    const val = sign * mag;
+    if (used.has(val)) continue;
+    used.add(val);
+    items.push({ str: sign > 0 ? `${mag}` : `-${mag}`, val });
+  }
+  return items.sort((a, b) => a.val - b.val).map((x) => x.str);
+}
+
+function makeRelatifDecOrderSet(count: number): string[] {
+  const used = new Set<number>();
+  const items: { str: string; val: number }[] = [];
+  while (items.length < count) {
+    const d = pick([1, 2] as const);
+    const intPart = randInt(0, 90);
+    const frac = Array.from({ length: d }, () => randInt(0, 9));
+    const isZero = intPart === 0 && frac.every((x) => x === 0);
+    const sign = isZero || Math.random() < 0.5 ? 1 : -1;
+    const val = sign * parseFloat(`${intPart}.${frac.join('')}`);
+    const key = Math.round(val * 1000);
+    if (used.has(key)) continue;
+    used.add(key);
+    const body = fmtDecStr(intPart, frac);
+    items.push({ str: sign > 0 ? body : `-${body}`, val });
+  }
+  return items.sort((a, b) => a.val - b.val).map((x) => x.str);
+}
+
+function shuffleOrder(items: readonly string[]): string[] {
+  const s = shuffle(items);
+  if (s.every((v, i) => v === items[i])) {
+    [s[0], s[1]] = [s[1]!, s[0]!];
+  }
+  return s;
+}
+
+function generateOrderMultiExercise(direction: 'croissant' | 'décroissant'): OrderMultiExercise {
+  const intAsc = makeRelatifIntOrderSet(7);
+  const decAsc = makeRelatifDecOrderSet(7);
+  const intNums = direction === 'croissant' ? intAsc : [...intAsc].reverse();
+  const decNums = direction === 'croissant' ? decAsc : [...decAsc].reverse();
+  return {
+    direction,
+    parts: [
+      { label: 'Nombres entiers relatifs', numbers: intNums, shuffled: shuffleOrder(intNums) },
+      { label: 'Nombres décimaux relatifs', numbers: decNums, shuffled: shuffleOrder(decNums) },
+    ],
+  };
+}
+
+interface OrderPartState {
+  pool: string[];
+  placed: (string | null)[];
+  status: 'pending' | 'correct' | 'wrong';
+  attempted: boolean;
+}
+
+type OrderDragSrc = { partIdx: number; from: 'pool'; text: string } | { partIdx: number; from: 'slot'; idx: number; text: string };
+
+function OrderMultiDragDrop({ index, exercise, answer, onSubmit }: {
+  index: number;
+  exercise: OrderMultiExercise;
+  answer: AnswerState;
+  onSubmit: (ok: boolean) => void;
+}) {
+  const [parts, setParts] = useState<OrderPartState[]>(() =>
+    exercise.parts.map((p) => ({ pool: [...p.shuffled], placed: Array(p.numbers.length).fill(null), status: 'pending', attempted: false }))
+  );
+  const [hintOpen, setHintOpen] = useState(false);
+  const dragSrc = useRef<OrderDragSrc | null>(null);
+  const submitted = useRef(false);
+  const disabled = answer.status !== 'pending';
+
+  useEffect(() => {
+    if (submitted.current || answer.status !== 'pending') return;
+    if (parts.every((p) => p.status !== 'pending')) {
+      submitted.current = true;
+      onSubmit(parts.every((p) => p.status === 'correct'));
+    }
+  }, [parts]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (answer.status === 'revealed') {
+      setParts((prev) => prev.map((p) => (p.status === 'pending' ? { ...p, status: 'wrong', attempted: true } : p)));
+      setHintOpen(true);
+    }
+  }, [answer.status]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const dropToSlot = (partIdx: number, toIdx: number) => {
+    if (!dragSrc.current || disabled) return;
+    const src = dragSrc.current;
+    dragSrc.current = null;
+    if (src.partIdx !== partIdx) return;
+    setParts((prev) => prev.map((p, pi) => {
+      if (pi !== partIdx || p.status !== 'pending') return p;
+      if (src.from === 'pool') {
+        const existing = p.placed[toIdx];
+        const filtered = p.pool.filter((s) => s !== src.text);
+        const pool = existing !== null ? [...filtered, existing] : filtered;
+        const placed = p.placed.map((x, i) => (i === toIdx ? src.text : x));
+        return { ...p, pool, placed };
+      }
+      const placed = [...p.placed];
+      const existing = placed[toIdx];
+      placed[src.idx] = existing ?? null;
+      placed[toIdx] = src.text;
+      return { ...p, placed };
+    }));
+  };
+
+  const dropToPool = (partIdx: number) => {
+    if (!dragSrc.current || disabled) return;
+    const src = dragSrc.current;
+    dragSrc.current = null;
+    if (src.partIdx !== partIdx || src.from !== 'slot') return;
+    setParts((prev) => prev.map((p, pi) => {
+      if (pi !== partIdx || p.status !== 'pending') return p;
+      const pool = [...p.pool, src.text];
+      const placed = p.placed.map((x, i) => (i === src.idx ? null : x));
+      return { ...p, pool, placed };
+    }));
+  };
+
+  const verifyPart = (partIdx: number) => {
+    if (disabled) return;
+    setParts((prev) => prev.map((p, pi) => {
+      if (pi !== partIdx || p.status !== 'pending') return p;
+      if (p.placed.some((x) => x === null)) return { ...p, attempted: true };
+      const ok = p.placed.every((x, i) => x === exercise.parts[pi]!.numbers[i]);
+      return { ...p, status: ok ? 'correct' : 'wrong', attempted: true };
+    }));
+  };
+
+  return (
+    <div className={`qcard ${disabled ? (answer.status === 'correct' ? 'correct-card' : 'wrong-card') : ''}`}>
+      <div className="qcard-header">
+        <span className="qnum">Q{String(index + 1).padStart(2, '0')}</span>
+        <div className="qtext">
+          Range ces nombres relatifs dans l'ordre <strong>{exercise.direction}</strong>.
+        </div>
+      </div>
+      {exercise.parts.map((part, pi) => {
+        const ps = parts[pi]!;
+        const partDone = disabled || ps.status !== 'pending';
+        const borderCol = ps.status === 'correct' ? 'var(--correct)' : ps.status === 'wrong' ? 'var(--wrong)' : 'var(--border2)';
+        return (
+          <div key={pi} style={{ marginTop: 14, padding: '10px 14px', borderRadius: 10, border: `1px solid ${borderCol}`, background: 'var(--surface)' }}>
+            <p style={{ fontSize: 12, color: 'var(--muted)', marginBottom: 8, fontWeight: 700 }}>{part.label}</p>
+            {!partDone && (
+              <>
+                <p style={{ fontSize: 12, color: 'var(--muted)', marginBottom: 6 }}>Nombres à ranger :</p>
+                <div className="drag-pool" onDragOver={(e) => e.preventDefault()} onDrop={() => dropToPool(pi)}>
+                  {ps.pool.length === 0 ? (
+                    <span style={{ fontSize: 12, color: 'var(--muted)', fontStyle: 'italic' }}>
+                      Glisse un nombre ici pour le retirer.
+                    </span>
+                  ) : (
+                    ps.pool.map((n) => (
+                      <div
+                        key={n}
+                        className="drag-item"
+                        draggable
+                        onDragStart={() => { dragSrc.current = { partIdx: pi, from: 'pool', text: n }; }}
+                      >
+                        {n}
+                      </div>
+                    ))
+                  )}
+                </div>
+                <p style={{ fontSize: 12, color: 'var(--muted)', margin: '10px 0 6px' }}>
+                  Remets-les dans l'ordre {exercise.direction} :
+                </p>
+              </>
+            )}
+            {partDone && <p style={{ fontSize: 12, color: 'var(--muted)', marginBottom: 8 }}>Ordre correct :</p>}
+            <div className="drag-slots">
+              {part.numbers.map((correctNum, i) => {
+                const content = partDone ? correctNum : ps.placed[i];
+                return (
+                  <div
+                    key={i}
+                    className="drag-slot"
+                    onDragOver={(e) => { if (!partDone) e.preventDefault(); }}
+                    onDrop={() => { if (!partDone) dropToSlot(pi, i); }}
+                  >
+                    <span className="drag-slot-num">{i + 1}.</span>
+                    {content != null ? (
+                      <div
+                        className="drag-item drag-slot-item"
+                        draggable={!partDone}
+                        onDragStart={!partDone ? () => { dragSrc.current = { partIdx: pi, from: 'slot', idx: i, text: content }; } : undefined}
+                      >
+                        {content}
+                      </div>
+                    ) : (
+                      <span className="drag-slot-empty">Glisse un nombre ici…</span>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+            {!partDone && (
+              <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginTop: 10 }}>
+                <button className="btn-secondary" onClick={() => verifyPart(pi)} style={{ padding: '6px 14px', fontSize: 12, borderRadius: 8 }}>
+                  Vérifier
+                </button>
+                {ps.attempted && ps.placed.some((x) => x === null) && (
+                  <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 12, color: 'var(--wrong)' }}>
+                    ✗ Place tous les nombres avant de vérifier.
+                  </span>
+                )}
+              </div>
+            )}
+            {partDone && ps.attempted && (
+              <div style={{ marginTop: 10 }}>
+                <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 12, color: ps.status === 'correct' ? 'var(--correct)' : 'var(--wrong)' }}>
+                  {ps.status === 'correct' ? '✓ Parfait ! Le rangement est correct.' : "✗ L'ordre n'est pas correct."}
+                </span>
+              </div>
+            )}
+          </div>
+        );
+      })}
+      <div style={{ marginTop: 12 }}>
+        <button type="button" className="hint-toggle" onClick={() => setHintOpen((v) => !v)}>
+          <span>{hintOpen ? '▼' : '▶'}</span> Voir la correction
+        </button>
+        <div className={`steps-box${hintOpen ? ' open' : ''}`}>
+          {exercise.parts.map((part, pi) => (
+            <div key={pi} style={{ marginBottom: 6 }}>
+              <strong>{part.label}</strong>
+              <div>{part.numbers.join(exercise.direction === 'croissant' ? ' < ' : ' > ')}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── RelatifsHub (main export) ──────────────────────────────────────────────────
 
 type RelatifsExercise =
@@ -910,7 +1491,9 @@ type RelatifsExercise =
   | { exKind: 'opposite-table'; data: OppositeTableExercise }
   | { exKind: 'axis-fill'; data: AxisFillExercise }
   | { exKind: 'axis-read'; data: AxisReadExercise }
-  | { exKind: 'axis-place'; data: AxisPlaceExercise };
+  | { exKind: 'axis-place'; data: AxisPlaceExercise }
+  | { exKind: 'relatif-compare'; data: RelatifCompareExercise }
+  | { exKind: 'order-multi'; data: OrderMultiExercise };
 
 function buildExercises(mode: HubMode): RelatifsExercise[] {
   if (mode === 'reperage') {
@@ -918,6 +1501,13 @@ function buildExercises(mode: HubMode): RelatifsExercise[] {
       { exKind: 'axis-fill', data: generateAxisFill() },
       { exKind: 'axis-read', data: generateAxisRead() },
       { exKind: 'axis-place', data: generateAxisPlace() },
+    ];
+  }
+  if (mode === 'comparaison') {
+    return [
+      { exKind: 'relatif-compare', data: generateRelatifCompareExercise() },
+      { exKind: 'order-multi', data: generateOrderMultiExercise('croissant') },
+      { exKind: 'order-multi', data: generateOrderMultiExercise('décroissant') },
     ];
   }
   return [
@@ -1001,6 +1591,13 @@ export function RelatifsHub({ accent, accentSecondary }: { accent: string; accen
           accent={accent}
           onClick={() => selectMode('reperage')}
         />
+        <ModeCard
+          label="Comparaison"
+          icon="<>"
+          desc="Comparer avec <, > ou =, ranger dans l'ordre croissant et décroissant"
+          accent={accent}
+          onClick={() => selectMode('comparaison')}
+        />
       </div>
     );
   }
@@ -1018,11 +1615,12 @@ export function RelatifsHub({ accent, accentSecondary }: { accent: string; accen
           ← Changer de mode
         </button>
         <span style={{ fontSize: 14, color: 'var(--muted)' }}>
-          {mode === 'reperage' ? 'Repérage sur une droite' : 'Définitions'}
+          {mode === 'reperage' ? 'Repérage sur une droite' : mode === 'comparaison' ? 'Comparaison' : 'Définitions'}
         </span>
       </div>
 
       {mode === 'definitions' && <RecallDefinitions accent={accent} />}
+      {mode === 'comparaison' && <RecallComparaison accent={accent} />}
 
       <div className="scoreboard">
         <div className="score-item">
@@ -1058,7 +1656,9 @@ export function RelatifsHub({ accent, accentSecondary }: { accent: string; accen
           if (ex.exKind === 'opposite-table') return <OppositeTableQuestion {...common} exercise={ex.data} />;
           if (ex.exKind === 'axis-fill') return <AxisFillQuestion {...common} exercise={ex.data} />;
           if (ex.exKind === 'axis-read') return <AxisReadQuestion {...common} exercise={ex.data} />;
-          return <AxisPlaceQuestion {...common} exercise={ex.data} />;
+          if (ex.exKind === 'axis-place') return <AxisPlaceQuestion {...common} exercise={ex.data} />;
+          if (ex.exKind === 'relatif-compare') return <RelatifComparisonQuestion {...common} exercise={ex.data} />;
+          return <OrderMultiDragDrop {...common} exercise={ex.data} />;
         })}
       </div>
 
