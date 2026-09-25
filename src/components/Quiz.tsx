@@ -50,9 +50,9 @@ import { ProbaQuestion } from './questions/ProbaQuestion';
 import { AutomatismesQuestion } from './questions/AutomatismesQuestion';
 import { CalculsHub5eme } from './questions/CalculsHub5eme';
 import { TablesHub5eme } from './TablesHub5eme';
-import { DecimauxHub } from './questions/DecimauxHub';
 import { RelatifsHub } from './questions/RelatifsHub';
 import { GeometrieHub } from './questions/GeometrieHub';
+import { DecimauxParentHub } from './questions/DecimauxParentHub';
 
 // Isolates a render crash in one exercise so the quiz controls still work.
 class ExerciseErrorBoundary extends Component<
@@ -309,12 +309,12 @@ export default function Quiz({ quiz }: QuizProps) {
         <PythHub />
       ) : quiz.renderer === 'thales-hub' ? (
         <ThalesHub />
-      ) : quiz.renderer === 'decimaux-hub' ? (
-        <DecimauxHub accent={quiz.accent} accentSecondary={quiz.accentSecondary} />
       ) : quiz.renderer === 'relatifs-hub-5eme' ? (
         <RelatifsHub accent={quiz.accent} accentSecondary={quiz.accentSecondary} />
       ) : quiz.renderer === 'geometrie-hub-6eme' ? (
         <GeometrieHub accent={quiz.accent} accentSecondary={quiz.accentSecondary} />
+      ) : quiz.renderer === 'decimaux-parent-hub-6eme' ? (
+        <DecimauxParentHub accent={quiz.accent} accentSecondary={quiz.accentSecondary} />
       ) : (<>
 
       {quiz.formulaBanner && (
