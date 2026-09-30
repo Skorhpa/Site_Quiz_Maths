@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ModeCard } from './FractionsHub';
 
-type HubMode = 'definitions' | 'reperage' | 'comparaison' | null;
+type HubMode = 'definitions' | 'reperage' | 'comparaison' | 'repere' | null;
 
 interface AnswerState {
   status: 'pending' | 'correct' | 'wrong' | 'revealed';
@@ -1484,6 +1484,458 @@ function OrderMultiDragDrop({ index, exercise, answer, onSubmit }: {
   );
 }
 
+// ── Repérage dans un repère : grille, axes, points ──────────────────────────────
+
+const GRID_MIN = -5;
+const GRID_MAX = 5;
+const SVG_SIZE = 340;
+const GRID_MARGIN = 30;
+const GRID_STEP = (SVG_SIZE - 2 * GRID_MARGIN) / (GRID_MAX - GRID_MIN);
+
+function gx(x: number): number {
+  return GRID_MARGIN + (x - GRID_MIN) * GRID_STEP;
+}
+function gy(y: number): number {
+  return SVG_SIZE - GRID_MARGIN - (y - GRID_MIN) * GRID_STEP;
+}
+
+const GRID_INTS = Array.from({ length: GRID_MAX - GRID_MIN + 1 }, (_, i) => GRID_MIN + i);
+
+function PointCross({ x, y, letter, color }: { x: number; y: number; letter: string; color: string }) {
+  const cx = gx(x);
+  const cy = gy(y);
+  const s = 5;
+  return (
+    <g>
+      <line x1={cx - s} y1={cy - s} x2={cx + s} y2={cy + s} stroke={color} strokeWidth={2} />
+      <line x1={cx - s} y1={cy + s} x2={cx + s} y2={cy - s} stroke={color} strokeWidth={2} />
+      <text x={cx} y={cy - 9} textAnchor="middle" fontSize={13} fontWeight={700} fill={color} fontFamily="'DM Mono', monospace">
+        {letter}
+      </text>
+    </g>
+  );
+}
+
+/** Graduated 2D grid (-5 to 5 on both axes). `onGridClick` (when set) maps a click to the nearest integer intersection. */
+function RepereGridSvg({ children, onGridClick, highlightX, highlightY }: {
+  children?: React.ReactNode;
+  onGridClick?: (x: number, y: number) => void;
+  /** Recolors the single abscissa-axis tick label matching this value (used by the rappel example). */
+  highlightX?: { value: number; color: string };
+  /** Recolors the single ordinate-axis tick label matching this value (used by the rappel example). */
+  highlightY?: { value: number; color: string };
+}) {
+  const svgRef = useRef<SVGSVGElement>(null);
+
+  const handleClick = (e: React.MouseEvent<SVGSVGElement>) => {
+    if (!onGridClick || !svgRef.current) return;
+    const rect = svgRef.current.getBoundingClientRect();
+    const px = ((e.clientX - rect.left) / rect.width) * SVG_SIZE;
+    const py = ((e.clientY - rect.top) / rect.height) * SVG_SIZE;
+    const rawX = GRID_MIN + (px - GRID_MARGIN) / GRID_STEP;
+    const rawY = GRID_MIN + (SVG_SIZE - GRID_MARGIN - py) / GRID_STEP;
+    const x = Math.max(GRID_MIN, Math.min(GRID_MAX, Math.round(rawX)));
+    const y = Math.max(GRID_MIN, Math.min(GRID_MAX, Math.round(rawY)));
+    onGridClick(x, y);
+  };
+
+  return (
+    <svg
+      ref={svgRef}
+      viewBox={`0 0 ${SVG_SIZE} ${SVG_SIZE}`}
+      style={{ width: '100%', maxWidth: 380, height: 'auto', display: 'block', margin: '0 auto', cursor: onGridClick ? 'crosshair' : 'default' }}
+      onClick={handleClick}
+    >
+      <defs>
+        <marker id="repere-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="var(--text)" />
+        </marker>
+      </defs>
+      {GRID_INTS.map((i) => (
+        <line key={`v${i}`} x1={gx(i)} y1={gy(GRID_MIN)} x2={gx(i)} y2={gy(GRID_MAX)} stroke="var(--border)" strokeWidth={1} />
+      ))}
+      {GRID_INTS.map((i) => (
+        <line key={`h${i}`} x1={gx(GRID_MIN)} y1={gy(i)} x2={gx(GRID_MAX)} y2={gy(i)} stroke="var(--border)" strokeWidth={1} />
+      ))}
+      <line x1={gx(GRID_MIN)} y1={gy(0)} x2={gx(GRID_MAX) + 10} y2={gy(0)} stroke="var(--text)" strokeWidth={2} markerEnd="url(#repere-arrow)" />
+      <line x1={gx(0)} y1={gy(GRID_MIN)} x2={gx(0)} y2={gy(GRID_MAX) - 10} stroke="var(--text)" strokeWidth={2} markerEnd="url(#repere-arrow)" />
+      {GRID_INTS.filter((i) => i !== 0).map((i) => {
+        const hl = highlightX?.value === i;
+        return (
+          <text key={`lx${i}`} x={gx(i)} y={gy(0) + 14} textAnchor="middle" fontSize={10} fontWeight={hl ? 700 : 400} fill={hl ? highlightX!.color : 'var(--muted)'} fontFamily="'DM Mono', monospace">
+            {i}
+          </text>
+        );
+      })}
+      {GRID_INTS.filter((i) => i !== 0).map((i) => {
+        const hl = highlightY?.value === i;
+        return (
+          <text key={`ly${i}`} x={gx(0) - 8} y={gy(i) + 3} textAnchor="end" fontSize={10} fontWeight={hl ? 700 : 400} fill={hl ? highlightY!.color : 'var(--muted)'} fontFamily="'DM Mono', monospace">
+            {i}
+          </text>
+        );
+      })}
+      <text x={gx(0) - 8} y={gy(0) + 14} textAnchor="end" fontSize={10} fill="var(--muted)" fontFamily="'DM Mono', monospace">
+        0
+      </text>
+      {children}
+    </svg>
+  );
+}
+
+function RecallRepere({ accent }: { accent: string }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div style={{ marginBottom: 16, border: '1px solid var(--border)', borderRadius: 10, overflow: 'hidden' }}>
+      <button
+        type="button"
+        className="hint-toggle"
+        onClick={() => setOpen((v) => !v)}
+        style={{ color: accent, width: '100%', padding: '10px 16px', textAlign: 'left' }}
+      >
+        <span>{open ? '▼' : '▶'}</span> Rappel — repérage dans le plan + vidéo
+      </button>
+      <div className={`steps-box${open ? ' open' : ''}`} style={{ padding: '0 16px', fontSize: 13, lineHeight: 1.9 }}>
+        <ul style={{ margin: '12px 0 8px 18px', padding: 0 }}>
+          <li>
+            Un <strong>repère du plan</strong> est formé de deux droites graduées qui se coupent à l'<strong>origine</strong>.
+          </li>
+          <li>
+            La droite horizontale est l'<strong>axe des abscisses</strong>, la droite verticale est l'<strong>axe des ordonnées</strong>.
+          </li>
+          <li>
+            Les <strong>coordonnées</strong> d'un point s'écrivent (abscisse&nbsp;;&nbsp;ordonnée) : on note toujours l'abscisse en premier.
+          </li>
+        </ul>
+        <div style={{ maxWidth: 280, margin: '0 auto 8px' }}>
+          <RepereGridSvg highlightX={{ value: 4, color: '#f87171' }} highlightY={{ value: 2, color: 'var(--correct)' }}>
+            <line x1={gx(4)} y1={gy(2)} x2={gx(4)} y2={gy(0)} stroke="#f87171" strokeDasharray="4 3" strokeWidth={1.5} />
+            <line x1={gx(0)} y1={gy(2)} x2={gx(4)} y2={gy(2)} stroke="var(--correct)" strokeDasharray="4 3" strokeWidth={1.5} />
+            <PointCross x={4} y={2} letter="A" color={accent} />
+          </RepereGridSvg>
+        </div>
+        <p style={{ textAlign: 'center', fontSize: 12, color: 'var(--muted)', marginTop: -4 }}>
+          A a pour <strong style={{ color: '#f87171' }}>abscisse 4</strong> et pour <strong style={{ color: 'var(--correct)' }}>ordonnée 2</strong> : on note A(4&nbsp;;&nbsp;2).
+        </p>
+        <div style={{ margin: '12px 0' }}>
+          <VideoLink url="https://youtu.be/AHNYuKCoCvU" label="Repérage dans le plan" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+interface RepPoint {
+  letter: string;
+  x: number;
+  y: number;
+}
+
+const LETTERS8 = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+const LETTERS5 = ['A', 'B', 'C', 'D', 'E'];
+
+/** Distinct integer points covering both axes (x=0, y=0) plus a spread across all 4 quadrant sign combinations. */
+function makeRepPoints(count: number, letters: readonly string[]): RepPoint[] {
+  const used = new Set<string>();
+  const points: RepPoint[] = [];
+  const randNZ = () => {
+    let v: number;
+    do { v = randInt(GRID_MIN, GRID_MAX); } while (v === 0);
+    return v;
+  };
+  const tryAdd = (x: number, y: number): boolean => {
+    const key = `${x},${y}`;
+    if (used.has(key)) return false;
+    used.add(key);
+    points.push({ letter: letters[points.length]!, x, y });
+    return true;
+  };
+
+  if (count >= 1) { let y; do { y = randNZ(); } while (!tryAdd(0, y)); }
+  if (count >= 2) { let x; do { x = randNZ(); } while (!tryAdd(x, 0)); }
+
+  const quadrants = shuffle([[1, 1], [1, -1], [-1, 1], [-1, -1]] as const);
+  let qi = 0;
+  while (points.length < count) {
+    let sx: 1 | -1, sy: 1 | -1;
+    if (qi < quadrants.length) {
+      [sx, sy] = quadrants[qi]!;
+      qi++;
+    } else {
+      sx = Math.random() < 0.5 ? 1 : -1;
+      sy = Math.random() < 0.5 ? 1 : -1;
+    }
+    let placed = false;
+    let attempts = 0;
+    while (!placed && attempts < 30) {
+      placed = tryAdd(sx * randInt(1, GRID_MAX), sy * randInt(1, GRID_MAX));
+      attempts++;
+    }
+    if (!placed) {
+      outer: for (let x = GRID_MIN; x <= GRID_MAX; x++) {
+        for (let y = GRID_MIN; y <= GRID_MAX; y++) {
+          if (x === 0 || y === 0) continue;
+          if (tryAdd(x, y)) break outer;
+        }
+      }
+    }
+  }
+  return points;
+}
+
+function parseIntAnswer(raw: string): number | null {
+  const compact = raw.replace(/\s+/g, '');
+  if (!/^[+-]?\d+$/.test(compact)) return null;
+  return parseInt(compact, 10);
+}
+
+// ── Q1 (Repère) : lire les coordonnées de points placés ─────────────────────────
+
+interface RepereReadExercise {
+  points: RepPoint[];
+}
+
+function generateRepereReadExercise(): RepereReadExercise {
+  return { points: makeRepPoints(8, LETTERS8) };
+}
+
+function RepereReadQuestion({ index, exercise, answer, accent, onSubmit }: {
+  index: number;
+  exercise: RepereReadExercise;
+  answer: AnswerState;
+  accent: string;
+  onSubmit: (ok: boolean) => void;
+}) {
+  const [xs, setXs] = useState<string[]>(exercise.points.map(() => ''));
+  const [ys, setYs] = useState<string[]>(exercise.points.map(() => ''));
+  const [hintOpen, setHintOpen] = useState(false);
+  const disabled = answer.status !== 'pending';
+
+  useEffect(() => {
+    if (answer.status === 'revealed') setHintOpen(true);
+  }, [answer.status]);
+
+  const rowOk = (i: number) => {
+    const x = parseIntAnswer(xs[i]!);
+    const y = parseIntAnswer(ys[i]!);
+    return x !== null && y !== null && x === exercise.points[i]!.x && y === exercise.points[i]!.y;
+  };
+
+  const submit = () => {
+    if (disabled) return;
+    if (xs.some((v) => v.trim() === '') || ys.some((v) => v.trim() === '')) return;
+    onSubmit(exercise.points.every((_, i) => rowOk(i)));
+  };
+
+  return (
+    <div className={`qcard ${disabled ? (answer.status === 'correct' ? 'correct-card' : 'wrong-card') : ''}`} style={{ borderLeft: `3px solid ${accent}` }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: '1rem' }}>
+        <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, padding: '3px 10px', borderRadius: 99, background: `${accent}22`, color: accent }}>
+          Lire des coordonnées
+        </span>
+        <span className="qnum">Q{String(index + 1).padStart(2, '0')}</span>
+      </div>
+      <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 10 }}>
+        Donne les coordonnées de chaque point.
+      </p>
+      <RepereGridSvg>
+        {exercise.points.map((p) => (
+          <PointCross key={p.letter} x={p.x} y={p.y} letter={p.letter} color={accent} />
+        ))}
+      </RepereGridSvg>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: 8, marginTop: 14 }}>
+        {exercise.points.map((p, i) => {
+          const showFb = disabled;
+          const ok = showFb ? rowOk(i) : null;
+          return (
+            <div
+              key={p.letter}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 4, padding: '6px 8px', borderRadius: 8,
+                background: showFb ? (ok ? 'rgba(74,222,128,0.08)' : 'rgba(248,113,113,0.08)') : 'var(--surface)',
+              }}
+            >
+              <span style={{ fontWeight: 700, fontFamily: "'DM Mono', monospace", fontSize: 14 }}>{p.letter}(</span>
+              <input
+                type="text"
+                value={xs[i]}
+                placeholder="?"
+                disabled={disabled}
+                onChange={(e) => setXs((prev) => prev.map((v, idx) => (idx === i ? e.target.value : v)))}
+                style={inpStyle}
+              />
+              <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 14 }}>;</span>
+              <input
+                type="text"
+                value={ys[i]}
+                placeholder="?"
+                disabled={disabled}
+                onChange={(e) => setYs((prev) => prev.map((v, idx) => (idx === i ? e.target.value : v)))}
+                style={inpStyle}
+              />
+              <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 14 }}>)</span>
+            </div>
+          );
+        })}
+      </div>
+
+      <div style={{ display: 'flex', gap: 8, marginTop: 12, alignItems: 'center' }}>
+        {!disabled && (
+          <button className="btn-secondary" onClick={submit} style={{ padding: '8px 18px', fontSize: 13, borderRadius: 8 }}>
+            OK
+          </button>
+        )}
+        {disabled && (
+          <span className={answer.status === 'correct' ? 'feedback ok' : 'feedback ko'} style={{ fontFamily: "'DM Mono', monospace", fontSize: 13 }}>
+            {answer.status === 'correct' ? '✓ Correct !' : '✗ Une ou plusieurs coordonnées sont incorrectes.'}
+          </span>
+        )}
+      </div>
+
+      <div style={{ marginTop: 10 }}>
+        <button type="button" className="hint-toggle" onClick={() => setHintOpen((v) => !v)}>
+          <span>{hintOpen ? '▼' : '▶'}</span> Voir la correction
+        </button>
+        <div className={`steps-box${hintOpen ? ' open' : ''}`} style={{ fontSize: 13, lineHeight: 2 }}>
+          {exercise.points.map((p) => (
+            <div key={p.letter}>
+              <strong style={{ color: 'var(--correct)' }}>{p.letter}({p.x} ; {p.y})</strong>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Q2 (Repère) : placer des points par clic ────────────────────────────────────
+
+interface ReperePlaceExercise {
+  points: RepPoint[];
+}
+
+function generateReperePlaceExercise(): ReperePlaceExercise {
+  return { points: makeRepPoints(5, LETTERS5) };
+}
+
+function ReperePlaceQuestion({ index, exercise, answer, accent, onSubmit }: {
+  index: number;
+  exercise: ReperePlaceExercise;
+  answer: AnswerState;
+  accent: string;
+  onSubmit: (ok: boolean) => void;
+}) {
+  const [placements, setPlacements] = useState<Record<string, { x: number; y: number } | null>>(() =>
+    Object.fromEntries(exercise.points.map((p) => [p.letter, null]))
+  );
+  const [selected, setSelected] = useState<string | null>(null);
+  const [hintOpen, setHintOpen] = useState(false);
+  const disabled = answer.status !== 'pending';
+
+  useEffect(() => {
+    if (answer.status === 'revealed') setHintOpen(true);
+  }, [answer.status]);
+
+  const rowOk = (p: RepPoint) => {
+    const pl = placements[p.letter];
+    return !!pl && pl.x === p.x && pl.y === p.y;
+  };
+
+  const allPlaced = exercise.points.every((p) => placements[p.letter] !== null);
+
+  const selectLetter = (letter: string) => {
+    if (disabled) return;
+    setSelected((prev) => (prev === letter ? null : letter));
+  };
+
+  const placeAt = (x: number, y: number) => {
+    if (disabled || !selected) return;
+    setPlacements((prev) => ({ ...prev, [selected]: { x, y } }));
+    setSelected(null);
+  };
+
+  const submit = () => {
+    if (disabled || !allPlaced) return;
+    onSubmit(exercise.points.every(rowOk));
+  };
+
+  return (
+    <div className={`qcard ${disabled ? (answer.status === 'correct' ? 'correct-card' : 'wrong-card') : ''}`} style={{ borderLeft: `3px solid ${accent}` }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: '1rem' }}>
+        <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, padding: '3px 10px', borderRadius: 99, background: `${accent}22`, color: accent }}>
+          Placer des points
+        </span>
+        <span className="qnum">Q{String(index + 1).padStart(2, '0')}</span>
+      </div>
+      <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 10 }}>
+        Clique sur une lettre, puis sur l'endroit du repère où tu veux la placer.
+      </p>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 10, justifyContent: 'center' }}>
+        {exercise.points.map((p) => {
+          const placed = placements[p.letter] !== null;
+          const showFb = disabled;
+          const ok = showFb ? rowOk(p) : null;
+          const isSel = selected === p.letter;
+          return (
+            <button
+              key={p.letter}
+              type="button"
+              disabled={disabled}
+              onClick={() => selectLetter(p.letter)}
+              style={{
+                padding: '6px 12px', borderRadius: 8, fontFamily: "'DM Mono', monospace", fontSize: 13, fontWeight: 700,
+                border: `1.5px solid ${showFb ? (ok ? 'var(--correct)' : 'var(--wrong)') : isSel ? accent : 'var(--border2)'}`,
+                background: showFb ? (ok ? 'rgba(74,222,128,0.08)' : 'rgba(248,113,113,0.08)') : isSel ? `${accent}22` : 'var(--bg)',
+                color: showFb ? (ok ? 'var(--correct)' : 'var(--wrong)') : isSel ? accent : 'var(--text)',
+                cursor: disabled ? 'default' : 'pointer',
+              }}
+            >
+              {p.letter}({p.x} ; {p.y}){placed && !showFb ? ' ✓' : ''}
+            </button>
+          );
+        })}
+      </div>
+      <RepereGridSvg onGridClick={disabled ? undefined : placeAt}>
+        {exercise.points.map((p) => {
+          const pl = placements[p.letter];
+          if (!pl) return null;
+          const showFb = disabled;
+          const color = showFb ? (rowOk(p) ? 'var(--correct)' : 'var(--wrong)') : selected === p.letter ? accent : 'var(--text)';
+          return <PointCross key={p.letter} x={pl.x} y={pl.y} letter={p.letter} color={color} />;
+        })}
+      </RepereGridSvg>
+
+      <div style={{ display: 'flex', gap: 8, marginTop: 12, alignItems: 'center', justifyContent: 'center' }}>
+        {!disabled && (
+          <button className="btn-secondary" onClick={submit} disabled={!allPlaced} style={{ padding: '8px 18px', fontSize: 13, borderRadius: 8 }}>
+            Vérifier
+          </button>
+        )}
+        {disabled && (
+          <span className={answer.status === 'correct' ? 'feedback ok' : 'feedback ko'} style={{ fontFamily: "'DM Mono', monospace", fontSize: 13 }}>
+            {answer.status === 'correct' ? '✓ Correct !' : '✗ Un ou plusieurs points sont mal placés.'}
+          </span>
+        )}
+      </div>
+
+      <div style={{ marginTop: 10 }}>
+        <button type="button" className="hint-toggle" onClick={() => setHintOpen((v) => !v)}>
+          <span>{hintOpen ? '▼' : '▶'}</span> Voir la correction
+        </button>
+        <div className={`steps-box${hintOpen ? ' open' : ''}`}>
+          <div style={{ maxWidth: 280, margin: '10px auto 0' }}>
+            <RepereGridSvg>
+              {exercise.points.map((p) => (
+                <PointCross key={p.letter} x={p.x} y={p.y} letter={p.letter} color="var(--correct)" />
+              ))}
+            </RepereGridSvg>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── RelatifsHub (main export) ──────────────────────────────────────────────────
 
 type RelatifsExercise =
@@ -1493,7 +1945,9 @@ type RelatifsExercise =
   | { exKind: 'axis-read'; data: AxisReadExercise }
   | { exKind: 'axis-place'; data: AxisPlaceExercise }
   | { exKind: 'relatif-compare'; data: RelatifCompareExercise }
-  | { exKind: 'order-multi'; data: OrderMultiExercise };
+  | { exKind: 'order-multi'; data: OrderMultiExercise }
+  | { exKind: 'repere-read'; data: RepereReadExercise }
+  | { exKind: 'repere-place'; data: ReperePlaceExercise };
 
 function buildExercises(mode: HubMode): RelatifsExercise[] {
   if (mode === 'reperage') {
@@ -1508,6 +1962,12 @@ function buildExercises(mode: HubMode): RelatifsExercise[] {
       { exKind: 'relatif-compare', data: generateRelatifCompareExercise() },
       { exKind: 'order-multi', data: generateOrderMultiExercise('croissant') },
       { exKind: 'order-multi', data: generateOrderMultiExercise('décroissant') },
+    ];
+  }
+  if (mode === 'repere') {
+    return [
+      { exKind: 'repere-read', data: generateRepereReadExercise() },
+      { exKind: 'repere-place', data: generateReperePlaceExercise() },
     ];
   }
   return [
@@ -1598,6 +2058,13 @@ export function RelatifsHub({ accent, accentSecondary }: { accent: string; accen
           accent={accent}
           onClick={() => selectMode('comparaison')}
         />
+        <ModeCard
+          label="Repérage dans un repère"
+          icon="⊹"
+          desc="Lire les coordonnées de points, placer des points dans un repère"
+          accent={accent}
+          onClick={() => selectMode('repere')}
+        />
       </div>
     );
   }
@@ -1615,12 +2082,16 @@ export function RelatifsHub({ accent, accentSecondary }: { accent: string; accen
           ← Changer de mode
         </button>
         <span style={{ fontSize: 14, color: 'var(--muted)' }}>
-          {mode === 'reperage' ? 'Repérage sur une droite' : mode === 'comparaison' ? 'Comparaison' : 'Définitions'}
+          {mode === 'reperage' ? 'Repérage sur une droite'
+            : mode === 'comparaison' ? 'Comparaison'
+            : mode === 'repere' ? 'Repérage dans un repère'
+            : 'Définitions'}
         </span>
       </div>
 
       {mode === 'definitions' && <RecallDefinitions accent={accent} />}
       {mode === 'comparaison' && <RecallComparaison accent={accent} />}
+      {mode === 'repere' && <RecallRepere accent={accent} />}
 
       <div className="scoreboard">
         <div className="score-item">
@@ -1658,7 +2129,9 @@ export function RelatifsHub({ accent, accentSecondary }: { accent: string; accen
           if (ex.exKind === 'axis-read') return <AxisReadQuestion {...common} exercise={ex.data} />;
           if (ex.exKind === 'axis-place') return <AxisPlaceQuestion {...common} exercise={ex.data} />;
           if (ex.exKind === 'relatif-compare') return <RelatifComparisonQuestion {...common} exercise={ex.data} />;
-          return <OrderMultiDragDrop {...common} exercise={ex.data} />;
+          if (ex.exKind === 'order-multi') return <OrderMultiDragDrop {...common} exercise={ex.data} />;
+          if (ex.exKind === 'repere-read') return <RepereReadQuestion {...common} exercise={ex.data} />;
+          return <ReperePlaceQuestion {...common} exercise={ex.data} />;
         })}
       </div>
 
