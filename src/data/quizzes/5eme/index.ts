@@ -4,6 +4,7 @@ import { calculsHub5emeQuiz } from './calculs-hub';
 import { arithHub5emeQuiz } from './arith-hub';
 import { tablesHub5emeQuiz } from './tables';
 import { relatifsHub5emeQuiz } from './relatifs';
+import { proportionnaliteHub5emeQuiz } from './proportionnalite';
 
 export const topics: Topic[] = [
   fractionsHub5emeQuiz,
@@ -11,4 +12,5 @@ export const topics: Topic[] = [
   arithHub5emeQuiz,
   tablesHub5emeQuiz,
   relatifsHub5emeQuiz,
+  proportionnaliteHub5emeQuiz,
 ];
