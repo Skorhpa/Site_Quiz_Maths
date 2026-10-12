@@ -53,6 +53,7 @@ import { TablesHub5eme } from './TablesHub5eme';
 import { RelatifsHub } from './questions/RelatifsHub';
 import { GeometrieHub } from './questions/GeometrieHub';
 import { DecimauxParentHub } from './questions/DecimauxParentHub';
+import { ProportionnaliteHub } from './questions/ProportionnaliteHub';
 
 // Isolates a render crash in one exercise so the quiz controls still work.
 class ExerciseErrorBoundary extends Component<
@@ -292,29 +293,31 @@ export default function Quiz({ quiz }: QuizProps) {
       )}
 
       {quiz.renderer === 'entiers-hub' ? (
-        <EntiersHub accent={quiz.accent} accentSecondary={quiz.accentSecondary} />
+        <ExerciseErrorBoundary><EntiersHub accent={quiz.accent} accentSecondary={quiz.accentSecondary} /></ExerciseErrorBoundary>
       ) : quiz.renderer === 'fractions-hub' ? (
-        <FractionsHub accent={quiz.accent} accentSecondary={quiz.accentSecondary} />
+        <ExerciseErrorBoundary><FractionsHub accent={quiz.accent} accentSecondary={quiz.accentSecondary} /></ExerciseErrorBoundary>
       ) : quiz.renderer === 'fractions-hub-5eme' ? (
-        <FractionsHub5eme accent={quiz.accent} accentSecondary={quiz.accentSecondary} />
+        <ExerciseErrorBoundary><FractionsHub5eme accent={quiz.accent} accentSecondary={quiz.accentSecondary} /></ExerciseErrorBoundary>
       ) : quiz.renderer === 'calculs-hub-5eme' ? (
-        <CalculsHub5eme accent={quiz.accent} accentSecondary={quiz.accentSecondary} />
+        <ExerciseErrorBoundary><CalculsHub5eme accent={quiz.accent} accentSecondary={quiz.accentSecondary} /></ExerciseErrorBoundary>
       ) : quiz.renderer === 'tables-hub-5eme' ? (
-        <TablesHub5eme accent={quiz.accent} accentSecondary={quiz.accentSecondary} />
+        <ExerciseErrorBoundary><TablesHub5eme accent={quiz.accent} accentSecondary={quiz.accentSecondary} /></ExerciseErrorBoundary>
       ) : quiz.renderer === 'arith-hub' ? (
-        <ArithHub accent={quiz.accent} accentSecondary={quiz.accentSecondary} />
+        <ExerciseErrorBoundary><ArithHub accent={quiz.accent} accentSecondary={quiz.accentSecondary} /></ExerciseErrorBoundary>
       ) : quiz.renderer === 'arith-hub-5eme' ? (
-        <ArithHub accent={quiz.accent} accentSecondary={quiz.accentSecondary} allowedModes={['diviseurs', 'multiples']} />
+        <ExerciseErrorBoundary><ArithHub accent={quiz.accent} accentSecondary={quiz.accentSecondary} allowedModes={['diviseurs', 'multiples']} /></ExerciseErrorBoundary>
       ) : quiz.renderer === 'pyth-hub' ? (
-        <PythHub />
+        <ExerciseErrorBoundary><PythHub /></ExerciseErrorBoundary>
       ) : quiz.renderer === 'thales-hub' ? (
-        <ThalesHub />
+        <ExerciseErrorBoundary><ThalesHub /></ExerciseErrorBoundary>
       ) : quiz.renderer === 'relatifs-hub-5eme' ? (
-        <RelatifsHub accent={quiz.accent} accentSecondary={quiz.accentSecondary} />
+        <ExerciseErrorBoundary><RelatifsHub accent={quiz.accent} accentSecondary={quiz.accentSecondary} /></ExerciseErrorBoundary>
       ) : quiz.renderer === 'geometrie-hub-6eme' ? (
-        <GeometrieHub accent={quiz.accent} accentSecondary={quiz.accentSecondary} />
+        <ExerciseErrorBoundary><GeometrieHub accent={quiz.accent} accentSecondary={quiz.accentSecondary} /></ExerciseErrorBoundary>
       ) : quiz.renderer === 'decimaux-parent-hub-6eme' ? (
-        <DecimauxParentHub accent={quiz.accent} accentSecondary={quiz.accentSecondary} />
+        <ExerciseErrorBoundary><DecimauxParentHub accent={quiz.accent} accentSecondary={quiz.accentSecondary} /></ExerciseErrorBoundary>
+      ) : quiz.renderer === 'proportionnalite-hub-5eme' ? (
+        <ExerciseErrorBoundary><ProportionnaliteHub accent={quiz.accent} accentSecondary={quiz.accentSecondary} /></ExerciseErrorBoundary>
       ) : (<>
 
       {quiz.formulaBanner && (
