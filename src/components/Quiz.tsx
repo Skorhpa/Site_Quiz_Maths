@@ -54,6 +54,7 @@ import { RelatifsHub } from './questions/RelatifsHub';
 import { GeometrieHub } from './questions/GeometrieHub';
 import { DecimauxParentHub } from './questions/DecimauxParentHub';
 import { ProportionnaliteHub } from './questions/ProportionnaliteHub';
+import { SymetrieCentraleHub } from './questions/SymetrieCentraleHub';
 
 // Isolates a render crash in one exercise so the quiz controls still work.
 class ExerciseErrorBoundary extends Component<
@@ -318,6 +319,8 @@ export default function Quiz({ quiz }: QuizProps) {
         <ExerciseErrorBoundary><DecimauxParentHub accent={quiz.accent} accentSecondary={quiz.accentSecondary} /></ExerciseErrorBoundary>
       ) : quiz.renderer === 'proportionnalite-hub-5eme' ? (
         <ExerciseErrorBoundary><ProportionnaliteHub accent={quiz.accent} accentSecondary={quiz.accentSecondary} /></ExerciseErrorBoundary>
+      ) : quiz.renderer === 'symetrie-centrale-hub-5eme' ? (
+        <ExerciseErrorBoundary><SymetrieCentraleHub accent={quiz.accent} accentSecondary={quiz.accentSecondary} /></ExerciseErrorBoundary>
       ) : (<>
 
       {quiz.formulaBanner && (
