@@ -1597,30 +1597,26 @@ const MODES: { id: Exclude<HubMode, null>; label: string; icon: string; desc: st
   },
 ];
 
-export function ProportionnaliteHub({ accent, accentSecondary }: { accent: string; accentSecondary?: string }) {
-  const [mode, setMode] = useState<HubMode>(null);
-  const [exercises, setExercises] = useState<ProportionnaliteExercise[]>([]);
-  const [answers, setAnswers] = useState<AnswerState[]>([]);
+/**
+ * The exercise-set content for one mode ('reconnaitre' or 'utiliser'), with no mode-selector of its own —
+ * reused as-is by the 6ème Proportionnalité hub's "Avec tableau" option, which supplies its own
+ * back-button/navigation above this.
+ */
+export function ProportionnaliteModeContent({ mode, accent, accentSecondary }: {
+  mode: Exclude<HubMode, null>;
+  accent: string;
+  accentSecondary?: string;
+}) {
+  const [exercises, setExercises] = useState<ProportionnaliteExercise[]>(() => buildExercises(mode));
+  const [answers, setAnswers] = useState<AnswerState[]>(() => exercises.map(() => emptyAnswer()));
   const [seriesKey, setSeriesKey] = useState(0);
   const endRef = useRef<HTMLDivElement>(null);
 
-  const loadExercises = (m: HubMode) => {
-    const exs = buildExercises(m);
+  const loadExercises = () => {
+    const exs = buildExercises(mode);
     setExercises(exs);
     setAnswers(exs.map(() => emptyAnswer()));
     setSeriesKey((k) => k + 1);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const selectMode = (m: HubMode) => {
-    setMode(m);
-    loadExercises(m);
-  };
-
-  const goBack = () => {
-    setMode(null);
-    setExercises([]);
-    setAnswers([]);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -1634,9 +1630,7 @@ export function ProportionnaliteHub({ accent, accentSecondary }: { accent: strin
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const newSeries = () => {
-    if (mode !== null) loadExercises(mode);
-  };
+  const newSeries = () => loadExercises();
 
   const stats = useMemo(() => {
     let correct = 0, wrong = 0, answered = 0;
@@ -1655,32 +1649,14 @@ export function ProportionnaliteHub({ accent, accentSecondary }: { accent: strin
     }
   }, [finished]);
 
-  if (mode === null) {
-    return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 14, maxWidth: 560, margin: '0 auto' }}>
-        {MODES.map((m) => (
-          <ModeCard key={m.id} label={m.label} icon={m.icon} desc={m.desc} accent={accent} onClick={() => selectMode(m.id)} disabled={m.disabled} />
-        ))}
-      </div>
-    );
-  }
-
   const accentStyle = { color: accent };
   const progressStyle = {
     width: `${stats.total > 0 ? (stats.answered / stats.total) * 100 : 0}%`,
     background: accentSecondary ? `linear-gradient(90deg, ${accent}, ${accentSecondary})` : accent,
   };
-  const modeLabel = MODES.find((m) => m.id === mode)?.label ?? '';
 
   return (
     <div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: '1.5rem' }}>
-        <button type="button" className="btn-secondary" onClick={goBack} style={{ fontSize: 13 }}>
-          ← Changer de mode
-        </button>
-        <span style={{ fontSize: 14, color: 'var(--muted)' }}>{modeLabel}</span>
-      </div>
-
       {mode === 'reconnaitre' && <RecallReconnaitre accent={accent} />}
       {mode === 'utiliser' && <RecallUtiliser accent={accent} />}
 
@@ -1739,6 +1715,34 @@ export function ProportionnaliteHub({ accent, accentSecondary }: { accent: strin
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+export function ProportionnaliteHub({ accent, accentSecondary }: { accent: string; accentSecondary?: string }) {
+  const [mode, setMode] = useState<HubMode>(null);
+
+  if (mode === null) {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 14, maxWidth: 560, margin: '0 auto' }}>
+        {MODES.map((m) => (
+          <ModeCard key={m.id} label={m.label} icon={m.icon} desc={m.desc} accent={accent} onClick={() => setMode(m.id)} disabled={m.disabled} />
+        ))}
+      </div>
+    );
+  }
+
+  const modeLabel = MODES.find((m) => m.id === mode)?.label ?? '';
+
+  return (
+    <div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: '1.5rem' }}>
+        <button type="button" className="btn-secondary" onClick={() => setMode(null)} style={{ fontSize: 13 }}>
+          ← Changer de mode
+        </button>
+        <span style={{ fontSize: 14, color: 'var(--muted)' }}>{modeLabel}</span>
+      </div>
+      <ProportionnaliteModeContent mode={mode} accent={accent} accentSecondary={accentSecondary} />
     </div>
   );
 }
