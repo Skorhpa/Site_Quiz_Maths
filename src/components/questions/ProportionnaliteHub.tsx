@@ -22,7 +22,7 @@ const randInt = (a: number, b: number) => Math.floor(Math.random() * (b - a + 1)
 const round2 = (n: number) => Math.round(n * 100) / 100;
 
 /** Rounds to 2 decimals, trims trailing zeros, groups the integer part by thousands (French style) and uses a comma. */
-function fmtNum(n: number): string {
+export function fmtNum(n: number): string {
   const rounded = round2(n);
   const neg = rounded < 0;
   const abs = Math.abs(rounded);
@@ -42,7 +42,7 @@ function parseNum(raw: string): number | null {
   return Number.isNaN(v) ? null : v;
 }
 
-function checkQuotient(raw: string, expected: number): boolean {
+export function checkQuotient(raw: string, expected: number): boolean {
   const v = parseNum(raw);
   return v !== null && Math.abs(v - expected) < 0.01;
 }
@@ -214,13 +214,13 @@ function RecallUtiliser({ accent }: { accent: string }) {
 
 // ── Q1 / Q2 / Q3 : tableau de proportionnalité (3 colonnes, sans contexte) ──────
 
-interface ProporCol {
+export interface ProporCol {
   top: number;
   bottom: number;
   quotient: number;
 }
 
-interface ProporTableExercise {
+export interface ProporTableExercise {
   cols: [ProporCol, ProporCol, ProporCol];
   isProportional: boolean;
 }
@@ -231,7 +231,7 @@ function makeTop(): number {
   return Math.random() < 0.5 ? randInt(1, 20) : randInt(5, 95) / 10;
 }
 
-function generateProporTable(isProportional: boolean): ProporTableExercise {
+export function generateProporTable(isProportional: boolean): ProporTableExercise {
   const k = pick(NICE_K);
   const cols: ProporCol[] = [];
   for (let i = 0; i < 3; i++) {
@@ -628,7 +628,7 @@ const PROBLEM_TEMPLATES: ProblemTemplate[] = [
   },
 ];
 
-interface ProporProblemExercise {
+export interface ProporProblemExercise {
   context: string;
   item1Name: string;
   item2Name: string;
@@ -643,7 +643,7 @@ interface ProporProblemExercise {
   isProportional: boolean;
 }
 
-function generateProblemExercise(isProportional: boolean): ProporProblemExercise {
+export function generateProblemExercise(isProportional: boolean): ProporProblemExercise {
   const tpl = pick(PROBLEM_TEMPLATES);
   const [qMin, qMax] = tpl.qtyRange;
   const qty1 = randInt(qMin, qMax);

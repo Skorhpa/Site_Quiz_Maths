@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ModeCard } from './FractionsHub';
 import { ProportionnaliteModeContent } from './ProportionnaliteHub';
+import { ProportionnaliteReconnaitreVivid } from './ProportionnaliteReconnaitreVivid';
 
 type TopMode = 'reconnaitre' | 'utiliser' | null;
 type SubMode = 'sans-tableau' | 'avec-tableau' | null;
@@ -947,6 +948,11 @@ export function ProportionnaliteHub6eme({ accent, accentSecondary }: { accent: s
         </div>
       </div>
     );
+  }
+
+  // Reconnaître + Avec tableau: redesigned page (same exercises as the 5ème quiz), with its own back button.
+  if (topMode === 'reconnaitre' && subMode === 'avec-tableau') {
+    return <ProportionnaliteReconnaitreVivid accent={accent} accentSecondary={accentSecondary} onBack={() => setSubMode(null)} />;
   }
 
   const subLabel = subMode === 'sans-tableau' ? 'Sans tableau' : 'Avec tableau';
