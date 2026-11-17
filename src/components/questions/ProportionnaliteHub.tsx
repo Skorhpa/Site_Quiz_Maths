@@ -839,7 +839,7 @@ const LOT_CONTEXTS = [
   'tablettes de chocolat',
 ];
 
-interface LotExercise {
+export interface LotExercise {
   itemPlural: string;
   lotSize: number;
   lotPrice: number;
@@ -849,7 +849,7 @@ interface LotExercise {
   qtyB: number;
 }
 
-function generateLotExercise(): LotExercise {
+export function generateLotExercise(): LotExercise {
   const itemPlural = pick(LOT_CONTEXTS);
   const lotSize = randInt(3, 8);
   const lotPrice = randInt(8, 30) / 2;
@@ -995,14 +995,14 @@ const ETIQUETTE_CONTEXTS: EtiquetteContext[] = [
   },
 ];
 
-interface EtiquetteRowData {
+export interface EtiquetteRowData {
   label: string;
   perBase: number;
   val1: number;
   val2: number;
 }
 
-interface EtiquetteExercise {
+export interface EtiquetteExercise {
   product: string;
   baseQty: number;
   qty1: number;
@@ -1012,7 +1012,7 @@ interface EtiquetteExercise {
 
 const ETIQUETTE_TARGETS = [150, 200, 250, 300, 350, 400, 450, 500] as const;
 
-function generateEtiquetteExercise(): EtiquetteExercise {
+export function generateEtiquetteExercise(): EtiquetteExercise {
   const ctx = pick(ETIQUETTE_CONTEXTS);
   const baseQty = 100;
   let qty1 = pick(ETIQUETTE_TARGETS);
@@ -1139,7 +1139,7 @@ const UDIR_CONTEXTS = [
 
 const UDIR_UNIT_PRICES = [0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 1, 1.1, 1.2, 1.25, 1.35, 1.5] as const;
 
-interface UniteDirecteExercise {
+export interface UniteDirecteExercise {
   singular: string;
   plural: string;
   qty1: number;
@@ -1149,7 +1149,7 @@ interface UniteDirecteExercise {
   price2: number;
 }
 
-function generateUniteDirecteExercise(): UniteDirecteExercise {
+export function generateUniteDirecteExercise(): UniteDirecteExercise {
   const ctx = pick(UDIR_CONTEXTS);
   const qty1 = randInt(3, 8);
   const unitPrice = pick(UDIR_UNIT_PRICES);
@@ -1261,7 +1261,7 @@ const UINV_CONTEXTS = [
   { unitPlural: 'kg de farine', itemPlural: 'pains', itemSingular: 'pain', verb: 'fabrique' },
 ];
 
-interface UniteInverseExercise {
+export interface UniteInverseExercise {
   unitPlural: string;
   itemPlural: string;
   itemSingular: string;
@@ -1273,7 +1273,7 @@ interface UniteInverseExercise {
   unitQty2: number;
 }
 
-function generateUniteInverseExercise(): UniteInverseExercise {
+export function generateUniteInverseExercise(): UniteInverseExercise {
   const ctx = pick(UINV_CONTEXTS);
   const itemCount1 = randInt(2, 6);
   const rate = randInt(15, 40);
@@ -1428,7 +1428,7 @@ const FULLTABLE_TEMPLATES: FullTableTemplate[] = [
   },
 ];
 
-interface FullTableExercise {
+export interface FullTableExercise {
   text: string;
   qtyLabel: string;
   valueLabel: string;
@@ -1438,7 +1438,7 @@ interface FullTableExercise {
   value2: number;
 }
 
-function generateFullTableExercise(): FullTableExercise {
+export function generateFullTableExercise(): FullTableExercise {
   const tpl = pick(FULLTABLE_TEMPLATES);
   const [qMin, qMax] = tpl.qtyRange;
   const qty1 = randInt(qMin, qMax);

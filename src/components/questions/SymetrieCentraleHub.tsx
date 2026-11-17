@@ -1,21 +1,11 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { ModeCard } from './FractionsHub';
+import {
+  C, CardFooter, CardShell, CorrectionFrame, Scene, SectionLabel, Tip, VividHero, VividPage,
+  type AnswerState, type CardTheme,
+} from './ProportionnaliteVividKit';
 
 type HubMode = 'quadrillage' | 'papier' | null;
-
-interface AnswerState {
-  status: 'pending' | 'correct' | 'wrong' | 'revealed';
-  resetKey: number;
-}
-
-const emptyAnswer = (): AnswerState => ({ status: 'pending', resetKey: 0 });
-
-function endTitle(pct: number): string {
-  if (pct === 100) return 'Parfait ! 🎉';
-  if (pct >= 70) return 'Très bien !';
-  if (pct >= 50) return 'Pas mal !';
-  return 'Continue !';
-}
 
 const randInt = (a: number, b: number) => Math.floor(Math.random() * (b - a + 1)) + a;
 const randFloat = (a: number, b: number) => a + Math.random() * (b - a);
@@ -51,27 +41,6 @@ function SymCross({ cx, cy, letter, color }: { cx: number; cy: number; letter: s
         {letter}
       </text>
     </g>
-  );
-}
-
-// ── VideoLink ─────────────────────────────────────────────────────────────────
-
-function VideoLink({ url, label }: { url: string; label: string }) {
-  return (
-    <a
-      href={url}
-      target="_blank"
-      rel="noopener noreferrer"
-      style={{
-        display: 'inline-flex', alignItems: 'center', gap: 8,
-        padding: '6px 14px', borderRadius: 8,
-        background: 'rgba(255,0,0,0.08)', border: '1px solid rgba(255,0,0,0.25)',
-        color: '#f87171', fontSize: 13, textDecoration: 'none',
-        fontWeight: 600, marginTop: 6, marginRight: 8,
-      }}
-    >
-      ▶ {label}
-    </a>
   );
 }
 
@@ -157,7 +126,7 @@ function QuadAnimationDemo({ accent }: { accent: string }) {
   const redMidY = (dgy(A.y) + dgy(O.y)) / 2;
 
   return (
-    <div style={{ marginTop: 10, padding: 12, border: '1px solid var(--border)', borderRadius: 10, background: 'var(--surface)' }}>
+    <div style={{ padding: 4 }}>
       <div style={{ maxWidth: 260, margin: '0 auto' }}>
         <DemoGrid>
           {step >= 1 && (
@@ -227,7 +196,7 @@ function PaperAnimationDemo({ accent }: { accent: string }) {
   const A = PAPER_DEMO_A, O = PAPER_DEMO_O, Ap = PAPER_DEMO_APRIME;
 
   return (
-    <div style={{ marginTop: 10, padding: 12, border: '1px solid var(--border)', borderRadius: 10, background: 'var(--surface)' }}>
+    <div style={{ padding: 4 }}>
       <div style={{ maxWidth: 260, margin: '0 auto' }}>
         <DemoPaperCanvas>
           {step >= 1 && <DemoRay from={A} through={O} color="#f87171" />}
@@ -247,75 +216,123 @@ function PaperAnimationDemo({ accent }: { accent: string }) {
   );
 }
 
-function RecallQuadrillage({ accent }: { accent: string }) {
-  const [open, setOpen] = useState(false);
-  const [showAnim, setShowAnim] = useState(false);
+// ── Hero (rappel illustré + animation) ──────────────────────────────────────────
+
+function AnimPanel({ children }: { children: React.ReactNode }) {
+  const [show, setShow] = useState(false);
+  if (show) return <>{children}</>;
   return (
-    <div style={{ marginBottom: 16, border: '1px solid var(--border)', borderRadius: 10, overflow: 'hidden' }}>
-      <button type="button" className="hint-toggle" onClick={() => setOpen((v) => !v)} style={{ color: accent, width: '100%', padding: '10px 16px', textAlign: 'left' }}>
-        <span>{open ? '▼' : '▶'}</span> Rappel — symétrie centrale sur quadrillage + vidéo
-      </button>
-      <div className={`steps-box${open ? ' open' : ''}`} style={{ padding: '0 16px', fontSize: 13, lineHeight: 1.8 }}>
-        <p style={{ margin: '12px 0 8px' }}>
-          Une <strong>symétrie centrale</strong> fait tourner une figure autour d'un point en effectuant un demi-tour.
-        </p>
-        <p style={{ margin: '0 0 12px' }}>
-          Le point M' est le symétrique du point M par la symétrie de centre O signifie que le point O est le{' '}
-          <strong style={{ color: accent }}>milieu du segment [MM']</strong>.
-        </p>
-        <p style={{ margin: '0 0 8px' }}>
-          <strong>Méthode sur quadrillage :</strong> je regarde quels déplacements je dois effectuer pour aller du point à O
-          (vers la gauche ou la droite, vers le haut ou le bas), puis je refais exactement ce déplacement en partant de O,
-          dans la même direction, pour arriver à l'image.
-        </p>
-        <div style={{ margin: '0 0 12px' }}>
-          <button type="button" className="btn-secondary" onClick={() => setShowAnim(true)} style={{ fontSize: 13, padding: '6px 14px', borderRadius: 8 }}>
-            🎬 Voir l'animation
-          </button>
-        </div>
-        {showAnim && <QuadAnimationDemo accent={accent} />}
-        <div style={{ margin: '12px 0 12px' }}>
-          <VideoLink url="https://www.youtube.com/watch?v=7Fsr3R6pLv8" label="Construire un symétrique sur quadrillage" />
-        </div>
+    <div className="pv-anim-cta">
+      <div style={{ fontSize: 46 }}>🎬</div>
+      <div style={{ fontSize: 13, color: 'var(--muted)', lineHeight: 1.5 }}>
+        Regarde la construction du symétrique d'un point, étape par étape.
       </div>
+      <button
+        type="button"
+        className="pv-validate"
+        onClick={() => setShow(true)}
+        style={{ background: `linear-gradient(135deg, ${C.orange}, ${C.pink})` }}
+      >
+        🎬 Voir l'animation
+      </button>
     </div>
   );
 }
 
-function RecallPapier({ accent }: { accent: string }) {
-  const [open, setOpen] = useState(false);
-  const [showAnim, setShowAnim] = useState(false);
+const MILIEU_INTRO = (
+  <>
+    Une <strong>symétrie centrale</strong> fait tourner une figure autour d'un point en effectuant un <strong>demi-tour</strong>.
+    Dire que M' est le symétrique de M par rapport à O signifie que O est le{' '}
+    <strong style={{ color: C.orange }}>milieu du segment [MM']</strong>.
+  </>
+);
+
+function QuadHero({ onBack }: { onBack: () => void }) {
   return (
-    <div style={{ marginBottom: 16, border: '1px solid var(--border)', borderRadius: 10, overflow: 'hidden' }}>
-      <button type="button" className="hint-toggle" onClick={() => setOpen((v) => !v)} style={{ color: accent, width: '100%', padding: '10px 16px', textAlign: 'left' }}>
-        <span>{open ? '▼' : '▶'}</span> Rappel — symétrie centrale sans quadrillage + vidéo
-      </button>
-      <div className={`steps-box${open ? ' open' : ''}`} style={{ padding: '0 16px', fontSize: 13, lineHeight: 1.8 }}>
-        <p style={{ margin: '12px 0 8px' }}>
-          Une <strong>symétrie centrale</strong> fait tourner une figure autour d'un point en effectuant un demi-tour.
-        </p>
-        <p style={{ margin: '0 0 12px' }}>
-          Le point M' est le symétrique du point M par la symétrie de centre O signifie que le point O est le{' '}
-          <strong style={{ color: accent }}>milieu du segment [MM']</strong>.
-        </p>
-        <p style={{ margin: '0 0 8px' }}>
-          <strong>Méthode sur papier blanc :</strong> pour construire le symétrique A' d'un point A, je trace la demi-droite
-          [AO). Je place A' sur cette demi-droite en reportant la longueur AO de l'autre côté de O, de sorte que O soit le
-          milieu de [AA']. On fait de même pour chaque point de la figure.
-        </p>
-        <p style={{ margin: '0 0 12px', color: 'var(--muted)' }}>📐 Tu disposes d'une règle et d'un compas.</p>
-        <div style={{ margin: '0 0 12px' }}>
-          <button type="button" className="btn-secondary" onClick={() => setShowAnim(true)} style={{ fontSize: 13, padding: '6px 14px', borderRadius: 8 }}>
-            🎬 Voir l'animation
+    <VividHero
+      onBack={onBack}
+      crumbs={[{ label: 'Symétrie centrale', color: C.sky }, { label: '⊞ Sur quadrillage', color: C.violet }]}
+      title="Comment construire un symétrique sur quadrillage ?"
+      intro={MILIEU_INTRO}
+      steps={[
+        { emoji: '👀', color: C.blue, text: <>Compte les carreaux pour aller du point jusqu'à <strong>O</strong> : à droite ou à gauche, puis en haut ou en bas.</> },
+        { emoji: '🔁', color: C.orange, text: <>Refais <strong>exactement le même déplacement</strong> en partant de O, dans la même direction.</> },
+        { emoji: '✅', color: C.green, text: <>Tu arrives sur le symétrique <strong>A'</strong> : O est bien le milieu de [AA'].</> },
+      ]}
+      videos={[{ url: 'https://www.youtube.com/watch?v=7Fsr3R6pLv8', label: 'Vidéo : construire un symétrique sur quadrillage' }]}
+      illusTitle="🎬 Animation"
+      illus={<AnimPanel><QuadAnimationDemo accent={C.sky} /></AnimPanel>}
+    />
+  );
+}
+
+function PaperHero({ onBack }: { onBack: () => void }) {
+  return (
+    <VividHero
+      onBack={onBack}
+      crumbs={[{ label: 'Symétrie centrale', color: C.sky }, { label: '✎ Sans quadrillage', color: C.pink }]}
+      title="Comment construire un symétrique sans quadrillage ?"
+      intro={<>{MILIEU_INTRO} <span style={{ color: 'var(--muted)' }}>📐 Tu disposes d'une règle et d'un compas.</span></>}
+      steps={[
+        { emoji: '📏', color: C.rose, text: <>À la règle, trace la demi-droite <strong>[AO)</strong>.</> },
+        { emoji: '🧭', color: C.blue, text: <>Au compas, mesure la longueur <strong>AO</strong> : pointe en A, mine en O.</> },
+        { emoji: '✂️', color: C.green, text: <>Reporte cet écartement <strong>de l'autre côté de O</strong> : tu obtiens A', et O est le milieu de [AA'].</> },
+      ]}
+      videos={[{ url: 'https://www.youtube.com/playlist?list=PLVUDmbpupCaq2_WKgsP0xJM0gOI1ZY6xK', label: 'Vidéo : construire un symétrique sans quadrillage' }]}
+      illusTitle="🎬 Animation"
+      illus={<AnimPanel><PaperAnimationDemo accent={C.sky} /></AnimPanel>}
+    />
+  );
+}
+
+// ── Cartes d'exercice (communes aux deux sous-quiz) ─────────────────────────────
+
+const LETTER_COLORS = [C.blue, C.orange, C.green, C.pink, C.violet] as const;
+
+function themeFor(points: SymPoint[]): CardTheme {
+  const n = points.length;
+  if (n === 1) return { color: C.sky, icon: '📍', deco: '↻', tag: 'Échauffement', stars: 1, title: "Symétrique d'un point", short: 'Un point' };
+  if (n === 2) return { color: C.orange, icon: '📏', deco: '↻', tag: 'Entraînement', stars: 2, title: "Symétrique d'un segment", short: 'Un segment' };
+  return { color: C.violet, icon: '🔷', deco: '↻', tag: 'Défi', stars: 3, title: `Symétrique d'un polygone (${n} côtés)`, short: `Un polygone (${n} côtés)` };
+}
+
+function LetterPicker({ points, placements, selected, disabled, rowOk, onSelect }: {
+  points: SymPoint[];
+  placements: Record<string, { x: number; y: number } | null>;
+  selected: string | null;
+  disabled: boolean;
+  rowOk: (p: SymPoint) => boolean;
+  onSelect: (letter: string) => void;
+}) {
+  return (
+    <div className="pv-letters">
+      {points.map((p, i) => {
+        const color = LETTER_COLORS[i % LETTER_COLORS.length]!;
+        const placed = placements[p.letter] !== null;
+        const isSel = selected === p.letter;
+        let style: React.CSSProperties;
+        if (disabled) {
+          const ok = rowOk(p);
+          style = ok
+            ? { borderColor: 'var(--correct)', background: 'rgba(74,222,128,0.16)', color: 'var(--correct)' }
+            : { borderColor: 'var(--wrong)', background: 'rgba(248,113,113,0.16)', color: 'var(--wrong)' };
+        } else if (isSel) {
+          style = { borderColor: color, background: `${color}33`, color, boxShadow: `0 8px 20px -12px ${color}` };
+        } else {
+          style = { borderColor: placed ? `${color}99` : 'var(--border2)', background: placed ? `${color}14` : 'var(--surface2)', color: 'var(--text)' };
+        }
+        return (
+          <button key={p.letter} type="button" className="pv-letterbtn" disabled={disabled} onClick={() => onSelect(p.letter)} style={style}>
+            {p.letter}'{placed && !disabled ? ' ✓' : ''}
           </button>
-        </div>
-        {showAnim && <PaperAnimationDemo accent={accent} />}
-        <div style={{ margin: '12px 0 12px' }}>
-          <VideoLink url="https://www.youtube.com/playlist?list=PLVUDmbpupCaq2_WKgsP0xJM0gOI1ZY6xK" label="Construire un symétrique sans quadrillage" />
-        </div>
-      </div>
+        );
+      })}
     </div>
   );
+}
+
+function figureArticle(n: number): string {
+  return n === 1 ? 'du point' : n === 2 ? 'du segment' : 'du polygone';
 }
 
 // ── Sous-quiz 1 : construction sur quadrillage ──────────────────────────────────
@@ -397,31 +414,22 @@ function generateQuadExercise(n: number): SymQuadExercise {
   }
 }
 
-const quadTagStyle: React.CSSProperties = { fontSize: 11, padding: '3px 10px', borderRadius: 99, fontFamily: "'DM Mono', monospace" };
 
-function figureWord(n: number): string {
-  if (n === 1) return 'point';
-  if (n === 2) return 'segment';
-  return 'polygone';
-}
-
-function SymQuadQuestion({ index, exercise, answer, accent, onSubmit }: {
+function SymQuadQuestion({ index, exercise, answer, onSubmit }: {
   index: number;
   exercise: SymQuadExercise;
+  theme: CardTheme;
   answer: AnswerState;
-  accent: string;
   onSubmit: (ok: boolean) => void;
 }) {
+  const theme = themeFor(exercise.points);
+  const color = theme.color;
   const [placements, setPlacements] = useState<Record<string, { x: number; y: number } | null>>(() =>
     Object.fromEntries(exercise.points.map((p) => [p.letter, null]))
   );
   const [selected, setSelected] = useState<string | null>(null);
-  const [hintOpen, setHintOpen] = useState(false);
+  const [tried, setTried] = useState(false);
   const disabled = answer.status !== 'pending';
-
-  useEffect(() => {
-    if (answer.status === 'revealed') setHintOpen(true);
-  }, [answer.status]);
 
   const imageOf = (p: SymPoint) => ({ x: -p.x, y: -p.y });
   const rowOk = (p: SymPoint) => {
@@ -442,107 +450,67 @@ function SymQuadQuestion({ index, exercise, answer, accent, onSubmit }: {
     setSelected(null);
   };
   const submit = () => {
-    if (disabled || !allPlaced) return;
+    if (disabled) return;
+    if (!allPlaced) { setTried(true); return; }
     onSubmit(exercise.points.every(rowOk));
   };
 
-  const word = figureWord(exercise.points.length);
   const names = exercise.points.map((p) => p.letter).join('');
 
   return (
-    <div className={`qcard ${disabled ? (answer.status === 'correct' ? 'correct-card' : 'wrong-card') : ''}`} style={{ borderLeft: `3px solid ${accent}` }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: '1rem' }}>
-        <span style={{ ...quadTagStyle, background: `${accent}22`, color: accent }}>Symétrique d'un {word}</span>
-        <span className="qnum">Q{String(index + 1).padStart(2, '0')}</span>
-      </div>
-      <p style={{ fontSize: 13, marginBottom: 4 }}>
-        Place le symétrique {word === 'point' ? 'du point' : word === 'segment' ? 'du segment' : 'du polygone'} {names} par
-        rapport au centre O. Clique sur une lettre, puis sur l'endroit du quadrillage où tu veux la placer.
-      </p>
-      <p style={{ fontSize: 12, color: 'var(--muted)', fontStyle: 'italic', marginBottom: 10 }}>✋ Pas d'outils : compte les carreaux.</p>
+    <CardShell index={index} theme={theme} status={answer.status}>
+      <Scene theme={theme} tip={<Tip color={C.orange}>✋ Pas d'outils : compte les carreaux</Tip>}>
+        Place le symétrique {figureArticle(exercise.points.length)} <strong>{names}</strong> par rapport au centre <strong>O</strong>.
+      </Scene>
+      <SectionLabel color={color}>1️⃣ Choisis une lettre, puis 2️⃣ clique sur le quadrillage</SectionLabel>
+      <LetterPicker points={exercise.points} placements={placements} selected={selected} disabled={disabled} rowOk={rowOk} onSelect={selectLetter} />
 
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 10, justifyContent: 'center' }}>
-        {exercise.points.map((p) => {
-          const placed = placements[p.letter] !== null;
-          const showFb = disabled;
-          const ok = showFb ? rowOk(p) : null;
-          const isSel = selected === p.letter;
-          return (
-            <button
-              key={p.letter}
-              type="button"
-              disabled={disabled}
-              onClick={() => selectLetter(p.letter)}
-              style={{
-                padding: '6px 14px', borderRadius: 8, fontFamily: "'DM Mono', monospace", fontSize: 13, fontWeight: 700,
-                border: `1.5px solid ${showFb ? (ok ? 'var(--correct)' : 'var(--wrong)') : isSel ? accent : 'var(--border2)'}`,
-                background: showFb ? (ok ? 'rgba(74,222,128,0.08)' : 'rgba(248,113,113,0.08)') : isSel ? `${accent}22` : 'var(--bg)',
-                color: showFb ? (ok ? 'var(--correct)' : 'var(--wrong)') : isSel ? accent : 'var(--text)',
-                cursor: disabled ? 'default' : 'pointer',
-              }}
-            >
-              {p.letter}'{placed && !showFb ? ' ✓' : ''}
-            </button>
-          );
-        })}
-      </div>
-
-      <GridCanvas onGridClick={disabled ? undefined : placeAt}>
-        <FigureOutline pts={exercise.points.map((p) => ({ cx: gx(p.x), cy: gy(p.y) }))} color="var(--text)" />
-        {exercise.points.map((p) => (
-          <SymCross key={p.letter} cx={gx(p.x)} cy={gy(p.y)} letter={p.letter} color="var(--text)" />
-        ))}
-        <SymCross cx={gx(0)} cy={gy(0)} letter="O" color="var(--text)" />
-        <FigureOutline
-          pts={exercise.points.filter((p) => placements[p.letter] !== null).map((p) => {
-            const pl = placements[p.letter]!;
-            return { cx: gx(pl.x), cy: gy(pl.y) };
+      <div className="pv-canvas" style={{ borderColor: `${color}55` }}>
+        <GridCanvas onGridClick={disabled ? undefined : placeAt}>
+          <FigureOutline pts={exercise.points.map((p) => ({ cx: gx(p.x), cy: gy(p.y) }))} color="var(--text)" />
+          {exercise.points.map((p) => (
+            <SymCross key={p.letter} cx={gx(p.x)} cy={gy(p.y)} letter={p.letter} color="var(--text)" />
+          ))}
+          <SymCross cx={gx(0)} cy={gy(0)} letter="O" color={C.orange} />
+          <FigureOutline
+            pts={exercise.points.filter((p) => placements[p.letter] !== null).map((p) => {
+              const pl = placements[p.letter]!;
+              return { cx: gx(pl.x), cy: gy(pl.y) };
+            })}
+            color={disabled ? 'var(--muted)' : color}
+          />
+          {exercise.points.map((p) => {
+            const pl = placements[p.letter];
+            if (!pl) return null;
+            const c = disabled ? (rowOk(p) ? 'var(--correct)' : 'var(--wrong)') : selected === p.letter ? color : 'var(--text)';
+            return <SymCross key={`img-${p.letter}`} cx={gx(pl.x)} cy={gy(pl.y)} letter={`${p.letter}'`} color={c} />;
           })}
-          color={disabled ? 'var(--muted)' : accent}
-        />
-        {exercise.points.map((p) => {
-          const pl = placements[p.letter];
-          if (!pl) return null;
-          const showFb = disabled;
-          const color = showFb ? (rowOk(p) ? 'var(--correct)' : 'var(--wrong)') : selected === p.letter ? accent : 'var(--text)';
-          return <SymCross key={`img-${p.letter}`} cx={gx(pl.x)} cy={gy(pl.y)} letter={`${p.letter}'`} color={color} />;
-        })}
-      </GridCanvas>
-
-      <div style={{ display: 'flex', gap: 8, marginTop: 12, alignItems: 'center', justifyContent: 'center' }}>
-        {!disabled && (
-          <button className="btn-secondary" onClick={submit} disabled={!allPlaced} style={{ padding: '8px 18px', fontSize: 13, borderRadius: 8 }}>
-            Vérifier
-          </button>
-        )}
-        {disabled && (
-          <span className={answer.status === 'correct' ? 'feedback ok' : 'feedback ko'} style={{ fontFamily: "'DM Mono', monospace", fontSize: 13 }}>
-            {answer.status === 'correct' ? '✓ Correct !' : '✗ Un ou plusieurs points sont mal placés.'}
-          </span>
-        )}
+        </GridCanvas>
       </div>
 
-      <div style={{ marginTop: 10 }}>
-        <button type="button" className="hint-toggle" onClick={() => setHintOpen((v) => !v)}>
-          <span>{hintOpen ? '▼' : '▶'}</span> Voir la correction
-        </button>
-        <div className={`steps-box${hintOpen ? ' open' : ''}`}>
-          <div style={{ maxWidth: 280, margin: '10px auto 0' }}>
-            <GridCanvas>
-              <FigureOutline pts={exercise.points.map((p) => ({ cx: gx(p.x), cy: gy(p.y) }))} color="var(--text)" />
-              {exercise.points.map((p) => (
-                <SymCross key={p.letter} cx={gx(p.x)} cy={gy(p.y)} letter={p.letter} color="var(--text)" />
-              ))}
-              <SymCross cx={gx(0)} cy={gy(0)} letter="O" color="var(--text)" />
-              <FigureOutline pts={exercise.points.map((p) => ({ cx: gx(-p.x), cy: gy(-p.y) }))} color="var(--correct)" />
-              {exercise.points.map((p) => (
-                <SymCross key={`c-${p.letter}`} cx={gx(-p.x)} cy={gy(-p.y)} letter={`${p.letter}'`} color="var(--correct)" />
-              ))}
-            </GridCanvas>
-          </div>
+      <div style={{ height: 14 }} />
+      <CardFooter
+        disabled={disabled} status={answer.status} color={color} onValidate={submit} showMissing={tried && !allPlaced}
+        missingText="Place d'abord tous les points."
+        failText="Un ou plusieurs points sont mal placés. Ouvre la correction."
+      />
+      <CorrectionFrame color={color}>
+        <div>Pour chaque point, on compte les carreaux jusqu'à O puis on refait le même déplacement : O est le milieu de chaque segment [MM'].</div>
+        <div style={{ maxWidth: 300, width: '100%', margin: '0 auto' }}>
+          <GridCanvas>
+            <FigureOutline pts={exercise.points.map((p) => ({ cx: gx(p.x), cy: gy(p.y) }))} color="var(--text)" />
+            {exercise.points.map((p) => (
+              <SymCross key={p.letter} cx={gx(p.x)} cy={gy(p.y)} letter={p.letter} color="var(--text)" />
+            ))}
+            <SymCross cx={gx(0)} cy={gy(0)} letter="O" color={C.orange} />
+            <FigureOutline pts={exercise.points.map((p) => ({ cx: gx(-p.x), cy: gy(-p.y) }))} color="var(--correct)" />
+            {exercise.points.map((p) => (
+              <SymCross key={`c-${p.letter}`} cx={gx(-p.x)} cy={gy(-p.y)} letter={`${p.letter}'`} color="var(--correct)" />
+            ))}
+          </GridCanvas>
         </div>
-      </div>
-    </div>
+      </CorrectionFrame>
+    </CardShell>
   );
 }
 
@@ -643,13 +611,15 @@ function ConstructionLine({ p, o, color }: { p: { x: number; y: number }; o: { x
   );
 }
 
-function SymPaperQuestion({ index, exercise, answer, accent, onSubmit }: {
+function SymPaperQuestion({ index, exercise, answer, onSubmit }: {
   index: number;
   exercise: SymPaperExercise;
+  theme: CardTheme;
   answer: AnswerState;
-  accent: string;
   onSubmit: (ok: boolean) => void;
 }) {
+  const theme = themeFor(exercise.points);
+  const color = theme.color;
   const [placements, setPlacements] = useState<Record<string, { x: number; y: number } | null>>(() =>
     Object.fromEntries(exercise.points.map((p) => [p.letter, null]))
   );
@@ -657,12 +627,8 @@ function SymPaperQuestion({ index, exercise, answer, accent, onSubmit }: {
   const [activeTool, setActiveTool] = useState<ToolType | null>(null);
   const [pendingAnchor, setPendingAnchor] = useState<{ x: number; y: number } | null>(null);
   const [toolMarks, setToolMarks] = useState<ToolMark[]>([]);
-  const [hintOpen, setHintOpen] = useState(false);
+  const [tried, setTried] = useState(false);
   const disabled = answer.status !== 'pending';
-
-  useEffect(() => {
-    if (answer.status === 'revealed') setHintOpen(true);
-  }, [answer.status]);
 
   const imageOf = (p: SymPoint) => ({ x: 2 * exercise.centerO.x - p.x, y: 2 * exercise.centerO.y - p.y });
   const rowOk = (p: SymPoint) => {
@@ -728,153 +694,113 @@ function SymPaperQuestion({ index, exercise, answer, accent, onSubmit }: {
     placeAt(x, y);
   };
   const submit = () => {
-    if (disabled || !allPlaced) return;
+    if (disabled) return;
+    if (!allPlaced) { setTried(true); return; }
     onSubmit(exercise.points.every(rowOk));
   };
 
-  const word = figureWord(exercise.points.length);
   const names = exercise.points.map((p) => p.letter).join('');
 
   return (
-    <div className={`qcard ${disabled ? (answer.status === 'correct' ? 'correct-card' : 'wrong-card') : ''}`} style={{ borderLeft: `3px solid ${accent}` }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: '1rem' }}>
-        <span style={{ ...quadTagStyle, background: `${accent}22`, color: accent }}>Symétrique d'un {word}</span>
-        <span className="qnum">Q{String(index + 1).padStart(2, '0')}</span>
-      </div>
-      <p style={{ fontSize: 13, marginBottom: 4 }}>
-        Place le symétrique {word === 'point' ? 'du point' : word === 'segment' ? 'du segment' : 'du polygone'} {names} par
-        rapport au centre O. Clique sur une lettre, puis sur l'endroit où tu veux la placer.
-      </p>
-      <p style={{ fontSize: 12, color: 'var(--muted)', fontStyle: 'italic', marginBottom: 10 }}>
-        📐 Utilise les outils règle et compas ci-dessous pour construire, puis place chaque point.
-      </p>
-
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 6, justifyContent: 'center' }}>
-        {exercise.points.map((p) => {
-          const placed = placements[p.letter] !== null;
-          const showFb = disabled;
-          const ok = showFb ? rowOk(p) : null;
-          const isSel = selected === p.letter;
-          return (
-            <button
-              key={p.letter}
-              type="button"
-              disabled={disabled}
-              onClick={() => selectLetter(p.letter)}
-              style={{
-                padding: '6px 14px', borderRadius: 8, fontFamily: "'DM Mono', monospace", fontSize: 13, fontWeight: 700,
-                border: `1.5px solid ${showFb ? (ok ? 'var(--correct)' : 'var(--wrong)') : isSel ? accent : 'var(--border2)'}`,
-                background: showFb ? (ok ? 'rgba(74,222,128,0.08)' : 'rgba(248,113,113,0.08)') : isSel ? `${accent}22` : 'var(--bg)',
-                color: showFb ? (ok ? 'var(--correct)' : 'var(--wrong)') : isSel ? accent : 'var(--text)',
-                cursor: disabled ? 'default' : 'pointer',
-              }}
-            >
-              {p.letter}'{placed && !showFb ? ' ✓' : ''}
-            </button>
-          );
-        })}
-      </div>
+    <CardShell index={index} theme={theme} status={answer.status}>
+      <Scene theme={theme} tip={<Tip color={C.orange}>📐 Règle et compas à disposition</Tip>}>
+        Place le symétrique {figureArticle(exercise.points.length)} <strong>{names}</strong> par rapport au centre <strong>O</strong>.
+        Construis d'abord avec les outils, puis place chaque point.
+      </Scene>
 
       {!disabled && (
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 10, justifyContent: 'center', alignItems: 'center' }}>
-          {([
-            { tool: 'ruler' as const, label: '📏 Règle' },
-            { tool: 'compass' as const, label: '🧭 Compas' },
-          ]).map(({ tool, label }) => {
-            const isSel = activeTool === tool;
-            return (
-              <button
-                key={tool}
-                type="button"
-                onClick={() => selectTool(tool)}
-                style={{
-                  padding: '6px 14px', borderRadius: 8, fontSize: 13, fontWeight: 700,
-                  border: `1.5px solid ${isSel ? accent : 'var(--border2)'}`,
-                  background: isSel ? `${accent}22` : 'var(--bg)',
-                  color: isSel ? accent : 'var(--text)',
-                  cursor: 'pointer',
-                }}
-              >
-                {label}
-              </button>
-            );
-          })}
-          <button type="button" onClick={clearToolMarks} className="btn-secondary" style={{ padding: '6px 14px', fontSize: 12, borderRadius: 8 }}>
-            🧹 Effacer les tracés
-          </button>
-        </div>
-      )}
-      {!disabled && activeTool && (
-        <p style={{ fontSize: 12, color: 'var(--muted)', textAlign: 'center', marginBottom: 8 }}>
-          {activeTool === 'ruler'
-            ? (pendingAnchor ? 'Clique un second point déjà tracé pour tirer la droite.' : 'Clique un premier point déjà tracé (ex. A ou O).')
-            : (pendingAnchor ? "Clique le point qui donne le rayon (ex. A), puis l'arc se trace." : "Clique le centre du compas (ex. O).")}
-        </p>
-      )}
-
-      <PaperCanvas onCanvasClick={disabled ? undefined : handleCanvasClick}>
-        {toolMarks.map((m, i) =>
-          m.type === 'ruler'
-            ? <RulerLine key={i} p1={m.p1} p2={m.p2} color="#f87171" />
-            : <CompassCircle key={i} p1={m.p1} p2={m.p2} color="#60A5FA" />
-        )}
-        {pendingAnchor && <circle cx={pendingAnchor.x} cy={pendingAnchor.y} r={4} fill="none" stroke={accent} strokeWidth={1.5} />}
-        <FigureOutline pts={exercise.points.map((p) => ({ cx: p.x, cy: p.y }))} color="var(--text)" />
-        {exercise.points.map((p) => (
-          <SymCross key={p.letter} cx={p.x} cy={p.y} letter={p.letter} color="var(--text)" />
-        ))}
-        <SymCross cx={exercise.centerO.x} cy={exercise.centerO.y} letter="O" color="var(--text)" />
-        <FigureOutline
-          pts={exercise.points.filter((p) => placements[p.letter] !== null).map((p) => { const pl = placements[p.letter]!; return { cx: pl.x, cy: pl.y }; })}
-          color={disabled ? 'var(--muted)' : accent}
-        />
-        {exercise.points.map((p) => {
-          const pl = placements[p.letter];
-          if (!pl) return null;
-          const showFb = disabled;
-          const color = showFb ? (rowOk(p) ? 'var(--correct)' : 'var(--wrong)') : selected === p.letter ? accent : 'var(--text)';
-          return <SymCross key={`img-${p.letter}`} cx={pl.x} cy={pl.y} letter={`${p.letter}'`} color={color} />;
-        })}
-      </PaperCanvas>
-
-      <div style={{ display: 'flex', gap: 8, marginTop: 12, alignItems: 'center', justifyContent: 'center' }}>
-        {!disabled && (
-          <button className="btn-secondary" onClick={submit} disabled={!allPlaced} style={{ padding: '8px 18px', fontSize: 13, borderRadius: 8 }}>
-            Vérifier
-          </button>
-        )}
-        {disabled && (
-          <span className={answer.status === 'correct' ? 'feedback ok' : 'feedback ko'} style={{ fontFamily: "'DM Mono', monospace", fontSize: 13 }}>
-            {answer.status === 'correct' ? '✓ Correct !' : '✗ Un ou plusieurs points sont mal placés.'}
-          </span>
-        )}
-      </div>
-
-      <div style={{ marginTop: 10 }}>
-        <button type="button" className="hint-toggle" onClick={() => setHintOpen((v) => !v)}>
-          <span>{hintOpen ? '▼' : '▶'}</span> Voir la correction
-        </button>
-        <div className={`steps-box${hintOpen ? ' open' : ''}`}>
-          <div style={{ maxWidth: 280, margin: '10px auto 0' }}>
-            <PaperCanvas>
-              {exercise.points.map((p) => (
-                <ConstructionLine key={`cl-${p.letter}`} p={p} o={exercise.centerO} color="#f87171" />
-              ))}
-              <FigureOutline pts={exercise.points.map((p) => ({ cx: p.x, cy: p.y }))} color="var(--text)" />
-              {exercise.points.map((p) => (
-                <SymCross key={p.letter} cx={p.x} cy={p.y} letter={p.letter} color="var(--text)" />
-              ))}
-              <SymCross cx={exercise.centerO.x} cy={exercise.centerO.y} letter="O" color="var(--text)" />
-              <FigureOutline pts={exercise.points.map((p) => { const img = imageOf(p); return { cx: img.x, cy: img.y }; })} color="var(--correct)" />
-              {exercise.points.map((p) => {
-                const img = imageOf(p);
-                return <SymCross key={`c-${p.letter}`} cx={img.x} cy={img.y} letter={`${p.letter}'`} color="var(--correct)" />;
-              })}
-            </PaperCanvas>
+        <>
+          <SectionLabel color={color}>🧰 Tes outils</SectionLabel>
+          <div className="pv-toolbar">
+            {([
+              { tool: 'ruler' as const, label: '📏 Règle', c: C.rose },
+              { tool: 'compass' as const, label: '🧭 Compas', c: C.blue },
+            ]).map(({ tool, label, c }) => {
+              const isSel = activeTool === tool;
+              return (
+                <button
+                  key={tool}
+                  type="button"
+                  className="pv-letterbtn"
+                  onClick={() => selectTool(tool)}
+                  style={isSel
+                    ? { borderColor: c, background: `${c}33`, color: c, boxShadow: `0 8px 20px -12px ${c}` }
+                    : { borderColor: 'var(--border2)', background: 'var(--surface2)', color: 'var(--text)' }}
+                >
+                  {label}
+                </button>
+              );
+            })}
+            <button type="button" onClick={clearToolMarks} className="btn-secondary" style={{ padding: '8px 14px', fontSize: 12, borderRadius: 14 }}>
+              🧹 Effacer les tracés
+            </button>
           </div>
-        </div>
+          {activeTool && (
+            <p className="pv-hint">
+              {activeTool === 'ruler'
+                ? (pendingAnchor ? 'Clique un second point déjà tracé pour tirer la droite.' : 'Clique un premier point déjà tracé (ex. A ou O).')
+                : (pendingAnchor ? "Clique le point qui donne le rayon (ex. A), puis l'arc se trace." : 'Clique le centre du compas (ex. O).')}
+            </p>
+          )}
+        </>
+      )}
+
+      <SectionLabel color={color}>1️⃣ Choisis une lettre, puis 2️⃣ clique sur la feuille</SectionLabel>
+      <LetterPicker points={exercise.points} placements={placements} selected={selected} disabled={disabled} rowOk={rowOk} onSelect={selectLetter} />
+
+      <div className="pv-canvas" style={{ borderColor: `${color}55` }}>
+        <PaperCanvas onCanvasClick={disabled ? undefined : handleCanvasClick}>
+          {toolMarks.map((m, i) =>
+            m.type === 'ruler'
+              ? <RulerLine key={i} p1={m.p1} p2={m.p2} color="#f87171" />
+              : <CompassCircle key={i} p1={m.p1} p2={m.p2} color="#60A5FA" />
+          )}
+          {pendingAnchor && <circle cx={pendingAnchor.x} cy={pendingAnchor.y} r={4} fill="none" stroke={color} strokeWidth={1.5} />}
+          <FigureOutline pts={exercise.points.map((p) => ({ cx: p.x, cy: p.y }))} color="var(--text)" />
+          {exercise.points.map((p) => (
+            <SymCross key={p.letter} cx={p.x} cy={p.y} letter={p.letter} color="var(--text)" />
+          ))}
+          <SymCross cx={exercise.centerO.x} cy={exercise.centerO.y} letter="O" color={C.orange} />
+          <FigureOutline
+            pts={exercise.points.filter((p) => placements[p.letter] !== null).map((p) => { const pl = placements[p.letter]!; return { cx: pl.x, cy: pl.y }; })}
+            color={disabled ? 'var(--muted)' : color}
+          />
+          {exercise.points.map((p) => {
+            const pl = placements[p.letter];
+            if (!pl) return null;
+            const c = disabled ? (rowOk(p) ? 'var(--correct)' : 'var(--wrong)') : selected === p.letter ? color : 'var(--text)';
+            return <SymCross key={`img-${p.letter}`} cx={pl.x} cy={pl.y} letter={`${p.letter}'`} color={c} />;
+          })}
+        </PaperCanvas>
       </div>
-    </div>
+
+      <div style={{ height: 14 }} />
+      <CardFooter
+        disabled={disabled} status={answer.status} color={color} onValidate={submit} showMissing={tried && !allPlaced}
+        missingText="Place d'abord tous les points."
+        failText="Un ou plusieurs points sont mal placés. Ouvre la correction."
+      />
+      <CorrectionFrame color={color}>
+        <div>Pour chaque point P : demi-droite [PO), puis on reporte la longueur PO de l'autre côté de O. O est le milieu de chaque segment [PP'].</div>
+        <div style={{ maxWidth: 300, width: '100%', margin: '0 auto' }}>
+          <PaperCanvas>
+            {exercise.points.map((p) => (
+              <ConstructionLine key={`cl-${p.letter}`} p={p} o={exercise.centerO} color="#f87171" />
+            ))}
+            <FigureOutline pts={exercise.points.map((p) => ({ cx: p.x, cy: p.y }))} color="var(--text)" />
+            {exercise.points.map((p) => (
+              <SymCross key={p.letter} cx={p.x} cy={p.y} letter={p.letter} color="var(--text)" />
+            ))}
+            <SymCross cx={exercise.centerO.x} cy={exercise.centerO.y} letter="O" color={C.orange} />
+            <FigureOutline pts={exercise.points.map((p) => { const img = imageOf(p); return { cx: img.x, cy: img.y }; })} color="var(--correct)" />
+            {exercise.points.map((p) => {
+              const img = imageOf(p);
+              return <SymCross key={`c-${p.letter}`} cx={img.x} cy={img.y} letter={`${p.letter}'`} color="var(--correct)" />;
+            })}
+          </PaperCanvas>
+        </div>
+      </CorrectionFrame>
+    </CardShell>
   );
 }
 
@@ -884,24 +810,20 @@ type SymExercise =
   | { exKind: 'quad'; data: SymQuadExercise }
   | { exKind: 'paper'; data: SymPaperExercise };
 
-function buildExercises(mode: HubMode): SymExercise[] {
+function buildExercises(mode: Exclude<HubMode, null>): SymExercise[] {
+  const polySides = randInt(3, 5);
   if (mode === 'quadrillage') {
-    const polySides = randInt(3, 5);
     return [
       { exKind: 'quad', data: generateQuadExercise(1) },
       { exKind: 'quad', data: generateQuadExercise(2) },
       { exKind: 'quad', data: generateQuadExercise(polySides) },
     ];
   }
-  if (mode === 'papier') {
-    const polySides = randInt(3, 5);
-    return [
-      { exKind: 'paper', data: generatePaperExercise(1) },
-      { exKind: 'paper', data: generatePaperExercise(2) },
-      { exKind: 'paper', data: generatePaperExercise(polySides) },
-    ];
-  }
-  return [];
+  return [
+    { exKind: 'paper', data: generatePaperExercise(1) },
+    { exKind: 'paper', data: generatePaperExercise(2) },
+    { exKind: 'paper', data: generatePaperExercise(polySides) },
+  ];
 }
 
 const MODES: { id: Exclude<HubMode, null>; label: string; icon: string; desc: string }[] = [
@@ -919,142 +841,39 @@ const MODES: { id: Exclude<HubMode, null>; label: string; icon: string; desc: st
   },
 ];
 
-export function SymetrieCentraleHub({ accent, accentSecondary }: { accent: string; accentSecondary?: string }) {
+export function SymetrieCentraleHub({ accent }: { accent: string; accentSecondary?: string }) {
   const [mode, setMode] = useState<HubMode>(null);
-  const [exercises, setExercises] = useState<SymExercise[]>([]);
-  const [answers, setAnswers] = useState<AnswerState[]>([]);
-  const [seriesKey, setSeriesKey] = useState(0);
-  const endRef = useRef<HTMLDivElement>(null);
-
-  const loadExercises = (m: HubMode) => {
-    const exs = buildExercises(m);
-    setExercises(exs);
-    setAnswers(exs.map(() => emptyAnswer()));
-    setSeriesKey((k) => k + 1);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const selectMode = (m: HubMode) => {
-    setMode(m);
-    loadExercises(m);
-  };
-
-  const goBack = () => {
-    setMode(null);
-    setExercises([]);
-    setAnswers([]);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const submit = (i: number, ok: boolean) => {
-    if (answers[i]?.status !== 'pending') return;
-    setAnswers((prev) => prev.map((a, idx) => (idx === i ? { ...a, status: ok ? 'correct' : 'wrong' } : a)));
-  };
-
-  const resetErrors = () => {
-    setAnswers((prev) => prev.map((a) => (a.status === 'correct' ? a : { status: 'pending', resetKey: a.resetKey + 1 })));
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const newSeries = () => {
-    if (mode !== null) loadExercises(mode);
-  };
-
-  const stats = useMemo(() => {
-    let correct = 0, wrong = 0, answered = 0;
-    for (const a of answers) {
-      if (a.status === 'correct') { correct++; answered++; }
-      else if (a.status === 'wrong' || a.status === 'revealed') { wrong++; answered++; }
-    }
-    return { correct, wrong, answered, total: exercises.length };
-  }, [answers, exercises.length]);
-
-  const finished = stats.answered === stats.total && stats.total > 0;
-
-  useEffect(() => {
-    if (finished && endRef.current) {
-      endRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-  }, [finished]);
 
   if (mode === null) {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: 14, maxWidth: 560, margin: '0 auto' }}>
         {MODES.map((m) => (
-          <ModeCard key={m.id} label={m.label} icon={m.icon} desc={m.desc} accent={accent} onClick={() => selectMode(m.id)} />
+          <ModeCard key={m.id} label={m.label} icon={m.icon} desc={m.desc} accent={accent} onClick={() => setMode(m.id)} />
         ))}
       </div>
     );
   }
 
-  const accentStyle = { color: accent };
-  const progressStyle = {
-    width: `${stats.total > 0 ? (stats.answered / stats.total) * 100 : 0}%`,
-    background: accentSecondary ? `linear-gradient(90deg, ${accent}, ${accentSecondary})` : accent,
+  const back = () => {
+    setMode(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-  const modeLabel = MODES.find((m) => m.id === mode)?.label ?? '';
 
   return (
-    <div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: '1.5rem' }}>
-        <button type="button" className="btn-secondary" onClick={goBack} style={{ fontSize: 13 }}>
-          ← Changer de mode
-        </button>
-        <span style={{ fontSize: 14, color: 'var(--muted)' }}>{modeLabel}</span>
-      </div>
-
-      {mode === 'quadrillage' && <RecallQuadrillage accent={accent} />}
-      {mode === 'papier' && <RecallPapier accent={accent} />}
-
-      <div className="scoreboard">
-        <div className="score-item">
-          <span className="score-num" style={accentStyle}>{stats.correct}</span>
-          <div className="score-label">Justes</div>
-        </div>
-        <div className="score-item">
-          <span className="score-num" style={accentStyle}>{stats.wrong}</span>
-          <div className="score-label">Faux</div>
-        </div>
-        <div className="score-item">
-          <span className="score-num" style={accentStyle}>{stats.total - stats.answered}</span>
-          <div className="score-label">Restants</div>
-        </div>
-      </div>
-
-      <div className="progress-bar">
-        <div className="progress-fill" style={progressStyle} />
-      </div>
-
-      <div className="controls">
-        <button className="btn-secondary" onClick={resetErrors} disabled={stats.wrong === 0}>
-          Recommencer les erreurs
-        </button>
-        <button className="btn-secondary" onClick={newSeries}>Nouvelle série</button>
-      </div>
-
-      <div className="questions-list">
-        {exercises.map((ex, i) => {
-          const key = `${seriesKey}-${answers[i]!.resetKey}-${i}`;
-          const common = { key, index: i, answer: answers[i]!, accent, onSubmit: (ok: boolean) => submit(i, ok) };
-          if (ex.exKind === 'quad') return <SymQuadQuestion {...common} exercise={ex.data} />;
-          return <SymPaperQuestion {...common} exercise={ex.data} />;
-        })}
-      </div>
-
-      {finished && (
-        <div className="end-banner" ref={endRef} style={{ border: `1px solid ${accent}` }}>
-          <h2 style={{ color: accent }}>{endTitle(Math.round((stats.correct / stats.total) * 100))}</h2>
-          <p>Score : {stats.correct} / {stats.total} ({Math.round((stats.correct / stats.total) * 100)}%)</p>
-          <div className="btn-group">
-            <button className="btn-secondary" onClick={resetErrors} disabled={stats.wrong === 0}>
-              Recommencer les erreurs
-            </button>
-            <button className="btn-primary" style={{ background: accent }} onClick={newSeries}>
-              Nouvelle série
-            </button>
-          </div>
-        </div>
-      )}
-    </div>
+    <VividPage<SymExercise>
+      key={mode}
+      accent={accent}
+      hero={mode === 'quadrillage' ? <QuadHero onBack={back} /> : <PaperHero onBack={back} />}
+      tip={{
+        emoji: '🧠', title: 'Le savais-tu ?',
+        text: <>Un point, son symétrique et le centre sont toujours <strong>alignés</strong>, et O est au <strong>milieu</strong>. Tu peux vérifier ta réponse avec ça !</>,
+      }}
+      build={() => buildExercises(mode)}
+      themeFor={(ex) => themeFor(ex.data.points)}
+      renderCard={(ex, i, p) =>
+        ex.exKind === 'quad'
+          ? <SymQuadQuestion index={i} exercise={ex.data} {...p} />
+          : <SymPaperQuestion index={i} exercise={ex.data} {...p} />}
+    />
   );
 }
