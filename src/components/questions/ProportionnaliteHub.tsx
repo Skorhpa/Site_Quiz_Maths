@@ -44,7 +44,7 @@ function parseNum(raw: string): number | null {
 
 export function checkQuotient(raw: string, expected: number): boolean {
   const v = parseNum(raw);
-  return v !== null && Math.abs(v - expected) < 0.01;
+  return v !== null && Math.abs(v - expected) < 0.005 + 1e-9;
 }
 
 // ── VideoLink ─────────────────────────────────────────────────────────────────
@@ -582,7 +582,7 @@ const PROBLEM_TEMPLATES: ProblemTemplate[] = [
     item1Name: 'Collège A', item2Name: 'Collège B',
     qtyLabel: "Nombre d'élèves", valueLabel: 'Subvention (€)',
     qtyRange: [300, 900],
-    kChoices: [1800, 2000, 2200, 2400],
+    kChoices: [20, 22, 25, 28, 30],
   },
   {
     context: 'La quantité de farine nécessaire pour une recette de crêpes dépend du nombre de personnes.',
@@ -964,32 +964,32 @@ const ETIQUETTE_CONTEXTS: EtiquetteContext[] = [
   {
     product: "jus d'orange",
     rows: [
-      { label: 'Énergie (kcal)', min: 30, max: 80, decimals: 0 },
-      { label: 'Protéines (g)', min: 2, max: 10, decimals: 1 },
-      { label: 'Glucides (g)', min: 80, max: 150, decimals: 1 },
+      { label: 'Énergie (kcal)', min: 40, max: 50, decimals: 0 },
+      { label: 'Protéines (g)', min: 0.5, max: 1, decimals: 1 },
+      { label: 'Glucides (g)', min: 8, max: 11, decimals: 1 },
     ],
   },
   {
     product: 'lait demi-écrémé',
     rows: [
-      { label: 'Énergie (kcal)', min: 40, max: 60, decimals: 0 },
-      { label: 'Protéines (g)', min: 30, max: 35, decimals: 1 },
-      { label: 'Lipides (g)', min: 15, max: 20, decimals: 1 },
+      { label: 'Énergie (kcal)', min: 42, max: 50, decimals: 0 },
+      { label: 'Protéines (g)', min: 3, max: 3.6, decimals: 1 },
+      { label: 'Lipides (g)', min: 1.5, max: 1.8, decimals: 1 },
     ],
   },
   {
     product: 'compote de pommes',
     rows: [
-      { label: 'Énergie (kcal)', min: 50, max: 90, decimals: 0 },
-      { label: 'Glucides (g)', min: 100, max: 200, decimals: 1 },
-      { label: 'Fibres (g)', min: 10, max: 20, decimals: 1 },
+      { label: 'Énergie (kcal)', min: 50, max: 80, decimals: 0 },
+      { label: 'Glucides (g)', min: 12, max: 18, decimals: 1 },
+      { label: 'Fibres (g)', min: 1, max: 2, decimals: 1 },
     ],
   },
   {
     product: 'soda au citron',
     rows: [
-      { label: 'Énergie (kcal)', min: 35, max: 55, decimals: 0 },
-      { label: 'Sucres (g)', min: 90, max: 110, decimals: 1 },
+      { label: 'Énergie (kcal)', min: 35, max: 45, decimals: 0 },
+      { label: 'Sucres (g)', min: 9, max: 11, decimals: 1 },
       { label: 'Sodium (mg)', min: 5, max: 15, decimals: 0 },
     ],
   },
@@ -1192,7 +1192,7 @@ function UniteDirecteQuestion({ index, exercise, answer, accent, onSubmit }: {
         <span className="qnum">Q{String(index + 1).padStart(2, '0')}</span>
       </div>
       <p style={{ fontSize: 13, marginBottom: 10 }}>
-        Un bouquet de {exercise.qty1} {exercise.plural} coûte {fmtNum(exercise.price1)} €. Calcule le prix d'un bouquet de {exercise.qty2} {exercise.plural}.
+        {exercise.qty1} {exercise.plural} coûtent {fmtNum(exercise.price1)} €. Calcule le prix de {exercise.qty2} {exercise.plural}.
       </p>
 
       <div style={{ overflowX: 'auto', marginBottom: 14 }}>

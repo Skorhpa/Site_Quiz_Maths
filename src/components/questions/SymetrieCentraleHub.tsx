@@ -4,8 +4,10 @@ import {
   C, CardFooter, CardShell, CorrectionFrame, Scene, SectionLabel, Tip, VividHero, VividPage,
   type AnswerState, type CardTheme,
 } from './ProportionnaliteVividKit';
+import { DndCard, FillCard, ProprietesHero } from './SymetrieProprietes';
+import { generateDndExercise, generateFillExercise, type DndExercise, type FillExercise } from './symetrieProprietesData';
 
-type HubMode = 'quadrillage' | 'papier' | null;
+type HubMode = 'quadrillage' | 'papier' | 'proprietes' | null;
 
 const randInt = (a: number, b: number) => Math.floor(Math.random() * (b - a + 1)) + a;
 const randFloat = (a: number, b: number) => a + Math.random() * (b - a);
@@ -804,13 +806,22 @@ function SymPaperQuestion({ index, exercise, answer, onSubmit }: {
   );
 }
 
+
 // ── SymetrieCentraleHub (main export) ───────────────────────────────────────────
 
 type SymExercise =
   | { exKind: 'quad'; data: SymQuadExercise }
-  | { exKind: 'paper'; data: SymPaperExercise };
+  | { exKind: 'paper'; data: SymPaperExercise }
+  | { exKind: 'dnd'; data: DndExercise }
+  | { exKind: 'fill'; data: FillExercise };
 
 function buildExercises(mode: Exclude<HubMode, null>): SymExercise[] {
+  if (mode === 'proprietes') {
+    return [
+      { exKind: 'dnd', data: generateDndExercise() },
+      { exKind: 'fill', data: generateFillExercise() },
+    ];
+  }
   const polySides = randInt(3, 5);
   if (mode === 'quadrillage') {
     return [
@@ -826,6 +837,16 @@ function buildExercises(mode: Exclude<HubMode, null>): SymExercise[] {
   ];
 }
 
+function themeForExercise(ex: SymExercise): CardTheme {
+  if (ex.exKind === 'dnd') {
+    return { color: C.orange, icon: '🧲', deco: '⚖', tag: 'Entraînement', stars: 2, title: "Remets le raisonnement dans l'ordre", short: 'Raisonnement' };
+  }
+  if (ex.exKind === 'fill') {
+    return { color: C.violet, icon: '✍️', deco: '=', tag: 'Défi', stars: 3, title: 'Complète le texte', short: 'Texte à trous' };
+  }
+  return themeFor(ex.data.points);
+}
+
 const MODES: { id: Exclude<HubMode, null>; label: string; icon: string; desc: string }[] = [
   {
     id: 'quadrillage',
@@ -838,6 +859,12 @@ const MODES: { id: Exclude<HubMode, null>; label: string; icon: string; desc: st
     label: 'Construction sans quadrillage',
     icon: '✎',
     desc: '3 exercices · point, segment, polygone — avec règle et compas',
+  },
+  {
+    id: 'proprietes',
+    label: 'Propriétés de la symétrie centrale',
+    icon: '⚖',
+    desc: "2 exercices · remettre un raisonnement dans l'ordre (glisser-déposer), puis texte à trous",
   },
 ];
 
@@ -859,21 +886,25 @@ export function SymetrieCentraleHub({ accent }: { accent: string; accentSecondar
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const hero = mode === 'quadrillage' ? <QuadHero onBack={back} /> : mode === 'papier' ? <PaperHero onBack={back} /> : <ProprietesHero onBack={back} />;
+  const tip = mode === 'proprietes'
+    ? { emoji: '🧠', title: 'Le savais-tu ?', text: <>Une symétrie centrale <strong>déplace</strong> la figure (un demi-tour autour de O) mais ne la <strong>déforme pas</strong> : voilà pourquoi tout est conservé.</> }
+    : { emoji: '🧠', title: 'Le savais-tu ?', text: <>Un point, son symétrique et le centre sont toujours <strong>alignés</strong>, et O est au <strong>milieu</strong>. Tu peux vérifier ta réponse avec ça !</> };
+
   return (
     <VividPage<SymExercise>
       key={mode}
       accent={accent}
-      hero={mode === 'quadrillage' ? <QuadHero onBack={back} /> : <PaperHero onBack={back} />}
-      tip={{
-        emoji: '🧠', title: 'Le savais-tu ?',
-        text: <>Un point, son symétrique et le centre sont toujours <strong>alignés</strong>, et O est au <strong>milieu</strong>. Tu peux vérifier ta réponse avec ça !</>,
-      }}
+      hero={hero}
+      tip={tip}
       build={() => buildExercises(mode)}
-      themeFor={(ex) => themeFor(ex.data.points)}
-      renderCard={(ex, i, p) =>
-        ex.exKind === 'quad'
-          ? <SymQuadQuestion index={i} exercise={ex.data} {...p} />
-          : <SymPaperQuestion index={i} exercise={ex.data} {...p} />}
+      themeFor={themeForExercise}
+      renderCard={(ex, i, p) => {
+        if (ex.exKind === 'quad') return <SymQuadQuestion index={i} exercise={ex.data} {...p} />;
+        if (ex.exKind === 'paper') return <SymPaperQuestion index={i} exercise={ex.data} {...p} />;
+        if (ex.exKind === 'dnd') return <DndCard index={i} exercise={ex.data} {...p} />;
+        return <FillCard index={i} exercise={ex.data} {...p} />;
+      }}
     />
   );
 }
