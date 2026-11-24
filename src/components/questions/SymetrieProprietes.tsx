@@ -214,9 +214,9 @@ export function ProprietesHero({ onBack }: { onBack: () => void }) {
         { url: 'https://youtu.be/zEWQwYUMXZc', label: 'Vidéo : propriétés de la symétrie centrale (2)' },
       ]}
       localVideo={{
-        src: "/videos/symetrie-centrale-demi-tour.mp4",
-        poster: "/videos/symetrie-centrale-demi-tour.jpg",
-        title: "Vidéo : un demi-tour autour de O — ce que la symétrie centrale conserve (sous-titrée)",
+        src: "/videos/proprietes-symetrie-centrale.mp4",
+        poster: "/videos/proprietes-symetrie-centrale.jpg",
+        title: "Vidéo : les propriétés de la symétrie centrale — longueurs, parallélisme, alignement, angles, aires, cercles (sous-titrée)",
       }}
       illusTitle="✨ Ce qui est conservé"
       illus={<HeroIllus />}
