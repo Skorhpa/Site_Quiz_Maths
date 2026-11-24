@@ -542,13 +542,15 @@ export interface HeroStep {
   text: React.ReactNode;
 }
 
-export function VividHero({ onBack, crumbs, title, intro, steps, videos, illusTitle, illus }: {
+export function VividHero({ onBack, crumbs, title, intro, steps, videos, localVideo, illusTitle, illus }: {
   onBack: () => void;
   crumbs: { label: string; color: string }[];
   title: string;
   intro: React.ReactNode;
   steps: HeroStep[];
   videos: { url: string; label: string }[];
+  /** A video file served from /public (e.g. an animation with burned-in subtitles). */
+  localVideo?: { src: string; poster?: string; title: string };
   illusTitle: string;
   illus: React.ReactNode;
 }) {
@@ -589,6 +591,12 @@ export function VividHero({ onBack, crumbs, title, intro, steps, videos, illusTi
                 </div>
               ))}
             </div>
+            {localVideo && (
+              <figure className="pv-player">
+                <video controls preload="metadata" playsInline poster={localVideo.poster} src={localVideo.src} aria-label={localVideo.title} />
+                <figcaption>🎬 {localVideo.title}</figcaption>
+              </figure>
+            )}
             <div className="pv-videos">
               {videos.map((v) => (
                 <a key={v.url} className="pv-video" href={v.url} target="_blank" rel="noopener noreferrer">

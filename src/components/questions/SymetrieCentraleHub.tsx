@@ -220,6 +220,18 @@ function PaperAnimationDemo({ accent }: { accent: string }) {
 
 // ── Hero (rappel illustré + animation) ──────────────────────────────────────────
 
+const QUAD_VIDEO = {
+  src: "/videos/construction-quadrillage.mp4",
+  poster: "/videos/construction-quadrillage.jpg",
+  title: "Vidéo : construire un symétrique sur quadrillage — on compte les carreaux (sous-titrée)",
+};
+
+const PAPER_VIDEO = {
+  src: "/videos/construction-sans-quadrillage.mp4",
+  poster: "/videos/construction-sans-quadrillage.jpg",
+  title: "Vidéo : construire un symétrique sans quadrillage — règle et compas, ou règle graduée (sous-titrée)",
+};
+
 function AnimPanel({ children }: { children: React.ReactNode }) {
   const [show, setShow] = useState(false);
   if (show) return <>{children}</>;
@@ -262,6 +274,7 @@ function QuadHero({ onBack }: { onBack: () => void }) {
         { emoji: '✅', color: C.green, text: <>Tu arrives sur le symétrique <strong>A'</strong> : O est bien le milieu de [AA'].</> },
       ]}
       videos={[{ url: 'https://www.youtube.com/watch?v=7Fsr3R6pLv8', label: 'Vidéo : construire un symétrique sur quadrillage' }]}
+      localVideo={QUAD_VIDEO}
       illusTitle="🎬 Animation"
       illus={<AnimPanel><QuadAnimationDemo accent={C.sky} /></AnimPanel>}
     />
@@ -281,6 +294,7 @@ function PaperHero({ onBack }: { onBack: () => void }) {
         { emoji: '✂️', color: C.green, text: <>Reporte cet écartement <strong>de l'autre côté de O</strong> : tu obtiens A', et O est le milieu de [AA'].</> },
       ]}
       videos={[{ url: 'https://www.youtube.com/playlist?list=PLVUDmbpupCaq2_WKgsP0xJM0gOI1ZY6xK', label: 'Vidéo : construire un symétrique sans quadrillage' }]}
+      localVideo={PAPER_VIDEO}
       illusTitle="🎬 Animation"
       illus={<AnimPanel><PaperAnimationDemo accent={C.sky} /></AnimPanel>}
     />
