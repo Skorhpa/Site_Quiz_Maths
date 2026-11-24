@@ -24,10 +24,10 @@ export interface SituationResult {
 }
 
 const VEHICULES = [
-  { name: 'une voiture', pronoun: 'elle' },
-  { name: 'une moto', pronoun: 'elle' },
-  { name: 'un camion', pronoun: 'il' },
-  { name: 'un bus', pronoun: 'il' },
+  { name: "d'une voiture", pronoun: 'elle' },
+  { name: "d'une moto", pronoun: 'elle' },
+  { name: "d'un camion", pronoun: 'il' },
+  { name: "d'un bus", pronoun: 'il' },
 ] as const;
 
 const PRODUITS_MASSE = ['pommes', 'bananes', 'tomates', 'clous', 'bonbons', 'noisettes'] as const;
@@ -45,7 +45,7 @@ const TRUE_SITUATION_TEMPLATES: (() => SituationResult)[] = [
   () => {
     const v = pick(VEHICULES);
     return {
-      text: `La consommation de carburant de ${v.name} en fonction du nombre de kilomètres parcourus, sachant qu'${v.pronoun} roule à vitesse constante.`,
+      text: `La consommation de carburant ${v.name} en fonction du nombre de kilomètres parcourus, sachant qu'${v.pronoun} roule à vitesse constante.`,
       isProportional: true,
       justification: "À vitesse constante, la quantité de carburant consommée par kilomètre est toujours la même : la consommation est proportionnelle à la distance parcourue.",
     };
@@ -54,7 +54,7 @@ const TRUE_SITUATION_TEMPLATES: (() => SituationResult)[] = [
     const produit = pick(PRODUITS_MASSE);
     const prixKg = pick([1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5]);
     return {
-      text: `Le prix de ${produit} en fonction de leur masse, sachant que le kilogramme coûte ${fmtNum(prixKg)} €.`,
+      text: `Le prix des ${produit} en fonction de leur masse, sachant que le kilogramme coûte ${fmtNum(prixKg)} €.`,
       isProportional: true,
       justification: `Le prix s'obtient en multipliant la masse par le prix au kilogramme (${fmtNum(prixKg)} €) : ces deux grandeurs sont proportionnelles.`,
     };
@@ -76,7 +76,7 @@ const TRUE_SITUATION_TEMPLATES: (() => SituationResult)[] = [
     const o = pick(OBJETS_IDENTIQUES);
     const masse = pick([50, 60, 80, 100, 120, 150, 200, 250]);
     return {
-      text: `La masse totale de ${o.plural} en fonction du nombre de ${o.plural}, sachant que chacun pèse ${masse} g.`,
+      text: `La masse totale de ${o.plural} en fonction du nombre de ${o.plural}, sachant que les ${o.plural} sont identiques et que la masse ${o.singular} est de ${masse} g.`,
       isProportional: true,
       justification: `La masse totale s'obtient en multipliant le nombre de ${o.plural} par ${masse} g (la masse ${o.singular}) : ces deux grandeurs sont proportionnelles.`,
     };
@@ -95,12 +95,13 @@ const FALSE_SITUATION_TEMPLATES: (() => SituationResult)[] = [
     justification: "C'est l'écart d'âge entre le père et le fils qui reste constant (pas leur rapport) : ces deux grandeurs ne sont pas proportionnelles.",
   }),
   () => {
-    const grandeur = pick(['poids', 'taille'] as const);
+    const g = pick([{ phrase: 'Le poids', ref: 'le poids' }, { phrase: 'La taille', ref: 'la taille' }] as const);
     const prenom = pick(PRENOMS);
+    const de = /^[AEIOUÉÈ]/.test(prenom) ? `d'${prenom}` : `de ${prenom}`;
     return {
-      text: `Le ${grandeur} de ${prenom} en fonction de son âge.`,
+      text: `${g.phrase} ${de} en fonction de son âge.`,
       isProportional: false,
-      justification: `La croissance n'est pas régulière : on n'obtient pas le ${grandeur} en multipliant l'âge par un nombre fixe. Ces deux grandeurs ne sont pas proportionnelles.`,
+      justification: `La croissance n'est pas régulière : on n'obtient pas ${g.ref} en multipliant l'âge par un nombre fixe. Ces deux grandeurs ne sont pas proportionnelles.`,
     };
   },
   () => {
@@ -188,6 +189,8 @@ interface DoubleRateTemplate {
   qbRange: [number, number];
   unitA: string;
   unitB: string;
+  /** Number of units covered by one `rate` (e.g. 100 photocopies for the quoted price); 1 when the rate is per unit. */
+  scale?: number;
 }
 
 const DOUBLE_RATE_TEMPLATES: DoubleRateTemplate[] = [
@@ -204,7 +207,7 @@ const DOUBLE_RATE_TEMPLATES: DoubleRateTemplate[] = [
     rateChoices: [6, 7, 8, 9, 10], qaRange: [2, 6], qbRange: [3, 9], unitA: '€', unitB: 'kg',
   },
   {
-    context: (r) => `Avec 2 L de peinture, on peint ${fmtNum(r)} m².`,
+    context: (r) => `Avec 1 L de peinture, on peint ${fmtNum(r)} m².`,
     questionA: (qa) => `a. Quelle surface peint-on avec ${qa} L de peinture ?`,
     questionB: (amount) => `b. Quelle quantité de peinture faut-il pour peindre ${fmtNum(amount)} m² ?`,
     rateChoices: [10, 12.5, 15, 20], qaRange: [3, 10], qbRange: [3, 9], unitA: 'm²', unitB: 'L',
@@ -213,7 +216,7 @@ const DOUBLE_RATE_TEMPLATES: DoubleRateTemplate[] = [
     context: (r) => `Un photocopieur facture ${fmtNum(r)} € pour 100 photocopies.`,
     questionA: (qa) => `a. Combien facture-t-il pour ${qa * 100} photocopies ?`,
     questionB: (amount) => `b. Combien de photocopies peut-on obtenir pour ${fmtNum(amount)} € ?`,
-    rateChoices: [4, 5, 6, 8], qaRange: [2, 6], qbRange: [3, 9], unitA: '€', unitB: 'photocopies',
+    rateChoices: [4, 5, 6, 8], qaRange: [2, 6], qbRange: [3, 9], unitA: '€', unitB: 'photocopies', scale: 100,
   },
 ];
 
@@ -229,6 +232,8 @@ export interface DoubleRateExercise {
   qa: number;
   qb: number;
   amount: number;
+  /** 1, or 100 for "price per 100 photocopies": the question counts units, the rate is per `scale` units. */
+  scale: number;
 }
 
 export function generateDoubleRateExercise(): DoubleRateExercise {
@@ -243,9 +248,10 @@ export function generateDoubleRateExercise(): DoubleRateExercise {
     qaText: tpl.questionA(qa),
     qbText: tpl.questionB(amount),
     answerA: round2(rate * qa),
-    answerB: qb,
+    answerB: qb * (tpl.scale ?? 1),
     unitA: tpl.unitA, unitB: tpl.unitB,
     rate, qa, qb, amount,
+    scale: tpl.scale ?? 1,
   };
 }
 

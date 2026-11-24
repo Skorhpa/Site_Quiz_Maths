@@ -1165,3 +1165,40 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
 @media (prefers-reduced-motion: reduce) {
   .pv-float, .pv-card, .pv-end { animation: none; }
 }
+
+/* ── Symétrie centrale · Propriétés : glisser-déposer, texte à trous ── */
+.pv-bank {
+  display: flex; flex-wrap: wrap; gap: 10px; min-height: 56px; padding: 12px;
+  border: 2px dashed var(--border2); border-radius: 18px; background: var(--bg);
+}
+.pv-chip {
+  display: inline-block; padding: 8px 16px; border-radius: 12px; cursor: grab; user-select: none;
+  background: var(--surface2); border: 2px solid var(--border2);
+  font-family: 'DM Mono', monospace; font-size: 15px; font-weight: 700; color: var(--text);
+  transition: transform 0.15s, border-color 0.15s, background 0.15s;
+}
+.pv-chip:hover { transform: translateY(-2px); border-color: var(--c2); }
+.pv-chip.selected { border-color: var(--c4); background: rgba(251,146,60,0.2); color: var(--c4); box-shadow: 0 8px 18px -12px var(--c4); }
+.pv-chip.placed { cursor: pointer; padding: 4px 12px; }
+.pv-slot {
+  display: inline-flex; align-items: center; justify-content: center; min-width: 110px; min-height: 42px;
+  padding: 3px; border: 2px dashed var(--border2); border-radius: 12px; background: var(--bg); cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.pv-slot.ready { border-color: var(--c4); }
+.pv-slot.filled { border-style: solid; }
+.pv-slot-hint { color: var(--muted); font-size: 18px; }
+.pv-sentence { flex: 1 1 280px; font-size: 14px; line-height: 2.2; }
+.pv-select {
+  padding: 6px 10px; border-radius: 10px; border: 2px dashed var(--border2);
+  background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; cursor: pointer;
+}
+.pv-select:focus { outline: none; border-style: solid; border-color: var(--pv-c, var(--c2)); }
+.pv-select:disabled { border-style: solid; cursor: default; }
+
+/* angle notation: a hat above the three letters */
+.pv-hat { position: relative; display: inline-block; padding-top: 0.5em; line-height: 1; margin: 0 0.1em; letter-spacing: 0.04em; }
+.pv-hat::before { content: '^'; position: absolute; top: -0.12em; left: 50%; transform: translateX(-50%) scaleX(1.5); font-size: 0.95em; line-height: 1; }
+.pv-slot.wide { flex: 1 1 280px; justify-content: flex-start; min-height: 52px; padding: 4px 6px; }
+.pv-chip.wide { cursor: grab; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; line-height: 1.7; text-align: left; padding: 8px 14px; max-width: 100%; }
+.pv-chip.wide.placed { cursor: pointer; background: transparent; border-color: transparent; padding: 2px 6px; }

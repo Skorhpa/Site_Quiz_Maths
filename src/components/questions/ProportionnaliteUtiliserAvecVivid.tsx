@@ -177,7 +177,7 @@ function UniteDirecteCard({ index, exercise: e, theme, answer, onSubmit }: {
   return (
     <CardShell index={index} theme={theme} status={answer.status}>
       <Scene theme={theme}>
-        Un bouquet de <strong>{e.qty1} {e.plural}</strong> coûte <strong>{fmtNum(e.price1)} €</strong>. Calcule le prix d'un bouquet de{' '}
+        <strong>{e.qty1} {e.plural}</strong> coûtent <strong>{fmtNum(e.price1)} €</strong>. Calcule le prix de{' '}
         <strong>{e.qty2} {e.plural}</strong>.
       </Scene>
       <GridTable

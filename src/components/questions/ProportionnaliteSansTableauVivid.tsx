@@ -225,7 +225,10 @@ function DoubleRateCard({ index, exercise, theme, answer, onSubmit }: {
       <StepsCorrection
         color={theme.color}
         labels={['a', 'b']}
-        steps={[
+        steps={exercise.scale > 1 ? [
+          <>{exercise.qa * exercise.scale} {exercise.unitB} = {exercise.qa} × {exercise.scale} {exercise.unitB}, donc le prix est {exercise.qa} × {fmtNum(exercise.rate)} = <Good>{fmtNum(exercise.answerA)} {exercise.unitA}</Good></>,
+          <>{fmtNum(exercise.amount)} : {fmtNum(exercise.rate)} = {exercise.qb}, donc {exercise.qb} × {exercise.scale} = <Good>{exercise.answerB} {exercise.unitB}</Good></>,
+        ] : [
           <>{exercise.qa} × {fmtNum(exercise.rate)} = <Good>{fmtNum(exercise.answerA)} {exercise.unitA}</Good></>,
           <>{fmtNum(exercise.amount)} : {fmtNum(exercise.rate)} = <Good>{exercise.answerB} {exercise.unitB}</Good></>,
         ]}
