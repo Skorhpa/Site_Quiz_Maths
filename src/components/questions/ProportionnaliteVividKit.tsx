@@ -546,7 +546,7 @@ export interface HeroStep {
   text: React.ReactNode;
 }
 
-export function VividHero({ onBack, crumbs, title, intro, steps, videos, localVideo, illusTitle, illus }: {
+export function VividHero({ onBack, crumbs, title, intro, steps, videos, localVideo, extraVideo, illusTitle, illus }: {
   onBack: () => void;
   crumbs: { label: string; color: string }[];
   title: string;
@@ -555,6 +555,8 @@ export function VividHero({ onBack, crumbs, title, intro, steps, videos, localVi
   videos: { url: string; label: string }[];
   /** A video file served from /public (e.g. an animation with burned-in subtitles). */
   localVideo?: { src: string; poster?: string; title: string };
+  /** Extra course video (full width, max 900 px, loaded on demand). */
+  extraVideo?: { src: string; poster: string; title: string };
   illusTitle: string;
   illus: React.ReactNode;
 }) {
@@ -599,6 +601,12 @@ export function VividHero({ onBack, crumbs, title, intro, steps, videos, localVi
               <figure className="pv-player">
                 <video controls preload="metadata" playsInline poster={localVideo.poster} src={localVideo.src} aria-label={localVideo.title} />
                 <figcaption>🎬 {localVideo.title}</figcaption>
+              </figure>
+            )}
+            {extraVideo && (
+              <figure className="pv-player" style={{ width: '100%', maxWidth: 900 }}>
+                <video controls preload="none" playsInline poster={extraVideo.poster} src={extraVideo.src} aria-label={extraVideo.title} style={{ width: '100%' }} />
+                <figcaption>🎬 {extraVideo.title}</figcaption>
               </figure>
             )}
             <div className="pv-videos">

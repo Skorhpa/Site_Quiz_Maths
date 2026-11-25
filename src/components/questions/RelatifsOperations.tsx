@@ -252,6 +252,8 @@ const VIDEO_ADDITION = {
   poster: '/videos/relatifs-addition.jpg',
   title: 'Vidéo : additionner des nombres relatifs — notation, même signe, signes contraires, opposés (sous-titrée)',
 };
+const WEB_ADDITION = { src: '/videos/Additionner_relatifs_5e_web.mp4', poster: '/videos/Additionner_relatifs_5e_apercu.jpg', title: 'Vidéo du cours : additionner des relatifs' };
+const WEB_SOUSTRACTION = { src: '/videos/Soustraire_relatifs_5e_web.mp4', poster: '/videos/Soustraire_relatifs_5e_apercu.jpg', title: 'Vidéo du cours : soustraire des relatifs' };
 const VIDEO_SOUSTRACTION = {
   src: '/videos/relatifs-soustraction.mp4',
   poster: '/videos/relatifs-soustraction.jpg',
@@ -286,6 +288,7 @@ function AdditionHero({ onBack }: { onBack: () => void }) {
         { url: 'https://www.youtube.com/watch?v=zzhfzRic7xg', label: 'Vidéo : somme de nombres relatifs' },
       ]}
       localVideo={VIDEO_ADDITION}
+      extraVideo={WEB_ADDITION}
       illusTitle="✨ Des exemples"
       illus={
         <Examples rows={[
@@ -315,6 +318,7 @@ function SoustractionHero({ onBack }: { onBack: () => void }) {
       steps={steps}
       videos={[{ url: 'https://www.youtube.com/shorts/HVl1vLXJIeE', label: 'Vidéo : soustraire des nombres relatifs' }]}
       localVideo={VIDEO_SOUSTRACTION}
+      extraVideo={WEB_SOUSTRACTION}
       illusTitle="✨ Des exemples"
       illus={
         <Examples rows={[
