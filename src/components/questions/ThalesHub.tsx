@@ -3,6 +3,7 @@ import type { Exercise, ThalesExercise, ThalesReciproqueExercise } from '@/types
 import { runGenerator } from '@/lib/runGenerator';
 import { ThalesQuestion } from './ThalesQuestion';
 import { ThalesReciproqueQuestion } from './ThalesReciproqueQuestion';
+import { ModeCard } from './ModeCard';
 
 type HubMode = 'theoreme' | 'reciproque';
 
@@ -138,28 +139,6 @@ function RecallRéciproque() {
   );
 }
 
-function ModeCard({ label, icon, desc, onClick }: { label: string; icon: string; desc: string; onClick: () => void }) {
-  return (
-    <button type="button" onClick={onClick}
-      style={{
-        display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: 16,
-        background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 14,
-        padding: '16px 20px', cursor: 'pointer', textAlign: 'left', color: 'var(--text)',
-        transition: 'border-color 0.15s', width: '100%',
-      }}
-      onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = ACCENT; }}
-      onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border)'; }}
-    >
-      <div style={{ width: 38, minWidth: 38, fontSize: 22, display: 'flex', justifyContent: 'flex-start', alignItems: 'center', flexShrink: 0, color: ACCENT }}>
-        {icon}
-      </div>
-      <div>
-        <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 2 }}>{label}</div>
-        <div style={{ fontSize: 12, color: 'var(--muted)' }}>{desc}</div>
-      </div>
-    </button>
-  );
-}
 
 const MAIN_MODES: { id: HubMode; label: string; icon: string; desc: string }[] = [
   { id: 'theoreme',  label: 'Le théorème de Thalès',     icon: '∥',  desc: '7 exercices · calculs de longueurs et glisser-déposer' },

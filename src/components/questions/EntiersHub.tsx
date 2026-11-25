@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react'
 import type { EntiersTrouExercise, EntiersSigneExercise, NumberExercise } from '@/types';
 import { generateCalcsSeries, generateComplexSeries, generateSigneSeries } from '@/lib/generators/entiers-hub';
 import { NumberQuestion } from './NumberQuestion';
+import { ModeCard } from './ModeCard';
 
 type HubMode = 'select' | 'calculs' | 'complex' | 'signes';
 type HubExercise = NumberExercise | EntiersTrouExercise | EntiersSigneExercise;
@@ -410,51 +411,10 @@ const MODES: { id: HubMode; label: string; icon: string; desc: string; href?: st
 function ModeSelector({ onSelect, accent }: { onSelect: (m: HubMode) => void; accent: string }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 14, maxWidth: 560, margin: '0 auto' }}>
-      {MODES.map((m) => {
-        if (m.href) {
-          return (
-            <a
-              key={m.id}
-              href={m.href}
-              style={{
-                display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: 16,
-                background: 'var(--surface)', border: `1px solid var(--border)`,
-                borderRadius: 14, padding: '16px 20px', textDecoration: 'none', color: 'var(--text)',
-                transition: 'border-color 0.15s',
-              }}
-              onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = accent; }}
-              onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border)'; }}
-            >
-              <span style={{ fontSize: 28, width: 38, minWidth: 38, flexShrink: 0, textAlign: 'left', color: accent }}>{m.icon}</span>
-              <div>
-                <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 2 }}>{m.label}</div>
-                <div style={{ fontSize: 12, color: 'var(--muted)' }}>{m.desc}</div>
-              </div>
-            </a>
-          );
-        }
-        return (
-          <button
-            key={m.id}
-            type="button"
-            onClick={() => onSelect(m.id as HubMode)}
-            style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: 16,
-              background: 'var(--surface)', border: `1px solid var(--border)`,
-              borderRadius: 14, padding: '16px 20px', cursor: 'pointer', textAlign: 'left',
-              color: 'var(--text)', transition: 'border-color 0.15s',
-            }}
-            onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = accent; }}
-            onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border)'; }}
-          >
-            <span style={{ fontSize: 28, width: 38, minWidth: 38, flexShrink: 0, textAlign: 'left', color: accent }}>{m.icon}</span>
-            <div>
-              <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 2 }}>{m.label}</div>
-              <div style={{ fontSize: 12, color: 'var(--muted)' }}>{m.desc}</div>
-            </div>
-          </button>
-        );
-      })}
+      {MODES.map((m) => (
+        <ModeCard key={m.id} label={m.label} icon={m.icon} desc={m.desc} href={m.href} accent={accent}
+          onClick={m.href ? undefined : () => onSelect(m.id as HubMode)} />
+      ))}
     </div>
   );
 }

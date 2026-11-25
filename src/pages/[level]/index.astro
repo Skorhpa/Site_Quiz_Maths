@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import { LEVELS, getLevel } from '@/data/levels';
+import { LEVELS, LEVEL_THEME, getLevel } from '@/data/levels';
 import type { Topic } from '@/types';
 
 export async function getStaticPaths() {
@@ -24,6 +24,34 @@ if (level.available && level.topicsModule) {
 // the link would just bounce back to this page via the / → /<level> redirect.
 // Auto-restores once a second level flips to `available: true` in src/data/levels.ts.
 const showLevelTopbar = LEVELS.filter((l) => l.available).length > 1;
+
+const theme = LEVEL_THEME[level.id] ?? { color: '#A78BFA', emoji: '✨' };
+const visible = topics.filter((t) => !(t.available && t.hidden));
+const liveCount = visible.filter((t) => t.available).length;
+
+// Topic cards grouped by category, in a fixed order.
+const CATEGORIES = [
+  { id: 'Calcul', emoji: '🔢', color: '#6EE7C0' },
+  { id: 'Géométrie', emoji: '📐', color: '#60A5FA' },
+  { id: 'Algèbre', emoji: '🧩', color: '#A78BFA' },
+];
+const groups = CATEGORIES
+  .map((c) => ({ ...c, topics: visible.filter((t) => t.category === c.id) }))
+  .filter((g) => g.topics.length > 0);
+
+const TIPS = [
+  { emoji: '✏️', color: '#60A5FA', title: 'Un brouillon', text: "Il est préférable de se munir d'un brouillon pour certains exercices." },
+  { emoji: '🧮', color: '#FB923C', title: 'Calculatrice ?', text: "Certains exercices se font sans calculatrice, d'autres avec : c'est indiqué en début d'exercice." },
+  { emoji: '🔍', color: '#4ADE80', title: 'La correction', text: 'Choisis une série, réponds aux questions et regarde bien la correction de chaque question.' },
+  { emoji: '🏔️', color: '#F472B6', title: 'Pas à pas', text: 'Certaines séries sont plus difficiles : maîtrise bien les bases avant de les essayer.' },
+];
+
+const DECOS = [
+  { s: 'π', x: '58%', y: '8%', size: 50, delay: '0s' },
+  { s: '√', x: '92%', y: '14%', size: 54, delay: '-2s' },
+  { s: '±', x: '86%', y: '70%', size: 42, delay: '-4s' },
+  { s: '÷', x: '70%', y: '62%', size: 36, delay: '-1s' },
+];
 ---
 <BaseLayout title={`${level.label} — SiteMath`} description={level.description}>
   {showLevelTopbar && (
@@ -52,68 +80,83 @@ const showLevelTopbar = LEVELS.filter((l) => l.available).length > 1;
     })();
   </script>
 
-  <main class="home-shell">
-    <div class="home-eyebrow">Révisions</div>
-    <h1 class="home-title">Maths - Collège Montesquieu d'Évry</h1>
-    {topics.length > 0 && (
-      <div class="home-sub" style="text-align:left;max-width:640px;margin:1.5rem auto 3.5rem;font-size:15px;line-height:2;">
-        <strong>Quelques recommandations :</strong>
-        <ul style="margin-top:0.5rem;padding-left:1.4rem;">
-          <li>Il est préférable de se munir d'un brouillon pour certains exercices.</li>
-          <li>Certains exercices doivent être faits sans calculatrice, d'autres avec. Cette information est mentionnée en début d'exercice.</li>
-          <li>Clique sur une série sur laquelle tu souhaites t'entraîner puis réponds aux questions. Pense bien à regarder la correction à chaque question.</li>
-          <li>Certains exercices proposent des séries plus compliquées, sois sûr de maîtriser les bases avant d'essayer.</li>
-        </ul>
-      </div>
-    )}
-
-    {topics.length === 0 && (
-      <div style="text-align:center;margin-top:3rem;">
-        <div style="font-size:3rem;margin-bottom:1rem;">🚧</div>
-        <p style="color:var(--text);font-size:1.1rem;font-weight:600;margin-bottom:0.5rem;">
-          Ce niveau arrive bientôt !
-        </p>
-        <p style="color:var(--muted);font-size:14px;">
-          Les exercices de {level.label} sont en cours de préparation.
-        </p>
-      </div>
-    )}
-
-    {topics.length > 0 && (
-      <div class="quiz-cards">
-        {topics.filter((t) => !(t.available && t.hidden)).map((topic) => (
-          topic.available ? (
-            <a
-              href={`/${level.id}/${topic.id}`}
-              class="quiz-card"
-              style={`--card-accent: ${topic.accent};`}
-            >
-              <div class="qc-icon" style={`background:${topic.accent}26;`}>
-                {topic.icon}
-              </div>
-              <div class="qc-label" style={`color:${topic.accent};`}>{topic.category}</div>
-              <div class="qc-title">{topic.cardTitle ?? topic.title}</div>
-              <div class="qc-desc">{topic.description}</div>
-              <div class="qc-tags">
-                {topic.tags.map((t) => <span class="qc-tag">{t}</span>)}
-              </div>
-              <div class="qc-arrow">→</div>
-            </a>
-          ) : (
-            <div class="quiz-card locked" style={`--card-accent: ${topic.accent};`}>
-              <div class="qc-icon" style={`background:${topic.accent}26;`}>
-                {topic.icon}
-              </div>
-              <div class="qc-label" style={`color:${topic.accent};`}>{topic.category}</div>
-              <div class="qc-title">{topic.cardTitle ?? topic.title}</div>
-              <div class="qc-desc">{topic.description}</div>
-              <div class="qc-tags">
-                <span class="qc-tag">Bientôt</span>
-              </div>
-            </div>
-          )
+  <main class="hm-shell" style={`--lv:${theme.color};`}>
+    <section class="hm-hero lv-hero">
+      <div class="hm-deco-layer" aria-hidden="true">
+        {DECOS.map((d) => (
+          <span class="hm-deco" style={`left:${d.x};top:${d.y};font-size:${d.size}px;color:${theme.color};animation-delay:${d.delay};`}>{d.s}</span>
         ))}
       </div>
+      <div class="hm-hero-content lv-hero-content">
+        <div class="hm-badge lv-badge">{level.shortLabel}</div>
+        <div>
+          <div class="hm-eyebrow lv-eyebrow">Révisions · Collège Montesquieu d'Évry</div>
+          <h1 class="hm-title lv-title">{level.label} <span aria-hidden="true">{theme.emoji}</span></h1>
+          <p class="hm-sub lv-sub">{level.description}</p>
+          {topics.length > 0 && (
+            <div class="lv-stats">
+              <span class="hm-count">{liveCount} quiz</span>
+              {groups.map((g) => (
+                <span class="hm-count" style={`--lv:${g.color};`}>{g.emoji} {g.id} · {g.topics.length}</span>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+
+    {topics.length === 0 && (
+      <div class="lv-empty">
+        <div style="font-size:3rem;margin-bottom:1rem;">🚧</div>
+        <p style="color:var(--text);font-size:1.1rem;font-weight:600;margin-bottom:0.5rem;">Ce niveau arrive bientôt !</p>
+        <p style="color:var(--muted);font-size:14px;">Les exercices de {level.label} sont en cours de préparation.</p>
+      </div>
     )}
+
+    {topics.length > 0 && (
+      <section class="lv-tips" aria-label="Quelques recommandations">
+        {TIPS.map((t) => (
+          <div class="lv-tip" style={`--hc:${t.color};`}>
+            <span class="lv-tip-emoji">{t.emoji}</span>
+            <div><strong>{t.title}</strong><p>{t.text}</p></div>
+          </div>
+        ))}
+      </section>
+    )}
+
+    {groups.map((g) => (
+      <section class="lv-group">
+        <h2 class="lv-group-title" style={`--gc:${g.color};`}>
+          <span class="lv-group-icon">{g.emoji}</span>{g.id}
+          <span class="lv-group-count">{g.topics.length} quiz</span>
+        </h2>
+        <div class="lv-cards">
+          {g.topics.map((topic) => {
+            const Tag = topic.available ? 'a' : 'div';
+            return (
+              <Tag
+                href={topic.available ? `/${level.id}/${topic.id}` : undefined}
+                class:list={['hm-level', 'lv-card', { 'hm-level-off': !topic.available }]}
+                style={`--lv:${topic.accent};`}
+              >
+                <div class="lv-card-top">
+                  <div class="lv-icon">{topic.icon}</div>
+                  <div class="lv-card-title">{topic.cardTitle ?? topic.title}</div>
+                </div>
+                <p class="lv-desc">{topic.description}</p>
+                <div class="hm-level-foot">
+                  <div class="lv-tags">
+                    {topic.available
+                      ? topic.tags.map((t) => <span class="hm-count">{t}</span>)
+                      : <span class="hm-count">Bientôt</span>}
+                  </div>
+                  {topic.available && <span class="hm-go">Commencer <span class="hm-arrow">→</span></span>}
+                </div>
+              </Tag>
+            );
+          })}
+        </div>
+      </section>
+    ))}
   </main>
 </BaseLayout>
