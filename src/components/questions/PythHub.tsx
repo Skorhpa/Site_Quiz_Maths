@@ -5,6 +5,7 @@ import { generateSquareSeries, generateSqrtSeries } from '@/lib/generators/squar
 import { SquareQuestion } from './SquareQuestion';
 import { PythagoreQuestion } from './PythagoreQuestion';
 import { ReciproqueQuestion } from './ReciproqueQuestion';
+import { ModeCard } from './ModeCard';
 
 type HubMode = 'carre' | 'racine' | 'theoreme' | 'reciproque';
 
@@ -171,28 +172,6 @@ function RecallRéciproque() {
 
 // ── ModeCard ──────────────────────────────────────────────────────────────
 
-function ModeCard({ label, icon, desc, accent, onClick }: { label: string; icon: string; desc: string; accent: string; onClick: () => void }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      style={{
-        display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: 16,
-        background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 14,
-        padding: '16px 20px', cursor: 'pointer', textAlign: 'left', color: 'var(--text)',
-        transition: 'border-color 0.15s', width: '100%',
-      }}
-      onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = accent; }}
-      onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border)'; }}
-    >
-      <span style={{ fontSize: 26, width: 38, minWidth: 38, flexShrink: 0, textAlign: 'left', color: accent }}>{icon}</span>
-      <div>
-        <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 2 }}>{label}</div>
-        <div style={{ fontSize: 12, color: 'var(--muted)' }}>{desc}</div>
-      </div>
-    </button>
-  );
-}
 
 const MAIN_MODES: { id: HubMode; label: string; icon: string; desc: string; accent: string }[] = [
   { id: 'carre',    label: 'Calculer un carré',          icon: 'n²',  desc: '5 exercices · chiffres et nombres à deux chiffres',         accent: ACCENT },

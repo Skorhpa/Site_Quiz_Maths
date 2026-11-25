@@ -268,7 +268,7 @@ export default function Quiz({ quiz }: QuizProps) {
   const { main: titleMain, tail: titleTail } = splitTitle(quiz.title, quiz.titleSub);
 
   return (
-    <div className="quiz-page">
+    <div className="quiz-page" style={{ ['--qa' as string]: quiz.accent } as React.CSSProperties}>
       <div className="er-header">
         <h1 className="er-title" style={titleStyle}>
           {titleMain}

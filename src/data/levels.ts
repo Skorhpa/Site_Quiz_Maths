@@ -41,3 +41,11 @@ export const LEVELS: LevelDefinition[] = [
 export function getLevel(id: string): LevelDefinition | undefined {
   return LEVELS.find((l) => l.id === id);
 }
+
+/** Colour + emoji of each collège level on the home page and the level pages (canonical palette). */
+export const LEVEL_THEME: Record<string, { color: string; emoji: string }> = {
+  '6eme': { color: '#60A5FA', emoji: '🚀' },
+  '5eme': { color: '#6EE7C0', emoji: '🧭' },
+  '4eme': { color: '#A78BFA', emoji: '📐' },
+  '3eme': { color: '#FB923C', emoji: '🎓' },
+};

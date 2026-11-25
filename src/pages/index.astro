@@ -1,33 +1,110 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import { LEVELS } from '@/data/levels';
+import { LEVELS, LEVEL_THEME } from '@/data/levels';
+import type { Topic } from '@/types';
 
 // Only show the four collège levels in the picker
 const collegeLevels = LEVELS.filter((l) => ['6eme', '5eme', '4eme', '3eme'].includes(l.id));
+
+const cards = await Promise.all(
+  collegeLevels.map(async (level) => {
+    let topics: Topic[] = [];
+    if (level.available && level.topicsModule) {
+      topics = (await level.topicsModule()).topics;
+    }
+    const live = topics.filter((t) => t.available && !('hidden' in t && t.hidden));
+    return { level, live, ...(LEVEL_THEME[level.id] ?? { color: '#A78BFA', emoji: '✨' }) };
+  }),
+);
+const totalQuizzes = cards.reduce((n, c) => n + c.live.length, 0);
+
+const DECOS = [
+  { s: 'π', x: '6%', y: '18%', size: 64, color: '#60A5FA', delay: '0s' },
+  { s: '√', x: '88%', y: '14%', size: 58, color: '#F472B6', delay: '-2s' },
+  { s: '±', x: '14%', y: '78%', size: 50, color: '#6EE7C0', delay: '-4s' },
+  { s: '÷', x: '80%', y: '74%', size: 54, color: '#FB923C', delay: '-1s' },
+  { s: '∠', x: '48%', y: '6%', size: 40, color: '#A78BFA', delay: '-3s' },
+  { s: '%', x: '94%', y: '46%', size: 40, color: '#38BDF8', delay: '-5s' },
+  { s: '×', x: '3%', y: '48%', size: 42, color: '#E879F9', delay: '-6s' },
+];
 ---
 <BaseLayout title="SiteMath — Choisis ton niveau">
-  <main class="home-shell">
-    <div class="home-eyebrow">Maths · Collège Montesquieu d'Évry</div>
-    <h1 class="home-title">Choisis ton niveau</h1>
-    <p class="home-sub">Clique sur ta classe pour accéder aux exercices</p>
+  <main class="hm-shell">
+    <section class="hm-hero">
+      <div class="hm-deco-layer" aria-hidden="true">
+        {DECOS.map((d) => (
+          <span class="hm-deco" style={`left:${d.x};top:${d.y};font-size:${d.size}px;color:${d.color};animation-delay:${d.delay};`}>{d.s}</span>
+        ))}
+      </div>
+      <div class="hm-hero-content">
+        <div class="hm-eyebrow">Maths · Collège Montesquieu d'Évry</div>
+        <h1 class="hm-title">Entraîne-toi en maths,<br /><span>à ton rythme.</span></h1>
+        <p class="hm-sub">
+          Des quiz qui changent à chaque fois, des rappels de cours avec des vidéos et une correction détaillée pour chaque question.
+        </p>
+        <div class="hm-stats">
+          <div class="hm-stat"><strong>{collegeLevels.length}</strong><span>niveaux</span></div>
+          <div class="hm-stat"><strong>{totalQuizzes}</strong><span>quiz</span></div>
+          <div class="hm-stat"><strong>∞</strong><span>exercices générés</span></div>
+        </div>
+        <a class="hm-cta" href="#niveaux">Choisis ta classe ↓</a>
+      </div>
+    </section>
 
-    <div class="quiz-cards" style="max-width:640px;margin:0 auto;">
-      {collegeLevels.map((level) => (
-        <a href={`/${level.id}`} class="quiz-card" style={`--card-accent: var(--text);`}>
-          <div class="qc-icon" style="font-size:1.6rem;font-weight:800;">{level.shortLabel}</div>
-          <div>
-            <div class="qc-title">{level.label}</div>
-            <div class="qc-desc">{level.description}</div>
-          </div>
-          <div class="qc-tags" style="margin-left:auto;">
-            {level.topicsModule
-              ? <span class="qc-tag" style="color:#4ADE80;border-color:#4ADE8040;">Disponible</span>
-              : <span class="qc-tag">Bientôt</span>
-            }
-          </div>
-          <div class="qc-arrow">→</div>
-        </a>
-      ))}
+    <h2 id="niveaux" class="hm-section-title">Choisis ton niveau</h2>
+    <div class="hm-levels">
+      {cards.map(({ level, live, color, emoji }) => {
+        const enabled = Boolean(level.topicsModule) && live.length > 0;
+        const preview = live.slice(0, 4);
+        const more = live.length - preview.length;
+        const Tag = enabled ? 'a' : 'div';
+        return (
+          <Tag
+            href={enabled ? `/${level.id}` : undefined}
+            class:list={['hm-level', { 'hm-level-off': !enabled }]}
+            style={`--lv:${color};`}
+          >
+            <div class="hm-level-top">
+              <div class="hm-badge">{level.shortLabel}</div>
+              <div class="hm-level-head">
+                <div class="hm-level-name">{level.label} <span aria-hidden="true">{emoji}</span></div>
+                <div class="hm-level-desc">{level.description}</div>
+              </div>
+            </div>
+            {enabled ? (
+              <ul class="hm-topics">
+                {preview.map((t) => (
+                  <li class="hm-topic" style={`--tc:${t.accent};`}>
+                    <span class="hm-topic-icon">{t.icon}</span>{t.title}
+                  </li>
+                ))}
+                {more > 0 && <li class="hm-topic hm-topic-more">+ {more} autre{more > 1 ? 's' : ''}</li>}
+              </ul>
+            ) : (
+              <p class="hm-soon">Bientôt disponible</p>
+            )}
+            <div class="hm-level-foot">
+              <span class="hm-count">{live.length} quiz</span>
+              {enabled && <span class="hm-go">C'est parti <span class="hm-arrow">→</span></span>}
+            </div>
+          </Tag>
+        );
+      })}
     </div>
+
+    <section class="hm-how">
+      <div class="hm-how-step" style="--hc:#60A5FA;">
+        <span class="hm-how-num">1</span>
+        <div><strong>Lis le rappel</strong><p>La méthode, des exemples et une vidéo pour bien démarrer.</p></div>
+      </div>
+      <div class="hm-how-step" style="--hc:#F472B6;">
+        <span class="hm-how-num">2</span>
+        <div><strong>Fais les missions</strong><p>Chaque série est tirée au hasard : tu peux recommencer autant que tu veux.</p></div>
+      </div>
+      <div class="hm-how-step" style="--hc:#4ADE80;">
+        <span class="hm-how-num">3</span>
+        <div><strong>Comprends tes erreurs</strong><p>Chaque réponse est corrigée étape par étape.</p></div>
+      </div>
+    </section>
   </main>
 </BaseLayout>

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
+import { ModeCard } from './questions/ModeCard';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -58,49 +59,6 @@ function endTitle(pct: number): string {
 
 // ── ModeCard ──────────────────────────────────────────────────────────────────
 
-function ModeCard({
-  label,
-  icon,
-  desc,
-  accent,
-  onClick,
-}: {
-  label: string;
-  icon: string;
-  desc: string;
-  accent: string;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'flex-start',
-        gap: 16,
-        background: 'var(--surface)',
-        border: '1px solid var(--border)',
-        borderRadius: 14,
-        padding: '16px 20px',
-        cursor: 'pointer',
-        textAlign: 'left',
-        color: 'var(--text)',
-        transition: 'border-color 0.15s',
-        width: '100%',
-      }}
-      onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = accent; }}
-      onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border)'; }}
-    >
-      <span style={{ fontSize: 26, width: 38, minWidth: 38, flexShrink: 0, textAlign: 'left', color: accent }}>{icon}</span>
-      <div>
-        <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 2 }}>{label}</div>
-        <div style={{ fontSize: 12, color: 'var(--muted)' }}>{desc}</div>
-      </div>
-    </button>
-  );
-}
 
 // ── TableQuestion ─────────────────────────────────────────────────────────────
 

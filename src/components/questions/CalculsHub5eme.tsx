@@ -3,6 +3,7 @@ import type { AutoQCMExercise, AutoCalcExercise } from '@/types';
 import { AutomatismesQuestion } from './AutomatismesQuestion';
 import { ReperageHub5eme } from '../ReperageHub5eme';
 import { DivEuclidienne5eme } from '../DivEuclidienne5eme';
+import { ModeCard } from './ModeCard';
 
 type MainMode = 'priorites' | 'reperage' | 'division' | 'dev-fact' | null;
 type SubMode = 'sans-parentheses' | 'avec-parentheses' | 'developper' | 'factoriser' | null;
@@ -25,51 +26,6 @@ function endTitle(pct: number): string {
 
 // ── ModeCard ──────────────────────────────────────────────────────────────────
 
-function ModeCard({
-  label, icon, desc, accent, onClick, href,
-}: {
-  label: string; icon: string; desc: string; accent: string; onClick?: () => void; href?: string;
-}) {
-  const sharedStyle: React.CSSProperties = {
-    display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: 16,
-    background: 'var(--surface)', border: '1px solid var(--border)',
-    borderRadius: 14, padding: '16px 20px', cursor: 'pointer',
-    textAlign: 'left', color: 'var(--text)', transition: 'border-color 0.15s', width: '100%',
-    textDecoration: 'none',
-  };
-  const inner = (
-    <>
-      <span style={{ fontSize: 26, width: 38, minWidth: 38, flexShrink: 0, textAlign: 'left', color: accent }}>{icon}</span>
-      <div>
-        <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 2 }}>{label}</div>
-        <div style={{ fontSize: 12, color: 'var(--muted)' }}>{desc}</div>
-      </div>
-    </>
-  );
-  if (href) {
-    return (
-      <a
-        href={href}
-        style={sharedStyle}
-        onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = accent; }}
-        onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border)'; }}
-      >
-        {inner}
-      </a>
-    );
-  }
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      style={sharedStyle}
-      onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = accent; }}
-      onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border)'; }}
-    >
-      {inner}
-    </button>
-  );
-}
 
 // ── VideoLink ─────────────────────────────────────────────────────────────────
 

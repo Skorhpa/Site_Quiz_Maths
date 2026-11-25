@@ -17,6 +17,8 @@ import {
 import { generateCompSeries, generateSimplSeries } from '@/lib/generators/fractions-comp';
 import { FractionQuestion } from './FractionQuestion';
 import { FractionsCompQuestion } from './FractionsCompQuestion';
+import { ModeCard } from './ModeCard';
+export { ModeCard };
 
 type HubMode = 'mdc' | 'calculs' | 'comp' | 'simpl' | 'problemes';
 type CalcSubMode = 'add' | 'sub' | 'mul' | 'div' | 'complex';
@@ -341,37 +343,6 @@ export function QuizView({
 
 // ── Mode selectors ────────────────────────────────────────────────────────────
 
-export function ModeCard({ label, icon, desc, accent, onClick, disabled = false }: {
-  label: string;
-  icon: string;
-  desc: string;
-  accent: string;
-  onClick: () => void;
-  disabled?: boolean;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={disabled}
-      style={{
-        display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: 16,
-        background: 'var(--surface)', border: '1px solid var(--border)',
-        borderRadius: 14, padding: '16px 20px', cursor: disabled ? 'not-allowed' : 'pointer',
-        textAlign: 'left', color: disabled ? 'var(--muted)' : 'var(--text)',
-        transition: 'border-color 0.15s', width: '100%', opacity: disabled ? 0.55 : 1,
-      }}
-      onMouseEnter={(e) => { if (!disabled) (e.currentTarget as HTMLElement).style.borderColor = accent; }}
-      onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border)'; }}
-    >
-      <div style={{ width: 38, minWidth: 38, fontSize: 22, display: 'flex', justifyContent: 'flex-start', alignItems: 'center', flexShrink: 0, color: disabled ? 'var(--muted)' : accent }}>{icon}</div>
-      <div>
-        <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 2 }}>{label}</div>
-        <div style={{ fontSize: 12, color: 'var(--muted)' }}>{desc}</div>
-      </div>
-    </button>
-  );
-}
 
 const MAIN_MODES: { id: HubMode; label: string; icon: string; desc: string }[] = [
   {
