@@ -1207,3 +1207,60 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
 .pv-player { margin: 0 0 14px; border: 1.5px solid var(--border2); border-radius: 18px; overflow: hidden; background: #000; max-width: 640px; }
 .pv-player video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; background: #000; }
 .pv-player figcaption { padding: 8px 14px; font-size: 12.5px; color: var(--muted); background: var(--surface); }
+
+/* Opérations sur les relatifs : lignes de calcul et pyramide */
+.pv-inp-wide { width: 170px; }
+.pv-eq { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; flex: 1 1 260px; }
+.pv-eqtext { font-family: 'DM Mono', monospace; font-size: 16px; white-space: pre-wrap; line-height: 1.6; }
+.pv-pyr { display: flex; flex-direction: column; align-items: center; gap: 8px; margin: 6px 0 4px; }
+.pv-pyr-row { display: flex; gap: 8px; justify-content: center; }
+.pv-pyr-cell { width: 108px; min-height: 52px; display: grid; place-items: center; padding: 4px; border: 2px solid; border-radius: 14px; }
+.pv-pyr-cell .pv-inp { width: 100%; }
+.pv-pyr-num { font-family: 'DM Mono', monospace; font-size: 17px; font-weight: 700; }
+@media (max-width: 520px) {
+  .pv-inp-wide { width: 130px; }
+  .pv-pyr-cell { width: 70px; min-height: 46px; }
+  .pv-pyr-num { font-size: 14px; }
+}
+
+/* "Nombre de nombres relatifs" selector (same idea as « Nombre de fractions ») */
+.pv-count { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.pv-count-label { font-size: 13px; color: var(--muted); }
+.pv-count-btn {
+  padding: 5px 16px; border-radius: 10px; border: 1.5px solid var(--border2); background: var(--surface);
+  color: var(--muted); font-family: 'DM Mono', monospace; font-size: 14px; font-weight: 700; cursor: pointer;
+  transition: transform 0.15s, border-color 0.15s, background 0.15s;
+}
+.pv-count-btn:hover:not(:disabled) { transform: translateY(-1px); }
+.pv-count-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* Anciens exercices (nombres relatifs : définitions, repérage, comparaison) habillés comme les autres missions */
+.pv-card input[type='text'] {
+  border: 2px dashed var(--border2) !important; border-radius: 10px !important; background: var(--bg) !important;
+  color: var(--text) !important; font-size: 15px !important; padding: 7px 6px !important;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.pv-card input[type='text']:focus {
+  outline: none; border-style: solid !important; border-color: var(--c2) !important; box-shadow: 0 0 0 4px rgba(96,165,250,0.25);
+}
+.pv-card input[type='text']:disabled { border-style: solid !important; }
+.pv-card input[type='checkbox'] { width: 22px !important; height: 22px !important; accent-color: var(--c6); }
+.pv-card .btn-secondary {
+  border: none; border-radius: 14px; padding: 10px 24px !important; font-size: 14px !important; font-weight: 700; color: #0F1117;
+  background: linear-gradient(135deg, var(--c2), var(--c3));
+}
+.pv-card .btn-secondary:hover:not(:disabled) { filter: brightness(1.08); transform: translateY(-1px); background: linear-gradient(135deg, var(--c2), var(--c3)); }
+.pv-card .btn-secondary:disabled { opacity: 0.45; }
+.pv-card .feedback { display: inline-block; margin-top: 0; padding: 7px 14px; border-radius: 12px; font-family: 'DM Sans', sans-serif !important; font-size: 14px !important; }
+.pv-card .feedback.ok { background: rgba(74,222,128,0.12); border: 1px solid rgba(74,222,128,0.35); }
+.pv-card .feedback.ko { background: rgba(248,113,113,0.10); border: 1px solid rgba(248,113,113,0.35); }
+.pv-card .hint-toggle {
+  display: inline-flex; margin-bottom: 8px; padding: 7px 16px; border: 1px solid var(--border2); border-radius: 99px;
+  font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; text-transform: none; letter-spacing: 0; color: var(--text);
+  background: var(--surface2); cursor: pointer;
+}
+.pv-card .hint-toggle:hover { color: var(--c2); border-color: var(--c2); }
+.pv-card .steps-box { border-radius: 18px; padding: 14px 16px; font-family: 'DM Sans', sans-serif; font-size: 14px; line-height: 1.8; color: var(--text); margin-bottom: 4px; }
+.pv-card table { border-collapse: separate !important; border-spacing: 0; }
+.pv-card th, .pv-card td { border-bottom: 1.5px solid var(--border2) !important; }
+.pv-card tr:last-child > th, .pv-card tr:last-child > td { border-bottom: none !important; }

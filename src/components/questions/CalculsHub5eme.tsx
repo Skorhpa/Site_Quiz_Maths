@@ -31,7 +31,7 @@ function ModeCard({
   label: string; icon: string; desc: string; accent: string; onClick?: () => void; href?: string;
 }) {
   const sharedStyle: React.CSSProperties = {
-    display: 'flex', alignItems: 'center', gap: 16,
+    display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: 16,
     background: 'var(--surface)', border: '1px solid var(--border)',
     borderRadius: 14, padding: '16px 20px', cursor: 'pointer',
     textAlign: 'left', color: 'var(--text)', transition: 'border-color 0.15s', width: '100%',
@@ -39,7 +39,7 @@ function ModeCard({
   };
   const inner = (
     <>
-      <span style={{ fontSize: 26, minWidth: 36, textAlign: 'center', color: accent }}>{icon}</span>
+      <span style={{ fontSize: 26, width: 38, minWidth: 38, flexShrink: 0, textAlign: 'left', color: accent }}>{icon}</span>
       <div>
         <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 2 }}>{label}</div>
         <div style={{ fontSize: 12, color: 'var(--muted)' }}>{desc}</div>

@@ -127,6 +127,7 @@ function ModeCard({
       style={{
         display: 'flex',
         alignItems: 'center',
+        justifyContent: 'flex-start',
         gap: 16,
         background: 'var(--surface)',
         border: '1px solid var(--border)',
@@ -149,8 +150,10 @@ function ModeCard({
       <span
         style={{
           fontSize: 26,
-          minWidth: 36,
-          textAlign: 'center',
+          width: 38,
+          minWidth: 38,
+          flexShrink: 0,
+          textAlign: 'left',
           color: disabled ? 'var(--muted)' : accent,
         }}
       >

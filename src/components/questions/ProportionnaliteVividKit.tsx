@@ -59,18 +59,22 @@ export function useStringArray(n: number) {
 
 // ── Small building blocks ─────────────────────────────────────────────────────
 
-export function Inp({ value, onChange, disabled, color, label }: {
+export function Inp({ value, onChange, disabled, color, label, wide = false, signed = false }: {
   value: string;
   onChange: (v: string) => void;
   disabled: boolean;
   color: string;
   label: string;
+  /** Wider box, for expressions such as "(−8) + (+13)". */
+  wide?: boolean;
+  /** Text keyboard (a number pad may have no minus sign) — for negative numbers. */
+  signed?: boolean;
 }) {
   return (
     <input
       type="text"
-      inputMode="decimal"
-      className="pv-inp"
+      inputMode={signed ? 'text' : 'decimal'}
+      className={wide ? 'pv-inp pv-inp-wide' : 'pv-inp'}
       value={value}
       placeholder="…"
       aria-label={label}

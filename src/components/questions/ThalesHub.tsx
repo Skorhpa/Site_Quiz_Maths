@@ -142,7 +142,7 @@ function ModeCard({ label, icon, desc, onClick }: { label: string; icon: string;
   return (
     <button type="button" onClick={onClick}
       style={{
-        display: 'flex', alignItems: 'center', gap: 16,
+        display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: 16,
         background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 14,
         padding: '16px 20px', cursor: 'pointer', textAlign: 'left', color: 'var(--text)',
         transition: 'border-color 0.15s', width: '100%',
@@ -150,7 +150,7 @@ function ModeCard({ label, icon, desc, onClick }: { label: string; icon: string;
       onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = ACCENT; }}
       onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border)'; }}
     >
-      <div style={{ width: 38, minWidth: 38, fontSize: 22, display: 'flex', justifyContent: 'center', alignItems: 'center', flexShrink: 0, color: ACCENT }}>
+      <div style={{ width: 38, minWidth: 38, fontSize: 22, display: 'flex', justifyContent: 'flex-start', alignItems: 'center', flexShrink: 0, color: ACCENT }}>
         {icon}
       </div>
       <div>
