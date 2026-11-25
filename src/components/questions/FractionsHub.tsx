@@ -355,7 +355,7 @@ export function ModeCard({ label, icon, desc, accent, onClick, disabled = false 
       onClick={onClick}
       disabled={disabled}
       style={{
-        display: 'flex', alignItems: 'center', gap: 16,
+        display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: 16,
         background: 'var(--surface)', border: '1px solid var(--border)',
         borderRadius: 14, padding: '16px 20px', cursor: disabled ? 'not-allowed' : 'pointer',
         textAlign: 'left', color: disabled ? 'var(--muted)' : 'var(--text)',
@@ -364,7 +364,7 @@ export function ModeCard({ label, icon, desc, accent, onClick, disabled = false 
       onMouseEnter={(e) => { if (!disabled) (e.currentTarget as HTMLElement).style.borderColor = accent; }}
       onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border)'; }}
     >
-      <div style={{ width: 38, minWidth: 38, fontSize: 22, display: 'flex', justifyContent: 'center', alignItems: 'center', flexShrink: 0, color: disabled ? 'var(--muted)' : accent }}>{icon}</div>
+      <div style={{ width: 38, minWidth: 38, fontSize: 22, display: 'flex', justifyContent: 'flex-start', alignItems: 'center', flexShrink: 0, color: disabled ? 'var(--muted)' : accent }}>{icon}</div>
       <div>
         <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 2 }}>{label}</div>
         <div style={{ fontSize: 12, color: 'var(--muted)' }}>{desc}</div>

@@ -1,20 +1,15 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ModeCard } from './FractionsHub';
+import { Examples, RELATIFS_OPERATION_MODES, RelatifsOperationsPage, type RelatifsOperationMode } from './RelatifsOperations';
+import { C, CardShell, Scene, VividHero, VividPage, type CardTheme } from './ProportionnaliteVividKit';
 
-type HubMode = 'definitions' | 'reperage' | 'comparaison' | 'repere' | null;
+type HubMode = 'definitions' | 'reperage' | 'comparaison' | 'repere' | RelatifsOperationMode | null;
+
+const isOperationMode = (m: HubMode): m is RelatifsOperationMode => m === 'addition' || m === 'soustraction' || m === 'ecriture';
 
 interface AnswerState {
   status: 'pending' | 'correct' | 'wrong' | 'revealed';
   resetKey: number;
-}
-
-const emptyAnswer = (): AnswerState => ({ status: 'pending', resetKey: 0 });
-
-function endTitle(pct: number): string {
-  if (pct === 100) return 'Parfait ! 🎉';
-  if (pct >= 70) return 'Très bien !';
-  if (pct >= 50) return 'Pas mal !';
-  return 'Continue !';
 }
 
 const randInt = (a: number, b: number) => Math.floor(Math.random() * (b - a + 1)) + a;
@@ -143,120 +138,6 @@ function pickPointIdx(count: number, labeledIdx: readonly number[], n: number): 
   return shuffle(available).slice(0, n);
 }
 
-// ── VideoLink ─────────────────────────────────────────────────────────────────
-
-function VideoLink({ url, label }: { url: string; label: string }) {
-  return (
-    <a
-      href={url}
-      target="_blank"
-      rel="noopener noreferrer"
-      style={{
-        display: 'inline-flex', alignItems: 'center', gap: 8,
-        padding: '6px 14px', borderRadius: 8,
-        background: 'rgba(255,0,0,0.08)', border: '1px solid rgba(255,0,0,0.25)',
-        color: '#f87171', fontSize: 13, textDecoration: 'none',
-        fontWeight: 600, marginTop: 6, marginRight: 8,
-      }}
-    >
-      ▶ {label}
-    </a>
-  );
-}
-
-// ── Rappel ────────────────────────────────────────────────────────────────────
-
-function RecallDefinitions({ accent }: { accent: string }) {
-  const [open, setOpen] = useState(false);
-  return (
-    <div style={{ marginBottom: 16, border: '1px solid var(--border)', borderRadius: 10, overflow: 'hidden' }}>
-      <button
-        type="button"
-        className="hint-toggle"
-        onClick={() => setOpen((v) => !v)}
-        style={{ color: accent, width: '100%', padding: '10px 16px', textAlign: 'left' }}
-      >
-        <span>{open ? '▼' : '▶'}</span> Rappel — définitions + vidéos
-      </button>
-      <div className={`steps-box${open ? ' open' : ''}`} style={{ padding: '0 16px', fontSize: 13, lineHeight: 1.9 }}>
-        <ul style={{ margin: '12px 0 8px 18px', padding: 0 }}>
-          <li>Un <strong>nombre positif</strong> est un nombre supérieur ou égal à zéro.</li>
-          <li>Un <strong>nombre négatif</strong> est un nombre inférieur ou égal à zéro.</li>
-          <li>Un <strong>nombre relatif</strong> est un nombre positif ou négatif.</li>
-          <li>On obtient l'<strong>opposé</strong> d'un nombre en changeant son signe.</li>
-        </ul>
-        <div style={{ marginBottom: 12 }}>
-          <VideoLink url="https://youtu.be/GAhNZgDw1XA" label="Définition" />
-          <VideoLink url="https://youtu.be/a5HGl910IXE" label="Opposé d'un nombre" />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-const compCellStyle: React.CSSProperties = { padding: '8px 10px', borderBottom: '1px solid var(--border)', verticalAlign: 'top' };
-const compHeadStyle: React.CSSProperties = { ...compCellStyle, fontWeight: 700, color: 'var(--muted)', fontSize: 12, textTransform: 'uppercase', letterSpacing: 0.4 };
-
-function RecallComparaison({ accent }: { accent: string }) {
-  const [open, setOpen] = useState(false);
-  return (
-    <div style={{ marginBottom: 16, border: '1px solid var(--border)', borderRadius: 10, overflow: 'hidden' }}>
-      <button
-        type="button"
-        className="hint-toggle"
-        onClick={() => setOpen((v) => !v)}
-        style={{ color: accent, width: '100%', padding: '10px 16px', textAlign: 'left' }}
-      >
-        <span>{open ? '▼' : '▶'}</span> Rappel — comparer et ranger + vidéos
-      </button>
-      <div className={`steps-box${open ? ' open' : ''}`} style={{ padding: '0 16px', fontSize: 13, lineHeight: 1.9 }}>
-        <ul style={{ margin: '12px 0 8px 18px', padding: 0 }}>
-          <li>
-            <strong>&lt;</strong> se lit « … est <strong>inférieur</strong> à … »
-          </li>
-          <li>
-            <strong>&gt;</strong> se lit « … est <strong>supérieur</strong> à … »
-          </li>
-          <li>
-            Ordre <strong>croissant</strong> : du plus petit au plus grand.
-          </li>
-          <li>
-            Ordre <strong>décroissant</strong> : du plus grand au plus petit.
-          </li>
-        </ul>
-        <div style={{ overflowX: 'auto', margin: '4px 0 12px' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontFamily: "'DM Mono', monospace", fontSize: 12.5 }}>
-            <thead>
-              <tr>
-                <th style={compHeadStyle}>Cas</th>
-                <th style={compHeadStyle}>Le plus grand est…</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td style={compCellStyle}>Deux nombres positifs</td>
-                <td style={compCellStyle}>celui qui a la plus grande distance à zéro (le plus loin de zéro).</td>
-              </tr>
-              <tr>
-                <td style={compCellStyle}>Un nombre positif et un nombre négatif</td>
-                <td style={compCellStyle}>toujours le nombre positif.</td>
-              </tr>
-              <tr>
-                <td style={{ ...compCellStyle, borderBottom: 'none' }}>Deux nombres négatifs</td>
-                <td style={{ ...compCellStyle, borderBottom: 'none' }}>celui qui a la plus petite distance à zéro (le plus proche de zéro). Penser aux températures.</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div style={{ marginBottom: 12 }}>
-          <VideoLink url="https://youtu.be/DYbRr4B42h8" label="Comparer deux nombres" />
-          <VideoLink url="https://youtu.be/jC_oYObrWbQ" label="Ranger dans l'ordre croissant ou décroissant" />
-        </div>
-      </div>
-    </div>
-  );
-}
-
 // ── Q1 : tableau des signes ─────────────────────────────────────────────────────
 
 interface SignTableExercise {
@@ -286,12 +167,13 @@ function generateSignTable(): SignTableExercise {
 const cellStyle: React.CSSProperties = { padding: '8px 10px', textAlign: 'center', borderBottom: '1px solid var(--border)' };
 const headStyle: React.CSSProperties = { ...cellStyle, fontWeight: 700, color: 'var(--muted)', fontSize: 12, textTransform: 'uppercase', letterSpacing: 0.4 };
 
-function SignTableQuestion({ index, exercise, answer, accent, onSubmit }: {
+function SignTableQuestion({ index, exercise, answer, onSubmit, theme }: {
   index: number;
   exercise: SignTableExercise;
   answer: AnswerState;
   accent: string;
   onSubmit: (ok: boolean) => void;
+  theme: CardTheme;
 }) {
   const [checks, setChecks] = useState(exercise.numbers.map(() => ({ pos: false, neg: false })));
   const [hintOpen, setHintOpen] = useState(false);
@@ -318,16 +200,10 @@ function SignTableQuestion({ index, exercise, answer, accent, onSubmit }: {
   };
 
   return (
-    <div className={`qcard ${disabled ? (answer.status === 'correct' ? 'correct-card' : 'wrong-card') : ''}`} style={{ borderLeft: `3px solid ${accent}` }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: '1rem' }}>
-        <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, padding: '3px 10px', borderRadius: 99, background: `${accent}22`, color: accent }}>
-          Signe d'un nombre
-        </span>
-        <span className="qnum">Q{String(index + 1).padStart(2, '0')}</span>
-      </div>
-      <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 10 }}>
+    <CardShell index={index} theme={theme} status={answer.status}>
+      <Scene theme={theme}>
         Coche la ou les bonnes cases pour chaque nombre.
-      </p>
+      </Scene>
       <div style={{ overflowX: 'auto' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', fontFamily: "'DM Mono', monospace" }}>
           <thead>
@@ -384,7 +260,7 @@ function SignTableQuestion({ index, exercise, answer, accent, onSubmit }: {
           ))}
         </div>
       </div>
-    </div>
+    </CardShell>
   );
 }
 
@@ -424,12 +300,13 @@ const inpStyle: React.CSSProperties = {
   background: 'var(--bg)', color: 'var(--text)', textAlign: 'center',
 };
 
-function OppositeTableQuestion({ index, exercise, answer, accent, onSubmit }: {
+function OppositeTableQuestion({ index, exercise, answer, onSubmit, theme }: {
   index: number;
   exercise: OppositeTableExercise;
   answer: AnswerState;
   accent: string;
   onSubmit: (ok: boolean) => void;
+  theme: CardTheme;
 }) {
   const [vals, setVals] = useState<string[]>(exercise.pairs.map(() => ''));
   const [hintOpen, setHintOpen] = useState(false);
@@ -452,16 +329,10 @@ function OppositeTableQuestion({ index, exercise, answer, accent, onSubmit }: {
   const setVal = (i: number, v: string) => setVals((prev) => prev.map((x, idx) => (idx === i ? v : x)));
 
   return (
-    <div className={`qcard ${disabled ? (answer.status === 'correct' ? 'correct-card' : 'wrong-card') : ''}`} style={{ borderLeft: `3px solid ${accent}` }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: '1rem' }}>
-        <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, padding: '3px 10px', borderRadius: 99, background: `${accent}22`, color: accent }}>
-          Opposé d'un nombre
-        </span>
-        <span className="qnum">Q{String(index + 1).padStart(2, '0')}</span>
-      </div>
-      <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 10 }}>
+    <CardShell index={index} theme={theme} status={answer.status}>
+      <Scene theme={theme}>
         Complète la case manquante. Utilise le signe <strong>−</strong> écrit avec un tiret (ex : -6).
-      </p>
+      </Scene>
       <div style={{ overflowX: 'auto' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', fontFamily: "'DM Mono', monospace" }}>
           <tbody>
@@ -524,7 +395,7 @@ function OppositeTableQuestion({ index, exercise, answer, accent, onSubmit }: {
           ))}
         </div>
       </div>
-    </div>
+    </CardShell>
   );
 }
 
@@ -561,12 +432,13 @@ interface AxisFillPartState {
   hintOpen: boolean;
 }
 
-function AxisFillQuestion({ index, exercise, answer, accent, onSubmit }: {
+function AxisFillQuestion({ index, exercise, answer, onSubmit, theme }: {
   index: number;
   exercise: AxisFillExercise;
   answer: AnswerState;
   accent: string;
   onSubmit: (ok: boolean) => void;
+  theme: CardTheme;
 }) {
   const blanksFor = (part: AxisFillPart) => part.ticks.map((_, i) => i).filter((i) => !part.givenIdx.includes(i));
 
@@ -605,16 +477,10 @@ function AxisFillQuestion({ index, exercise, answer, accent, onSubmit }: {
   const toggleHint = (pi: number) => setParts((prev) => prev.map((p, idx) => (idx === pi ? { ...p, hintOpen: !p.hintOpen } : p)));
 
   return (
-    <div className={`qcard ${disabled ? (answer.status === 'correct' ? 'correct-card' : 'wrong-card') : ''}`} style={{ borderLeft: `3px solid ${accent}` }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: '1rem' }}>
-        <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, padding: '3px 10px', borderRadius: 99, background: `${accent}22`, color: accent }}>
-          Compléter une graduation
-        </span>
-        <span className="qnum">Q{String(index + 1).padStart(2, '0')}</span>
-      </div>
-      <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 10 }}>
+    <CardShell index={index} theme={theme} status={answer.status}>
+      <Scene theme={theme}>
         Écris, sous chaque trait de graduation, le nombre relatif qui convient.
-      </p>
+      </Scene>
       {exercise.parts.map((part, pi) => {
         const ps = parts[pi]!;
         const partDone = disabled || ps.status !== 'pending';
@@ -662,7 +528,7 @@ function AxisFillQuestion({ index, exercise, answer, accent, onSubmit }: {
           </div>
         );
       })}
-    </div>
+    </CardShell>
   );
 }
 
@@ -715,12 +581,13 @@ interface AxisReadPartState {
   hintOpen: boolean;
 }
 
-function AxisReadQuestion({ index, exercise, answer, accent, onSubmit }: {
+function AxisReadQuestion({ index, exercise, answer, onSubmit, theme }: {
   index: number;
   exercise: AxisReadExercise;
   answer: AnswerState;
   accent: string;
   onSubmit: (ok: boolean) => void;
+  theme: CardTheme;
 }) {
   const [parts, setParts] = useState<AxisReadPartState[]>(
     exercise.parts.map((p) => ({ vals: p.points.map(() => ''), status: 'pending', hintOpen: false }))
@@ -756,16 +623,10 @@ function AxisReadQuestion({ index, exercise, answer, accent, onSubmit }: {
   const toggleHint = (pi: number) => setParts((prev) => prev.map((p, idx) => (idx === pi ? { ...p, hintOpen: !p.hintOpen } : p)));
 
   return (
-    <div className={`qcard ${disabled ? (answer.status === 'correct' ? 'correct-card' : 'wrong-card') : ''}`} style={{ borderLeft: `3px solid ${accent}` }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: '1rem' }}>
-        <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, padding: '3px 10px', borderRadius: 99, background: `${accent}22`, color: accent }}>
-          Lire une abscisse
-        </span>
-        <span className="qnum">Q{String(index + 1).padStart(2, '0')}</span>
-      </div>
-      <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 10 }}>
+    <CardShell index={index} theme={theme} status={answer.status}>
+      <Scene theme={theme}>
         Donne l'abscisse de chaque point, en comptant les graduations depuis les nombres donnés.
-      </p>
+      </Scene>
       {exercise.parts.map((part, pi) => {
         const ps = parts[pi]!;
         const partDone = disabled || ps.status !== 'pending';
@@ -818,7 +679,7 @@ function AxisReadQuestion({ index, exercise, answer, accent, onSubmit }: {
           </div>
         );
       })}
-    </div>
+    </CardShell>
   );
 }
 
@@ -862,12 +723,13 @@ interface AxisPlacePartState {
   hintOpen: boolean;
 }
 
-function AxisPlaceQuestion({ index, exercise, answer, accent, onSubmit }: {
+function AxisPlaceQuestion({ index, exercise, answer, onSubmit, theme }: {
   index: number;
   exercise: AxisPlaceExercise;
   answer: AnswerState;
   accent: string;
   onSubmit: (ok: boolean) => void;
+  theme: CardTheme;
 }) {
   const blanksFor = (part: AxisPlacePart) => part.ticks.map((_, i) => i).filter((i) => !part.labeledIdx.includes(i));
   const expectedLetter = (part: AxisPlacePart, tickIdx: number) => part.points.find((p) => p.idx === tickIdx)?.letter ?? '';
@@ -906,16 +768,10 @@ function AxisPlaceQuestion({ index, exercise, answer, accent, onSubmit }: {
   const toggleHint = (pi: number) => setParts((prev) => prev.map((p, idx) => (idx === pi ? { ...p, hintOpen: !p.hintOpen } : p)));
 
   return (
-    <div className={`qcard ${disabled ? (answer.status === 'correct' ? 'correct-card' : 'wrong-card') : ''}`} style={{ borderLeft: `3px solid ${accent}` }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: '1rem' }}>
-        <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, padding: '3px 10px', borderRadius: 99, background: `${accent}22`, color: accent }}>
-          Placer un point
-        </span>
-        <span className="qnum">Q{String(index + 1).padStart(2, '0')}</span>
-      </div>
-      <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 10 }}>
+    <CardShell index={index} theme={theme} status={answer.status}>
+      <Scene theme={theme}>
         Écris la lettre du point sous la bonne graduation (laisse la case vide s'il n'y a pas de point).
-      </p>
+      </Scene>
       {exercise.parts.map((part, pi) => {
         const ps = parts[pi]!;
         const partDone = disabled || ps.status !== 'pending';
@@ -973,7 +829,7 @@ function AxisPlaceQuestion({ index, exercise, answer, accent, onSubmit }: {
           </div>
         );
       })}
-    </div>
+    </CardShell>
   );
 }
 
@@ -1112,12 +968,13 @@ const symBtnStyle = (active: boolean, disabled: boolean, accent: string): React.
 
 const CMP_ROW_LETTERS = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 
-function RelatifComparisonQuestion({ index, exercise, answer, accent, onSubmit }: {
+function RelatifComparisonQuestion({ index, exercise, answer, accent, onSubmit, theme }: {
   index: number;
   exercise: RelatifCompareExercise;
   answer: AnswerState;
   accent: string;
   onSubmit: (ok: boolean) => void;
+  theme: CardTheme;
 }) {
   const [rows, setRows] = useState<('<' | '>' | '=' | null)[]>(exercise.pairs.map(() => null));
   const [hintOpen, setHintOpen] = useState(false);
@@ -1141,16 +998,10 @@ function RelatifComparisonQuestion({ index, exercise, answer, accent, onSubmit }
   };
 
   return (
-    <div className={`qcard ${disabled ? (answer.status === 'correct' ? 'correct-card' : 'wrong-card') : ''}`} style={{ borderLeft: `3px solid ${accent}` }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: '1rem' }}>
-        <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, padding: '3px 10px', borderRadius: 99, background: `${accent}22`, color: accent }}>
-          Comparer deux nombres relatifs
-        </span>
-        <span className="qnum">Q{String(index + 1).padStart(2, '0')}</span>
-      </div>
-      <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 10 }}>
+    <CardShell index={index} theme={theme} status={answer.status}>
+      <Scene theme={theme}>
         Complète avec &lt;, &gt; ou =.
-      </p>
+      </Scene>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
         {exercise.pairs.map((p, i) => {
           const showFb = disabled;
@@ -1222,7 +1073,7 @@ function RelatifComparisonQuestion({ index, exercise, answer, accent, onSubmit }
           })}
         </div>
       </div>
-    </div>
+    </CardShell>
   );
 }
 
@@ -1303,11 +1154,12 @@ interface OrderPartState {
 
 type OrderDragSrc = { partIdx: number; from: 'pool'; text: string } | { partIdx: number; from: 'slot'; idx: number; text: string };
 
-function OrderMultiDragDrop({ index, exercise, answer, onSubmit }: {
+function OrderMultiDragDrop({ index, exercise, answer, onSubmit, theme }: {
   index: number;
   exercise: OrderMultiExercise;
   answer: AnswerState;
   onSubmit: (ok: boolean) => void;
+  theme: CardTheme;
 }) {
   const [parts, setParts] = useState<OrderPartState[]>(() =>
     exercise.parts.map((p) => ({ pool: [...p.shuffled], placed: Array(p.numbers.length).fill(null), status: 'pending', attempted: false }))
@@ -1378,13 +1230,10 @@ function OrderMultiDragDrop({ index, exercise, answer, onSubmit }: {
   };
 
   return (
-    <div className={`qcard ${disabled ? (answer.status === 'correct' ? 'correct-card' : 'wrong-card') : ''}`}>
-      <div className="qcard-header">
-        <span className="qnum">Q{String(index + 1).padStart(2, '0')}</span>
-        <div className="qtext">
-          Range ces nombres relatifs dans l'ordre <strong>{exercise.direction}</strong>.
-        </div>
-      </div>
+    <CardShell index={index} theme={theme} status={answer.status}>
+      <Scene theme={theme}>
+        Range ces nombres relatifs dans l'ordre <strong>{exercise.direction}</strong>.
+      </Scene>
       {exercise.parts.map((part, pi) => {
         const ps = parts[pi]!;
         const partDone = disabled || ps.status !== 'pending';
@@ -1480,7 +1329,7 @@ function OrderMultiDragDrop({ index, exercise, answer, onSubmit }: {
           ))}
         </div>
       </div>
-    </div>
+    </CardShell>
   );
 }
 
@@ -1583,44 +1432,20 @@ function RepereGridSvg({ children, onGridClick, highlightX, highlightY }: {
   );
 }
 
-function RecallRepere({ accent }: { accent: string }) {
-  const [open, setOpen] = useState(false);
+/** Example figure of the « repère » recall: A(4 ; 2), with its abscissa and its ordinate marked. */
+function RepereRecallFigure({ accent }: { accent: string }) {
   return (
-    <div style={{ marginBottom: 16, border: '1px solid var(--border)', borderRadius: 10, overflow: 'hidden' }}>
-      <button
-        type="button"
-        className="hint-toggle"
-        onClick={() => setOpen((v) => !v)}
-        style={{ color: accent, width: '100%', padding: '10px 16px', textAlign: 'left' }}
-      >
-        <span>{open ? '▼' : '▶'}</span> Rappel — repérage dans le plan + vidéo
-      </button>
-      <div className={`steps-box${open ? ' open' : ''}`} style={{ padding: '0 16px', fontSize: 13, lineHeight: 1.9 }}>
-        <ul style={{ margin: '12px 0 8px 18px', padding: 0 }}>
-          <li>
-            Un <strong>repère du plan</strong> est formé de deux droites graduées qui se coupent à l'<strong>origine</strong>.
-          </li>
-          <li>
-            La droite horizontale est l'<strong>axe des abscisses</strong>, la droite verticale est l'<strong>axe des ordonnées</strong>.
-          </li>
-          <li>
-            Les <strong>coordonnées</strong> d'un point s'écrivent (abscisse&nbsp;;&nbsp;ordonnée) : on note toujours l'abscisse en premier.
-          </li>
-        </ul>
-        <div style={{ maxWidth: 280, margin: '0 auto 8px' }}>
-          <RepereGridSvg highlightX={{ value: 4, color: '#f87171' }} highlightY={{ value: 2, color: 'var(--correct)' }}>
-            <line x1={gx(4)} y1={gy(2)} x2={gx(4)} y2={gy(0)} stroke="#f87171" strokeDasharray="4 3" strokeWidth={1.5} />
-            <line x1={gx(0)} y1={gy(2)} x2={gx(4)} y2={gy(2)} stroke="var(--correct)" strokeDasharray="4 3" strokeWidth={1.5} />
-            <PointCross x={4} y={2} letter="A" color={accent} />
-          </RepereGridSvg>
-        </div>
-        <p style={{ textAlign: 'center', fontSize: 12, color: 'var(--muted)', marginTop: -4 }}>
-          A a pour <strong style={{ color: '#f87171' }}>abscisse 4</strong> et pour <strong style={{ color: 'var(--correct)' }}>ordonnée 2</strong> : on note A(4&nbsp;;&nbsp;2).
-        </p>
-        <div style={{ margin: '12px 0' }}>
-          <VideoLink url="https://youtu.be/AHNYuKCoCvU" label="Repérage dans le plan" />
-        </div>
+    <div>
+      <div style={{ maxWidth: 300, margin: '0 auto 6px' }}>
+        <RepereGridSvg highlightX={{ value: 4, color: '#f87171' }} highlightY={{ value: 2, color: 'var(--correct)' }}>
+          <line x1={gx(4)} y1={gy(2)} x2={gx(4)} y2={gy(0)} stroke="#f87171" strokeDasharray="4 3" strokeWidth={1.5} />
+          <line x1={gx(0)} y1={gy(2)} x2={gx(4)} y2={gy(2)} stroke="var(--correct)" strokeDasharray="4 3" strokeWidth={1.5} />
+          <PointCross x={4} y={2} letter="A" color={accent} />
+        </RepereGridSvg>
       </div>
+      <p style={{ textAlign: 'center', fontSize: 12.5, color: 'var(--muted)' }}>
+        A a pour <strong style={{ color: '#f87171' }}>abscisse 4</strong> et pour <strong style={{ color: 'var(--correct)' }}>ordonnée 2</strong> : on note A(4&nbsp;;&nbsp;2).
+      </p>
     </div>
   );
 }
@@ -1699,12 +1524,13 @@ function generateRepereReadExercise(): RepereReadExercise {
   return { points: makeRepPoints(8, LETTERS8) };
 }
 
-function RepereReadQuestion({ index, exercise, answer, accent, onSubmit }: {
+function RepereReadQuestion({ index, exercise, answer, accent, onSubmit, theme }: {
   index: number;
   exercise: RepereReadExercise;
   answer: AnswerState;
   accent: string;
   onSubmit: (ok: boolean) => void;
+  theme: CardTheme;
 }) {
   const [xs, setXs] = useState<string[]>(exercise.points.map(() => ''));
   const [ys, setYs] = useState<string[]>(exercise.points.map(() => ''));
@@ -1728,16 +1554,10 @@ function RepereReadQuestion({ index, exercise, answer, accent, onSubmit }: {
   };
 
   return (
-    <div className={`qcard ${disabled ? (answer.status === 'correct' ? 'correct-card' : 'wrong-card') : ''}`} style={{ borderLeft: `3px solid ${accent}` }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: '1rem' }}>
-        <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, padding: '3px 10px', borderRadius: 99, background: `${accent}22`, color: accent }}>
-          Lire des coordonnées
-        </span>
-        <span className="qnum">Q{String(index + 1).padStart(2, '0')}</span>
-      </div>
-      <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 10 }}>
+    <CardShell index={index} theme={theme} status={answer.status}>
+      <Scene theme={theme}>
         Donne les coordonnées de chaque point.
-      </p>
+      </Scene>
       <RepereGridSvg>
         {exercise.points.map((p) => (
           <PointCross key={p.letter} x={p.x} y={p.y} letter={p.letter} color={accent} />
@@ -1804,7 +1624,7 @@ function RepereReadQuestion({ index, exercise, answer, accent, onSubmit }: {
           ))}
         </div>
       </div>
-    </div>
+    </CardShell>
   );
 }
 
@@ -1818,12 +1638,13 @@ function generateReperePlaceExercise(): ReperePlaceExercise {
   return { points: makeRepPoints(5, LETTERS5) };
 }
 
-function ReperePlaceQuestion({ index, exercise, answer, accent, onSubmit }: {
+function ReperePlaceQuestion({ index, exercise, answer, accent, onSubmit, theme }: {
   index: number;
   exercise: ReperePlaceExercise;
   answer: AnswerState;
   accent: string;
   onSubmit: (ok: boolean) => void;
+  theme: CardTheme;
 }) {
   const [placements, setPlacements] = useState<Record<string, { x: number; y: number } | null>>(() =>
     Object.fromEntries(exercise.points.map((p) => [p.letter, null]))
@@ -1860,16 +1681,10 @@ function ReperePlaceQuestion({ index, exercise, answer, accent, onSubmit }: {
   };
 
   return (
-    <div className={`qcard ${disabled ? (answer.status === 'correct' ? 'correct-card' : 'wrong-card') : ''}`} style={{ borderLeft: `3px solid ${accent}` }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: '1rem' }}>
-        <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, padding: '3px 10px', borderRadius: 99, background: `${accent}22`, color: accent }}>
-          Placer des points
-        </span>
-        <span className="qnum">Q{String(index + 1).padStart(2, '0')}</span>
-      </div>
-      <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 10 }}>
+    <CardShell index={index} theme={theme} status={answer.status}>
+      <Scene theme={theme}>
         Clique sur une lettre, puis sur l'endroit du repère où tu veux la placer.
-      </p>
+      </Scene>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 10, justifyContent: 'center' }}>
         {exercise.points.map((p) => {
           const placed = placements[p.letter] !== null;
@@ -1932,7 +1747,7 @@ function ReperePlaceQuestion({ index, exercise, answer, accent, onSubmit }: {
           </div>
         </div>
       </div>
-    </div>
+    </CardShell>
   );
 }
 
@@ -1976,179 +1791,261 @@ function buildExercises(mode: HubMode): RelatifsExercise[] {
   ];
 }
 
-export function RelatifsHub({ accent, accentSecondary }: { accent: string; accentSecondary?: string }) {
+// ── Rappels (heroes) ───────────────────────────────────────────────────────────
+
+const M = '−';
+
+type ClassicMode = 'definitions' | 'reperage' | 'comparaison' | 'repere';
+
+const VIDEO_DEFINITIONS = {
+  src: '/videos/relatifs-definitions.mp4',
+  poster: '/videos/relatifs-definitions.jpg',
+  title: 'Vidéo : positif, négatif, relatif, opposé (sous-titrée)',
+};
+const VIDEO_REPERAGE_DROITE = {
+  src: '/videos/relatifs-reperage-droite.mp4',
+  poster: '/videos/relatifs-reperage-droite.jpg',
+  title: "Vidéo : repérer un point sur une droite graduée — abscisse et pas (sous-titrée)",
+};
+const VIDEO_COMPARAISON = {
+  src: '/videos/relatifs-comparaison.mp4',
+  poster: '/videos/relatifs-comparaison.jpg',
+  title: 'Vidéo : comparer et ranger des nombres relatifs (sous-titrée)',
+};
+const VIDEO_REPERAGE_REPERE = {
+  src: '/videos/relatifs-reperage-repere.mp4',
+  poster: '/videos/relatifs-reperage-repere.jpg',
+  title: 'Vidéo : repérer un point dans un repère — abscisse, ordonnée, coordonnées (sous-titrée)',
+};
+
+function DefinitionsHero({ onBack }: { onBack: () => void }) {
+  return (
+    <VividHero
+      onBack={onBack}
+      crumbs={[{ label: 'Nombres relatifs', color: C.mint }, { label: '± Définitions', color: C.sky }]}
+      title="Qu'est-ce qu'un nombre relatif ?"
+      intro={<>Un nombre <strong style={{ color: C.orange }}>relatif</strong> est un nombre qui peut être <strong>positif</strong> ou <strong>négatif</strong>.</>}
+      steps={[
+        { emoji: '➕', color: C.green, title: 'Positif', text: <>Un nombre <strong>positif</strong> est un nombre supérieur ou égal à zéro.</> },
+        { emoji: '➖', color: C.rose, title: 'Négatif', text: <>Un nombre <strong>négatif</strong> est un nombre inférieur ou égal à zéro.</> },
+        { emoji: '🔀', color: C.violet, title: 'Relatif', text: <>Un nombre <strong>relatif</strong> est un nombre positif ou négatif.</> },
+        { emoji: '🔄', color: C.orange, title: 'Opposé', text: <>On obtient l'<strong>opposé</strong> d'un nombre en changeant son signe.</> },
+      ]}
+      videos={[
+        { url: 'https://youtu.be/GAhNZgDw1XA', label: 'Vidéo : définition' },
+        { url: 'https://youtu.be/a5HGl910IXE', label: "Vidéo : opposé d'un nombre" },
+      ]}
+      localVideo={VIDEO_DEFINITIONS}
+      illusTitle="✨ Des exemples"
+      illus={
+        <Examples rows={[
+          { text: '+7 est positif', note: '≥ 0', color: C.green },
+          { text: `${M}4 est négatif`, note: '≤ 0', color: C.rose },
+          { text: '0 est positif et négatif', note: 'les deux', color: C.violet },
+          { text: `L'opposé de +3 est ${M}3`, note: 'signe changé', color: C.orange },
+          { text: `L'opposé de ${M}6 est +6`, note: 'signe changé', color: C.orange },
+        ]} />
+      }
+    />
+  );
+}
+
+/** A small graduated line (−3 … 4) with two points, for the « repérage sur une droite » recall. */
+function AxisRecallFigure() {
+  const x = (n: number) => 40 + (n + 3) * 52;
+  return (
+    <div>
+      <svg viewBox="0 0 450 120" width="100%" role="img" aria-label="Droite graduée de −3 à 4, avec les points A d'abscisse −2 et B d'abscisse 3">
+        <line x1={14} y1={70} x2={436} y2={70} stroke="var(--text)" strokeWidth={2.5} />
+        <path d="M436 70 l-10 -6 v12 z" fill="var(--text)" />
+        {Array.from({ length: 8 }, (_, i) => i - 3).map((n) => (
+          <g key={n}>
+            <line x1={x(n)} y1={62} x2={x(n)} y2={78} stroke="var(--text)" strokeWidth={2.5} />
+            <text x={x(n)} y={100} textAnchor="middle" fontSize={15} fontWeight={700} fill={n === 0 ? C.orange : 'var(--muted)'} fontFamily="'DM Mono', monospace">
+              {(n < 0 ? M : '') + Math.abs(n)}
+            </text>
+          </g>
+        ))}
+        {[{ n: -2, l: 'A', c: C.sky }, { n: 3, l: 'B', c: C.pink }].map((p) => (
+          <g key={p.l}>
+            <text x={x(p.n)} y={46} textAnchor="middle" fontSize={16} fontWeight={700} fill={p.c} fontFamily="'DM Mono', monospace">{p.l}</text>
+            <line x1={x(p.n) - 7} y1={63} x2={x(p.n) + 7} y2={77} stroke={p.c} strokeWidth={3} strokeLinecap="round" />
+            <line x1={x(p.n) - 7} y1={77} x2={x(p.n) + 7} y2={63} stroke={p.c} strokeWidth={3} strokeLinecap="round" />
+          </g>
+        ))}
+      </svg>
+      <p style={{ textAlign: 'center', fontSize: 12.5, color: 'var(--muted)' }}>
+        <strong style={{ color: C.sky }}>A</strong> a pour abscisse <strong>{M}2</strong> ; <strong style={{ color: C.pink }}>B</strong> a pour abscisse <strong>3</strong>.
+      </p>
+    </div>
+  );
+}
+
+function ReperageHero({ onBack }: { onBack: () => void }) {
+  return (
+    <VividHero
+      onBack={onBack}
+      crumbs={[{ label: 'Nombres relatifs', color: C.mint }, { label: '⟷ Repérage sur une droite', color: C.green }]}
+      title="Comment repérer un point sur une droite graduée ?"
+      intro={<>Sur une droite graduée, chaque point est repéré par un nombre relatif : son <strong style={{ color: C.orange }}>abscisse</strong>.</>}
+      steps={[
+        { emoji: '📏', color: C.blue, title: 'Les graduations', text: <>Elles sont <strong>régulièrement espacées</strong> : compte l'écart entre deux graduations pour trouver le pas.</> },
+        { emoji: '⬅️', color: C.rose, title: 'À gauche de 0', text: <>Les abscisses sont <strong>négatives</strong> : elles diminuent quand on va vers la gauche.</> },
+        { emoji: '➡️', color: C.green, title: 'À droite de 0', text: <>Les abscisses sont <strong>positives</strong> : elles augmentent quand on va vers la droite.</> },
+      ]}
+      videos={[]}
+      localVideo={VIDEO_REPERAGE_DROITE}
+      illusTitle="✨ Exemple"
+      illus={<AxisRecallFigure />}
+    />
+  );
+}
+
+function ComparaisonHero({ onBack }: { onBack: () => void }) {
+  return (
+    <VividHero
+      onBack={onBack}
+      crumbs={[{ label: 'Nombres relatifs', color: C.mint }, { label: '⚖️ Comparaison', color: C.orange }]}
+      title="Comment comparer et ranger des nombres relatifs ?"
+      intro={
+        <>
+          <strong>&lt;</strong> se lit « est <strong>inférieur</strong> à » et <strong>&gt;</strong> se lit « est <strong>supérieur</strong> à ». Ordre{' '}
+          <strong style={{ color: C.green }}>croissant</strong> : du plus petit au plus grand ; ordre{' '}
+          <strong style={{ color: C.rose }}>décroissant</strong> : du plus grand au plus petit.
+        </>
+      }
+      steps={[
+        { emoji: '➕➕', color: C.green, title: 'Deux positifs', text: <>Le plus grand est celui qui a la <strong>plus grande distance à zéro</strong> (le plus loin de zéro).</> },
+        { emoji: '➕➖', color: C.orange, title: 'Un positif, un négatif', text: <>Le plus grand est <strong>toujours le nombre positif</strong>.</> },
+        { emoji: '➖➖', color: C.rose, title: 'Deux négatifs', text: <>Le plus grand est celui qui a la <strong>plus petite distance à zéro</strong> (le plus proche de zéro). Pense aux températures.</> },
+      ]}
+      videos={[
+        { url: 'https://youtu.be/DYbRr4B42h8', label: 'Vidéo : comparer deux nombres' },
+        { url: 'https://youtu.be/jC_oYObrWbQ', label: "Vidéo : ranger dans l'ordre croissant ou décroissant" },
+      ]}
+      localVideo={VIDEO_COMPARAISON}
+      illusTitle="✨ Des exemples"
+      illus={
+        <Examples rows={[
+          { text: '3 < 5', note: 'distances 3 et 5', color: C.green },
+          { text: `${M}2 < 4`, note: 'négatif < positif', color: C.orange },
+          { text: `${M}7 < ${M}3`, note: 'plus loin de 0 = plus petit', color: C.rose },
+          { text: `${M}5 ; ${M}1 ; 0 ; 3`, note: 'ordre croissant', color: C.violet },
+        ]} />
+      }
+    />
+  );
+}
+
+function RepereHero({ onBack }: { onBack: () => void }) {
+  return (
+    <VividHero
+      onBack={onBack}
+      crumbs={[{ label: 'Nombres relatifs', color: C.mint }, { label: '⊹ Repérage dans un repère', color: C.pink }]}
+      title="Comment repérer un point dans un repère ?"
+      intro={<>Un <strong style={{ color: C.orange }}>repère du plan</strong> est formé de deux droites graduées qui se coupent en un point appelé l'<strong>origine</strong>.</>}
+      steps={[
+        { emoji: '✚', color: C.blue, title: 'Les axes', text: <>La droite horizontale est l'<strong>axe des abscisses</strong>, la droite verticale est l'<strong>axe des ordonnées</strong>.</> },
+        { emoji: '📍', color: C.green, title: 'Les coordonnées', text: <>Les coordonnées d'un point s'écrivent <strong>(abscisse ; ordonnée)</strong>.</> },
+        { emoji: '1️⃣', color: C.orange, title: "L'ordre", text: <>On note <strong>toujours l'abscisse en premier</strong>, puis l'ordonnée.</> },
+      ]}
+      videos={[{ url: 'https://youtu.be/AHNYuKCoCvU', label: 'Vidéo : repérage dans le plan' }]}
+      localVideo={VIDEO_REPERAGE_REPERE}
+      illusTitle="✨ Exemple"
+      illus={<RepereRecallFigure accent={C.sky} />}
+    />
+  );
+}
+
+const TIPS: Record<ClassicMode, { emoji: string; title: string; text: React.ReactNode }> = {
+  definitions: { emoji: '🧠', title: 'Le savais-tu ?', text: <><strong>0</strong> est le seul nombre à la fois <strong>positif</strong> et <strong>négatif</strong>.</> },
+  reperage: { emoji: '🧠', title: 'Astuce', text: <>Pour lire une abscisse, <strong>compte les graduations</strong> à partir d'un nombre déjà donné.</> },
+  comparaison: { emoji: '🧠', title: 'Astuce', text: <>Entre deux nombres négatifs, le plus grand est le plus <strong>proche de zéro</strong> : {M}2 &gt; {M}7.</> },
+  repere: { emoji: '🧠', title: 'Astuce', text: <>On lit <strong>toujours l'abscisse avant l'ordonnée</strong> : (x&nbsp;;&nbsp;y).</> },
+};
+
+function heroFor(mode: ClassicMode, onBack: () => void) {
+  if (mode === 'definitions') return <DefinitionsHero onBack={onBack} />;
+  if (mode === 'reperage') return <ReperageHero onBack={onBack} />;
+  if (mode === 'comparaison') return <ComparaisonHero onBack={onBack} />;
+  return <RepereHero onBack={onBack} />;
+}
+
+// ── Missions (one theme per exercise type) ─────────────────────────────────────
+
+function themeFor(ex: RelatifsExercise): CardTheme {
+  switch (ex.exKind) {
+    case 'sign-table':
+      return { color: C.sky, icon: '☑️', deco: '±', tag: 'Échauffement', stars: 1, title: "Signe d'un nombre : positif, négatif, ou les deux ?", short: "Signe d'un nombre" };
+    case 'opposite-table':
+      return { color: C.orange, icon: '🔄', deco: M, tag: 'Entraînement', stars: 2, title: "Trouve l'opposé de chaque nombre", short: "Opposé d'un nombre" };
+    case 'axis-fill':
+      return { color: C.green, icon: '📏', deco: '→', tag: 'Échauffement', stars: 1, title: 'Compléter les graduations', short: 'Compléter une graduation' };
+    case 'axis-read':
+      return { color: C.violet, icon: '🔍', deco: '×', tag: 'Entraînement', stars: 2, title: "Lire l'abscisse de chaque point", short: 'Lire une abscisse' };
+    case 'axis-place':
+      return { color: C.pink, icon: '📍', deco: '⟷', tag: 'Défi', stars: 3, title: 'Placer les points sur la droite', short: 'Placer un point' };
+    case 'relatif-compare':
+      return { color: C.sky, icon: '⚖️', deco: '<', tag: 'Échauffement', stars: 1, title: 'Compare avec <, > ou =', short: 'Comparer deux nombres' };
+    case 'order-multi':
+      return ex.data.direction === 'croissant'
+        ? { color: C.green, icon: '📈', deco: '↗', tag: 'Entraînement', stars: 2, title: "Range dans l'ordre croissant", short: 'Ordre croissant' }
+        : { color: C.rose, icon: '📉', deco: '↘', tag: 'Défi', stars: 3, title: "Range dans l'ordre décroissant", short: 'Ordre décroissant' };
+    case 'repere-read':
+      return { color: C.blue, icon: '🧭', deco: '⊹', tag: 'Entraînement', stars: 2, title: 'Lire les coordonnées des points', short: 'Lire des coordonnées' };
+    default:
+      return { color: C.magenta, icon: '🎯', deco: '✚', tag: 'Défi', stars: 3, title: 'Placer des points dans le repère', short: 'Placer des points' };
+  }
+}
+
+// ── RelatifsHub (main export) ──────────────────────────────────────────────────
+
+export function RelatifsHub({ accent }: { accent: string; accentSecondary?: string }) {
   const [mode, setMode] = useState<HubMode>(null);
-  const [exercises, setExercises] = useState<RelatifsExercise[]>([]);
-  const [answers, setAnswers] = useState<AnswerState[]>([]);
-  const [seriesKey, setSeriesKey] = useState(0);
-  const endRef = useRef<HTMLDivElement>(null);
-
-  const loadExercises = (m: HubMode) => {
-    const exs = buildExercises(m);
-    setExercises(exs);
-    setAnswers(exs.map(() => emptyAnswer()));
-    setSeriesKey((k) => k + 1);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const selectMode = (m: HubMode) => {
-    setMode(m);
-    loadExercises(m);
-  };
-
-  const goBack = () => {
-    setMode(null);
-    setExercises([]);
-    setAnswers([]);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const submit = (i: number, ok: boolean) => {
-    if (answers[i]?.status !== 'pending') return;
-    setAnswers((prev) => prev.map((a, idx) => (idx === i ? { ...a, status: ok ? 'correct' : 'wrong' } : a)));
-  };
-
-  const resetErrors = () => {
-    setAnswers((prev) => prev.map((a) => (a.status === 'correct' ? a : { status: 'pending', resetKey: a.resetKey + 1 })));
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const newSeries = () => {
-    if (mode !== null) loadExercises(mode);
-  };
-
-  const stats = useMemo(() => {
-    let correct = 0, wrong = 0, answered = 0;
-    for (const a of answers) {
-      if (a.status === 'correct') { correct++; answered++; }
-      else if (a.status === 'wrong' || a.status === 'revealed') { wrong++; answered++; }
-    }
-    return { correct, wrong, answered, total: exercises.length };
-  }, [answers, exercises.length]);
-
-  const finished = stats.answered === stats.total && stats.total > 0;
-
-  useEffect(() => {
-    if (finished && endRef.current) {
-      endRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-  }, [finished]);
 
   if (mode === null) {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: 14, maxWidth: 560, margin: '0 auto' }}>
-        <ModeCard
-          label="Définitions"
-          icon="±"
-          desc="Nombres positifs, négatifs, relatifs, opposés"
-          accent={accent}
-          onClick={() => selectMode('definitions')}
-        />
-        <ModeCard
-          label="Repérage sur une droite"
-          icon="⟷"
-          desc="Compléter une graduation, lire une abscisse, placer un point"
-          accent={accent}
-          onClick={() => selectMode('reperage')}
-        />
-        <ModeCard
-          label="Comparaison"
-          icon="<>"
-          desc="Comparer avec <, > ou =, ranger dans l'ordre croissant et décroissant"
-          accent={accent}
-          onClick={() => selectMode('comparaison')}
-        />
-        <ModeCard
-          label="Repérage dans un repère"
-          icon="⊹"
-          desc="Lire les coordonnées de points, placer des points dans un repère"
-          accent={accent}
-          onClick={() => selectMode('repere')}
-        />
+        <ModeCard label="Définitions" icon="±" desc="Nombres positifs, négatifs, relatifs, opposés" accent={accent} onClick={() => setMode('definitions')} />
+        <ModeCard label="Repérage sur une droite" icon="⟷" desc="Compléter une graduation, lire une abscisse, placer un point" accent={accent} onClick={() => setMode('reperage')} />
+        <ModeCard label="Comparaison" icon="<>" desc="Comparer avec <, > ou =, ranger dans l'ordre croissant et décroissant" accent={accent} onClick={() => setMode('comparaison')} />
+        <ModeCard label="Repérage dans un repère" icon="⊹" desc="Lire les coordonnées de points, placer des points dans un repère" accent={accent} onClick={() => setMode('repere')} />
+        {RELATIFS_OPERATION_MODES.map((m) => (
+          <ModeCard key={m.id} label={m.label} icon={m.icon} desc={m.desc} accent={accent} onClick={() => setMode(m.id)} />
+        ))}
       </div>
     );
   }
 
-  const accentStyle = { color: accent };
-  const progressStyle = {
-    width: `${stats.total > 0 ? (stats.answered / stats.total) * 100 : 0}%`,
-    background: accentSecondary ? `linear-gradient(90deg, ${accent}, ${accentSecondary})` : accent,
+  const back = () => {
+    setMode(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  if (isOperationMode(mode)) {
+    return <RelatifsOperationsPage mode={mode} accent={accent} onBack={back} />;
+  }
+
   return (
-    <div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: '1.5rem' }}>
-        <button type="button" className="btn-secondary" onClick={goBack} style={{ fontSize: 13 }}>
-          ← Changer de mode
-        </button>
-        <span style={{ fontSize: 14, color: 'var(--muted)' }}>
-          {mode === 'reperage' ? 'Repérage sur une droite'
-            : mode === 'comparaison' ? 'Comparaison'
-            : mode === 'repere' ? 'Repérage dans un repère'
-            : 'Définitions'}
-        </span>
-      </div>
-
-      {mode === 'definitions' && <RecallDefinitions accent={accent} />}
-      {mode === 'comparaison' && <RecallComparaison accent={accent} />}
-      {mode === 'repere' && <RecallRepere accent={accent} />}
-
-      <div className="scoreboard">
-        <div className="score-item">
-          <span className="score-num" style={accentStyle}>{stats.correct}</span>
-          <div className="score-label">Justes</div>
-        </div>
-        <div className="score-item">
-          <span className="score-num" style={accentStyle}>{stats.wrong}</span>
-          <div className="score-label">Faux</div>
-        </div>
-        <div className="score-item">
-          <span className="score-num" style={accentStyle}>{stats.total - stats.answered}</span>
-          <div className="score-label">Restants</div>
-        </div>
-      </div>
-
-      <div className="progress-bar">
-        <div className="progress-fill" style={progressStyle} />
-      </div>
-
-      <div className="controls">
-        <button className="btn-secondary" onClick={resetErrors} disabled={stats.wrong === 0}>
-          Recommencer les erreurs
-        </button>
-        <button className="btn-secondary" onClick={newSeries}>Nouvelle série</button>
-      </div>
-
-      <div className="questions-list">
-        {exercises.map((ex, i) => {
-          const key = `${seriesKey}-${answers[i]!.resetKey}-${i}`;
-          const common = { key, index: i, answer: answers[i]!, accent, onSubmit: (ok: boolean) => submit(i, ok) };
-          if (ex.exKind === 'sign-table') return <SignTableQuestion {...common} exercise={ex.data} />;
-          if (ex.exKind === 'opposite-table') return <OppositeTableQuestion {...common} exercise={ex.data} />;
-          if (ex.exKind === 'axis-fill') return <AxisFillQuestion {...common} exercise={ex.data} />;
-          if (ex.exKind === 'axis-read') return <AxisReadQuestion {...common} exercise={ex.data} />;
-          if (ex.exKind === 'axis-place') return <AxisPlaceQuestion {...common} exercise={ex.data} />;
-          if (ex.exKind === 'relatif-compare') return <RelatifComparisonQuestion {...common} exercise={ex.data} />;
-          if (ex.exKind === 'order-multi') return <OrderMultiDragDrop {...common} exercise={ex.data} />;
-          if (ex.exKind === 'repere-read') return <RepereReadQuestion {...common} exercise={ex.data} />;
-          return <ReperePlaceQuestion {...common} exercise={ex.data} />;
-        })}
-      </div>
-
-      {finished && (
-        <div className="end-banner" ref={endRef} style={{ border: `1px solid ${accent}` }}>
-          <h2 style={{ color: accent }}>{endTitle(Math.round((stats.correct / stats.total) * 100))}</h2>
-          <p>Score : {stats.correct} / {stats.total} ({Math.round((stats.correct / stats.total) * 100)}%)</p>
-          <div className="btn-group">
-            <button className="btn-secondary" onClick={resetErrors} disabled={stats.wrong === 0}>
-              Recommencer les erreurs
-            </button>
-            <button className="btn-primary" style={{ background: accent }} onClick={newSeries}>
-              Nouvelle série
-            </button>
-          </div>
-        </div>
-      )}
-    </div>
+    <VividPage<RelatifsExercise>
+      key={mode}
+      accent={accent}
+      hero={heroFor(mode, back)}
+      tip={TIPS[mode]}
+      build={() => buildExercises(mode)}
+      themeFor={themeFor}
+      renderCard={(ex, i, p) => {
+        const common = { index: i, answer: p.answer, accent: p.theme.color, theme: p.theme, onSubmit: p.onSubmit };
+        if (ex.exKind === 'sign-table') return <SignTableQuestion {...common} exercise={ex.data} />;
+        if (ex.exKind === 'opposite-table') return <OppositeTableQuestion {...common} exercise={ex.data} />;
+        if (ex.exKind === 'axis-fill') return <AxisFillQuestion {...common} exercise={ex.data} />;
+        if (ex.exKind === 'axis-read') return <AxisReadQuestion {...common} exercise={ex.data} />;
+        if (ex.exKind === 'axis-place') return <AxisPlaceQuestion {...common} exercise={ex.data} />;
+        if (ex.exKind === 'relatif-compare') return <RelatifComparisonQuestion {...common} exercise={ex.data} />;
+        if (ex.exKind === 'order-multi') return <OrderMultiDragDrop {...common} exercise={ex.data} />;
+        if (ex.exKind === 'repere-read') return <RepereReadQuestion {...common} exercise={ex.data} />;
+        return <ReperePlaceQuestion {...common} exercise={ex.data} />;
+      }}
+    />
   );
 }

@@ -417,7 +417,7 @@ function ModeSelector({ onSelect, accent }: { onSelect: (m: HubMode) => void; ac
               key={m.id}
               href={m.href}
               style={{
-                display: 'flex', alignItems: 'center', gap: 16,
+                display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: 16,
                 background: 'var(--surface)', border: `1px solid var(--border)`,
                 borderRadius: 14, padding: '16px 20px', textDecoration: 'none', color: 'var(--text)',
                 transition: 'border-color 0.15s',
@@ -425,7 +425,7 @@ function ModeSelector({ onSelect, accent }: { onSelect: (m: HubMode) => void; ac
               onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = accent; }}
               onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border)'; }}
             >
-              <span style={{ fontSize: 28, minWidth: 36, textAlign: 'center', color: accent }}>{m.icon}</span>
+              <span style={{ fontSize: 28, width: 38, minWidth: 38, flexShrink: 0, textAlign: 'left', color: accent }}>{m.icon}</span>
               <div>
                 <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 2 }}>{m.label}</div>
                 <div style={{ fontSize: 12, color: 'var(--muted)' }}>{m.desc}</div>
@@ -439,7 +439,7 @@ function ModeSelector({ onSelect, accent }: { onSelect: (m: HubMode) => void; ac
             type="button"
             onClick={() => onSelect(m.id as HubMode)}
             style={{
-              display: 'flex', alignItems: 'center', gap: 16,
+              display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: 16,
               background: 'var(--surface)', border: `1px solid var(--border)`,
               borderRadius: 14, padding: '16px 20px', cursor: 'pointer', textAlign: 'left',
               color: 'var(--text)', transition: 'border-color 0.15s',
@@ -447,7 +447,7 @@ function ModeSelector({ onSelect, accent }: { onSelect: (m: HubMode) => void; ac
             onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = accent; }}
             onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border)'; }}
           >
-            <span style={{ fontSize: 28, minWidth: 36, textAlign: 'center', color: accent }}>{m.icon}</span>
+            <span style={{ fontSize: 28, width: 38, minWidth: 38, flexShrink: 0, textAlign: 'left', color: accent }}>{m.icon}</span>
             <div>
               <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 2 }}>{m.label}</div>
               <div style={{ fontSize: 12, color: 'var(--muted)' }}>{m.desc}</div>

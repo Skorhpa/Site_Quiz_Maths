@@ -78,6 +78,7 @@ function ModeCard({
       style={{
         display: 'flex',
         alignItems: 'center',
+        justifyContent: 'flex-start',
         gap: 16,
         background: 'var(--surface)',
         border: '1px solid var(--border)',
@@ -92,7 +93,7 @@ function ModeCard({
       onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = accent; }}
       onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border)'; }}
     >
-      <span style={{ fontSize: 26, minWidth: 36, textAlign: 'center', color: accent }}>{icon}</span>
+      <span style={{ fontSize: 26, width: 38, minWidth: 38, flexShrink: 0, textAlign: 'left', color: accent }}>{icon}</span>
       <div>
         <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 2 }}>{label}</div>
         <div style={{ fontSize: 12, color: 'var(--muted)' }}>{desc}</div>
