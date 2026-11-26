@@ -1,4 +1,5 @@
 import type { Topic } from '@/types';
+import { anglesHub6emeQuiz } from './angles';
 import { decimauxQuiz } from './decimaux';
 import { geometrieHub6emeQuiz } from './geometrie';
 import { proportionnaliteHub6emeQuiz } from './proportionnalite';
@@ -7,6 +8,7 @@ import { tablesHub6emeQuiz } from './tables';
 export const topics: Topic[] = [
   decimauxQuiz,
   geometrieHub6emeQuiz,
+  anglesHub6emeQuiz,
   proportionnaliteHub6emeQuiz,
   tablesHub6emeQuiz,
 ];

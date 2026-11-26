@@ -52,6 +52,7 @@ import { CalculsHub5eme } from './questions/CalculsHub5eme';
 import { TablesHub5eme } from './TablesHub5eme';
 import { RelatifsHub } from './questions/RelatifsHub';
 import { GeometrieHub } from './questions/GeometrieHub';
+import { AnglesHub } from './questions/AnglesHub';
 import { DecimauxParentHub } from './questions/DecimauxParentHub';
 import { ProportionnaliteHub } from './questions/ProportionnaliteHub';
 import { ProportionnaliteHub6eme } from './questions/ProportionnaliteHub6eme';
@@ -316,6 +317,8 @@ export default function Quiz({ quiz }: QuizProps) {
         <ExerciseErrorBoundary><RelatifsHub accent={quiz.accent} accentSecondary={quiz.accentSecondary} /></ExerciseErrorBoundary>
       ) : quiz.renderer === 'geometrie-hub-6eme' ? (
         <ExerciseErrorBoundary><GeometrieHub accent={quiz.accent} accentSecondary={quiz.accentSecondary} /></ExerciseErrorBoundary>
+      ) : quiz.renderer === 'angles-hub-6eme' ? (
+        <ExerciseErrorBoundary><AnglesHub accent={quiz.accent} accentSecondary={quiz.accentSecondary} /></ExerciseErrorBoundary>
       ) : quiz.renderer === 'decimaux-parent-hub-6eme' ? (
         <ExerciseErrorBoundary><DecimauxParentHub accent={quiz.accent} accentSecondary={quiz.accentSecondary} /></ExerciseErrorBoundary>
       ) : quiz.renderer === 'proportionnalite-hub-5eme' ? (
